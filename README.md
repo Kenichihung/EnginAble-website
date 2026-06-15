@@ -166,11 +166,13 @@ Every time you want to work:
 ```bash
 git pull
 git checkout -b your-name-task-name
+npm run dev
 ```
 
 After editing:
 
 ```bash
+npm run build
 git status
 git add .
 git commit -m "Your message"
