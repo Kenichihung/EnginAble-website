@@ -28,6 +28,8 @@ npm run build
 
 This guide explains how to clone this private repository, make changes, and push your work to GitHub.
 
+Assuming u can read this, so you've done steps 0 and 1 so skip to 2
+
 ## 0. Send Kenichi ur github user for him to add ur github account to collab in this repo
 
 ## 1. Accept the GitHub Invitation
