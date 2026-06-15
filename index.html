@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="EnginAble Global promotes engineering through accessible learning, events, partnerships, and community-driven opportunities."
+    />
+    <title>EnginAble Global</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div id="fallback" class="site-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <img src="./src/assets/Logo.png" alt="EnginAble Global logo" class="brand-logo" />
+          <div>
+            <a href="#home" class="brand-name">EnginAble Global</a>
+            <p class="brand-subtitle">Promoting engineering for everyone</p>
+          </div>
+        </div>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">
+          Menu
+        </button>
+        <nav id="site-navigation" class="site-nav">
+          <a href="#information">Information</a>
+          <a href="#articles">Articles</a>
+          <a href="#events">Events</a>
+          <a href="#partners">Partners</a>
+          <a href="#contact">Contact Us</a>
+        </nav>
+      </header>
+
+      <main id="home">
+        <section class="hero">
+          <div class="hero-copy reveal">
+            <h1 class="typewriter-heading">
+              <span class="typewriter-ghost" aria-hidden="true">
+                Opening more doors into engineering through stories, programs, and community.
+              </span>
+              <span class="typewriter-live">
+                <span id="fallback-typewriter"></span><span class="typewriter-cursor" aria-hidden="true"></span>
+              </span>
+            </h1>
+            <p class="hero-text">
+              EnginAble Global is a modern platform for aspiring engineers, educators, and industry
+              allies. We spotlight opportunities, publish ideas, and connect people with meaningful
+              events and partnerships.
+            </p>
+            <div class="hero-actions">
+              <a href="#events" class="button button-primary">Explore Events</a>
+              <a href="#articles" class="button button-secondary">Read Articles</a>
+            </div>
+            <dl class="hero-stats">
+              <div>
+                <dt>12+</dt>
+                <dd>program ideas ready to scale</dd>
+              </div>
+              <div>
+                <dt>4</dt>
+                <dd>core content pillars</dd>
+              </div>
+              <div>
+                <dt>1</dt>
+                <dd>shared mission: engineering for all</dd>
+              </div>
+            </dl>
+          </div>
+
+          <aside class="hero-panel reveal delay-1">
+            <div class="panel-card panel-highlight">
+              <h2>Future-ready engineering communities start with belonging.</h2>
+              <p>
+                Build a public-facing presence for initiatives, thought leadership, and partner
+                activations in one place.
+              </p>
+            </div>
+            <div class="panel-grid">
+              <article class="panel-card">
+                <h3>Career Pathways</h3>
+                <p>Profiles, explainers, and engineering journeys that feel practical and inspiring.</p>
+              </article>
+              <article class="panel-card">
+                <h3>Mentor Studio</h3>
+                <p>Live sessions that bring professionals, students, and institutions together.</p>
+              </article>
+            </div>
+          </aside>
+        </section>
+
+        <section class="carousel-section reveal delay-2" aria-labelledby="carousel-heading">
+          <div class="section-heading">
+            <h2 id="carousel-heading">A mock carousel for future campaign visuals</h2>
+            <p>Four rotating placeholders ready for future campaigns, program photos, or event highlights.</p>
+          </div>
+
+          <div class="carousel" aria-roledescription="carousel">
+            <button class="carousel-control prev" type="button" aria-label="Previous slide">&#8592;</button>
+            <div class="carousel-track">
+              <article class="carousel-slide active">
+                <div
+                  class="slide-media"
+                  style="background-image: linear-gradient(rgba(7, 22, 52, 0.16), rgba(7, 22, 52, 0.16)), url('./src/assets/slide-1.svg');"
+                ></div>
+                <div class="slide-copy">
+                  <h3>Engineering talks that feel welcoming, practical, and ambitious.</h3>
+                </div>
+              </article>
+              <article class="carousel-slide">
+                <div
+                  class="slide-media"
+                  style="background-image: linear-gradient(rgba(11, 36, 87, 0.16), rgba(11, 36, 87, 0.16)), url('./src/assets/slide-2.svg');"
+                ></div>
+                <div class="slide-copy">
+                  <h3>Hands-on workshops designed to spark confidence and curiosity.</h3>
+                </div>
+              </article>
+              <article class="carousel-slide">
+                <div
+                  class="slide-media"
+                  style="background-image: linear-gradient(rgba(16, 54, 125, 0.16), rgba(16, 54, 125, 0.16)), url('./src/assets/slide-3.svg');"
+                ></div>
+                <div class="slide-copy">
+                  <h3>Partnerships that bridge schools, industry, and future talent.</h3>
+                </div>
+              </article>
+              <article class="carousel-slide">
+                <div
+                  class="slide-media"
+                  style="background-image: linear-gradient(rgba(13, 25, 56, 0.18), rgba(13, 25, 56, 0.18)), url('./src/assets/slide-4.svg');"
+                ></div>
+                <div class="slide-copy">
+                  <h3>Stories that show engineering as creative, global, and impactful.</h3>
+                </div>
+              </article>
+            </div>
+            <button class="carousel-control next" type="button" aria-label="Next slide">&#8594;</button>
+          </div>
+
+          <div class="carousel-dots" aria-label="Carousel navigation">
+            <button class="dot active" type="button" aria-label="Slide 1"></button>
+            <button class="dot" type="button" aria-label="Slide 2"></button>
+            <button class="dot" type="button" aria-label="Slide 3"></button>
+            <button class="dot" type="button" aria-label="Slide 4"></button>
+          </div>
+        </section>
+
+        <section id="information" class="content-section">
+          <div class="section-heading reveal">
+            <h2>Clear pathways into EnginAble's mission, approach, and public value.</h2>
+          </div>
+          <div class="info-grid">
+            <article class="info-card reveal">
+              <h3>Who We Are</h3>
+              <p>
+                A promoting-engineering organisation focused on widening access, sharing knowledge,
+                and celebrating talent across different communities.
+              </p>
+            </article>
+            <article class="info-card reveal delay-1">
+              <h3>What We Do</h3>
+              <p>
+                We curate articles, host events, strengthen partnerships, and create visible entry
+                points for people exploring engineering futures.
+              </p>
+            </article>
+            <article class="info-card reveal delay-2">
+              <h3>Why It Matters</h3>
+              <p>
+                Engineering becomes more innovative when more people can see themselves in it and
+                access the guidance needed to participate.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="articles" class="content-section alt-section">
+          <div class="section-heading reveal">
+            <h2>Editorial content for discovery, reflection, and momentum.</h2>
+          </div>
+          <div class="feature-layout">
+            <article class="feature-story reveal">
+              <h3>How engineering communities can make opportunity feel visible.</h3>
+              <p>
+                A flagship long-form article slot for interviews, opinion pieces, or thought
+                leadership from educators, practitioners, and young innovators.
+              </p>
+              <a href="#contact" class="text-link">Pitch future stories</a>
+            </article>
+            <div class="article-list">
+              <article class="article-card reveal delay-1">
+                <h3>Building confidence before technical mastery</h3>
+                <p>Early encouragement can be the difference between interest and action.</p>
+              </article>
+              <article class="article-card reveal delay-2">
+                <h3>Engineering role models from different paths</h3>
+                <p>Career journeys that make the field feel broad, human, and attainable.</p>
+              </article>
+              <article class="article-card reveal delay-3">
+                <h3>What a strong outreach event actually looks like</h3>
+                <p>Practical ingredients for high-impact sessions that people remember.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="events" class="content-section">
+          <div class="section-heading reveal">
+            <h2>Programs built for exposure, participation, and real connection.</h2>
+          </div>
+          <div class="event-grid">
+            <article class="event-card reveal">
+              <h3>Engineering Discovery Day</h3>
+              <p>
+                A school-facing event format with speakers, demos, and hands-on stations for
+                students and families.
+              </p>
+            </article>
+            <article class="event-card reveal delay-1">
+              <h3>Mentor Circles</h3>
+              <p>
+                Small-group conversations between learners and engineering professionals across
+                disciplines.
+              </p>
+            </article>
+            <article class="event-card reveal delay-2">
+              <h3>Partner Showcase Forum</h3>
+              <p>
+                A presentation space for universities, companies, and community organizations to
+                share opportunities.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="partners" class="content-section alt-section">
+          <div class="section-heading reveal">
+            <h2>Built to welcome schools, industry, and mission-aligned collaborators.</h2>
+          </div>
+          <div class="partners-layout">
+            <div class="partner-copy reveal">
+              <p>
+                This section can grow into a proper partner directory, sponsorship showcase, or
+                collaboration page. For now it introduces the relationship model and the types of
+                organisations EnginAble works with.
+              </p>
+              <div class="partner-tags">
+                <span>Schools</span>
+                <span>Universities</span>
+                <span>Industry</span>
+                <span>Nonprofits</span>
+              </div>
+            </div>
+            <div class="partner-grid">
+              <article class="partner-card reveal delay-1">
+                <h3>Education Partners</h3>
+                <p>Program hosts, student communities, academic institutions.</p>
+              </article>
+              <article class="partner-card reveal delay-2">
+                <h3>Industry Partners</h3>
+                <p>Companies supporting outreach, mentorship, and applied learning.</p>
+              </article>
+              <article class="partner-card reveal delay-3">
+                <h3>Community Partners</h3>
+                <p>Organisations advocating for inclusion, access, and local impact.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" class="content-section contact-section">
+          <div class="section-heading reveal">
+            <h2>Start a conversation about content, events, or collaboration.</h2>
+          </div>
+          <div class="contact-layout">
+            <article class="contact-card reveal">
+              <h3>General Enquiries</h3>
+              <p>hello@enginable.global</p>
+              <p>+62 000 0000 0000</p>
+            </article>
+            <article class="contact-card reveal delay-1">
+              <h3>Partnerships</h3>
+              <p>partners@enginable.global</p>
+              <p>For schools, companies, and community collaborations.</p>
+            </article>
+            <article class="contact-card reveal delay-2">
+              <h3>Editorial</h3>
+              <p>stories@enginable.global</p>
+              <p>For article pitches, interviews, and spotlight opportunities.</p>
+            </article>
+            <article class="contact-card reveal delay-3">
+              <h3>Instagram</h3>
+              <p>@enginable.global</p>
+              <p>
+                <a class="contact-link-button" href="https://www.instagram.com/enginable.global/" target="_blank" rel="noreferrer">
+                  Visit Instagram
+                </a>
+              </p>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>EnginAble Global</p>
+        <p>Promoting engineering through information, stories, events, and partnerships.</p>
+      </footer>
+    </div>
+
+    <div id="root"></div>
+
+    <script>
+      const menuToggle = document.querySelector(".menu-toggle");
+      const siteNav = document.querySelector(".site-nav");
+      const slides = Array.from(document.querySelectorAll(".carousel-slide"));
+      const dots = Array.from(document.querySelectorAll(".dot"));
+      const prevButton = document.querySelector(".carousel-control.prev");
+      const nextButton = document.querySelector(".carousel-control.next");
+      const fallbackTypewriter = document.getElementById("fallback-typewriter");
+      const fallbackTypewriterHeading = document.querySelector(".typewriter-heading");
+      const fallbackTypewriterMeasure = document.querySelector(".typewriter-ghost");
+      const heroPhrases = [
+        "Opening more doors into engineering through stories, programs, and community.",
+        "Opening clearer pathways into engineering through mentorship, ideas, and action."
+      ];
+      let activeSlide = 0;
+      let autoRotate;
+
+      if (menuToggle && siteNav) {
+        menuToggle.addEventListener("click", () => {
+          const isOpen = siteNav.classList.toggle("is-open");
+          menuToggle.setAttribute("aria-expanded", String(isOpen));
+        });
+      }
+
+      function renderCarousel(index) {
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle("active", slideIndex === index);
+        });
+
+        dots.forEach((dot, dotIndex) => {
+          dot.classList.toggle("active", dotIndex === index);
+        });
+      }
+
+      function goToSlide(index) {
+        activeSlide = (index + slides.length) % slides.length;
+        renderCarousel(activeSlide);
+      }
+
+      function startAutoRotate() {
+        autoRotate = window.setInterval(() => {
+          goToSlide(activeSlide + 1);
+        }, 5000);
+      }
+
+      function resetAutoRotate() {
+        window.clearInterval(autoRotate);
+        startAutoRotate();
+      }
+
+      if (slides.length && dots.length) {
+        renderCarousel(activeSlide);
+        startAutoRotate();
+
+        prevButton?.addEventListener("click", () => {
+          goToSlide(activeSlide - 1);
+          resetAutoRotate();
+        });
+
+        nextButton?.addEventListener("click", () => {
+          goToSlide(activeSlide + 1);
+          resetAutoRotate();
+        });
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener("click", () => {
+            goToSlide(index);
+            resetAutoRotate();
+          });
+        });
+      }
+
+      if (fallbackTypewriter) {
+        function measureFallbackHeadlineHeight() {
+          if (!fallbackTypewriterHeading || !fallbackTypewriterMeasure) {
+            return;
+          }
+
+          let tallestHeight = 0;
+
+          heroPhrases.forEach((phrase) => {
+            fallbackTypewriterMeasure.textContent = `${phrase}\u00A0`;
+            tallestHeight = Math.max(tallestHeight, fallbackTypewriterMeasure.getBoundingClientRect().height);
+          });
+
+          fallbackTypewriterMeasure.textContent = `${heroPhrases[0]}\u00A0`;
+          fallbackTypewriterHeading.style.minHeight = `${Math.ceil(tallestHeight)}px`;
+        }
+
+        measureFallbackHeadlineHeight();
+        window.addEventListener("resize", measureFallbackHeadlineHeight);
+
+        let phraseIndex = 0;
+        let characterIndex = 0;
+        let isDeleting = false;
+
+        function tickTypewriter() {
+          const currentPhrase = heroPhrases[phraseIndex];
+
+          if (!isDeleting) {
+            characterIndex += 1;
+            fallbackTypewriter.textContent = currentPhrase.slice(0, characterIndex);
+
+            if (characterIndex >= currentPhrase.length) {
+              window.setTimeout(() => {
+                isDeleting = true;
+                tickTypewriter();
+              }, 3000);
+              return;
+            }
+          } else {
+            characterIndex -= 1;
+            fallbackTypewriter.textContent = currentPhrase.slice(0, characterIndex);
+
+            if (characterIndex <= 0) {
+              isDeleting = false;
+              phraseIndex = (phraseIndex + 1) % heroPhrases.length;
+            }
+          }
+
+          window.setTimeout(tickTypewriter, isDeleting ? 18 : 34);
+        }
+
+        tickTypewriter();
+      }
+
+      if (window.location.protocol !== "file:") {
+        const moduleScript = document.createElement("script");
+        moduleScript.type = "module";
+        moduleScript.src = "/src/main.jsx";
+        document.body.appendChild(moduleScript);
+      }
+    </script>
+  </body>
+</html>
