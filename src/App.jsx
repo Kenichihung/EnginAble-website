@@ -1,227 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { startTransition, useEffect, useRef, useState } from "react";
 import logo from "./assets/enginable-header-logo.png";
-import slideOne from "./assets/slide-1.svg";
-import slideTwo from "./assets/slide-2.svg";
-import slideThree from "./assets/slide-3.svg";
-import slideFour from "./assets/slide-4.svg";
 import heroBackground from "./assets/hero-background.png";
-import waterFilterImage from "./assets/article-water.svg";
-import solarImage from "./assets/article-solar.svg";
-import arduinoImage from "./assets/article-arduino.svg";
-import schoolImage from "./assets/partner-school.svg";
-import universityImage from "./assets/partner-university.svg";
-import industryImage from "./assets/partner-industry.svg";
-import nonprofitImage from "./assets/partner-nonprofit.svg";
-import instagramArduinoImage from "./assets/instagram-arduino.png";
-import instagramSolarImage from "./assets/instagram-solar.png";
-import instagramWaterImage from "./assets/instagram-water.png";
-
-const heroPhrases = [
-  "Opening more doors into engineering through stories, programs, and community.",
-  "Opening clearer pathways into engineering through mentorship, ideas, and action.",
-];
-
-const navItems = [
-  { label: "Information", href: "#information" },
-  { label: "Articles", href: "#articles" },
-  { label: "Events", href: "#events" },
-  { label: "Partners", href: "#partners" },
-];
-
-const slides = [
-  {
-    title: "Engineering talks that feel welcoming, practical, and ambitious.",
-    image: slideOne,
-    overlay: "rgba(7, 22, 52, 0.16)",
-  },
-  {
-    title: "Hands-on workshops designed to spark confidence and curiosity.",
-    image: slideTwo,
-    overlay: "rgba(11, 36, 87, 0.16)",
-  },
-  {
-    title: "Partnerships that bridge schools, industry, and future talent.",
-    image: slideThree,
-    overlay: "rgba(16, 54, 125, 0.16)",
-  },
-  {
-    title: "Stories that show engineering as creative, global, and impactful.",
-    image: slideFour,
-    overlay: "rgba(13, 25, 56, 0.18)",
-  },
-];
-
-const articleCards = [
-  {
-    slug: "how-do-water-filters-work",
-    publishedAt: "2026-01-12",
-    category: "Article",
-    title: "How Do Water Filters Work?",
-    text: "A practical explainer on filtration systems, clean water access, and the engineering logic behind them.",
-    image: instagramWaterImage,
-    content: [
-      "Water filters work by guiding water through materials that capture, block, or neutralize unwanted particles. Depending on the design, a filter may target sediment, bacteria, odors, heavy metals, or chemical contaminants.",
-      "A simple household filter often uses several stages. The first stage catches larger dirt and rust particles. Activated carbon then helps absorb chlorine, smells, and some dissolved compounds. More advanced systems may add membranes or ultraviolet treatment for stronger purification.",
-      "Engineers think carefully about flow rate, pore size, maintenance, and cost. A filter must clean water effectively without slowing it too much or becoming difficult to replace. That balance is what turns a science concept into a useful public product.",
-      "In outreach and education, water filtration is a strong example because it connects engineering directly to health, equity, and community impact. Students can quickly see how design decisions affect daily life.",
-    ],
-    instagramPosts: [
-      {
-        title: "Related Instagram Post",
-        url: "https://www.instagram.com/enginable.global/p/DWI5MGhEXz4/",
-        image: instagramWaterImage,
-        caption:
-          "Clean water is one example where simple engineering concepts can make a difference, yet not everyone is given the opportunity to explore them. EnginAble is built on the idea that access to knowledge can lead to action.\n\nIf you’re interested in being inched, feel free to reach out via DM or starry tunes for upcoming opportunities. EnginAble is currently open for Founding Team members all year round—register in our bio!\n\n#engineering #studentopportunities #highschool",
-      },
-      {
-        title: "Related Instagram Post",
-        url: "https://www.instagram.com/enginable.global/p/DZFf2CFEvOw/",
-        image: instagramWaterImage,
-        caption:
-          "Clean water is one example where simple engineering concepts can make a difference, yet not everyone is given the opportunity to explore them. EnginAble is built on the idea that access to knowledge can lead to action.\n\nIf you’re interested in being inched, feel free to reach out via DM or starry tunes for upcoming opportunities. EnginAble is currently open for Founding Team members all year round—register in our bio!\n\n#engineering #studentopportunities #highschool",
-      },
-    ],
-  },
-  {
-    slug: "the-physics-of-solar-panels",
-    publishedAt: "2026-02-08",
-    category: "Article",
-    title: "The Physics of Solar Panels",
-    text: "A clear introduction to how sunlight becomes electricity and why solar design matters so much today.",
-    image: instagramSolarImage,
-    content: [
-      "Solar panels convert sunlight into electricity through photovoltaic cells. When sunlight hits the semiconductor material inside a cell, it energizes electrons and creates an electric current.",
-      "The physics matters because panel performance depends on angle, light intensity, temperature, and material quality. Engineers study how to maximize energy output while making systems durable enough for long-term outdoor use.",
-      "A solar installation is more than just the panel surface. Wiring, inverters, battery storage, and structural supports all play a role. Each part must work together so sunlight can become reliable power for homes, schools, or larger infrastructure.",
-      "For young learners, solar panels are a powerful entry point into engineering because they connect physics, sustainability, and real-world design into one visible technology.",
-    ],
-    instagramPosts: [
-      {
-        title: "Related Instagram Post",
-        url: "https://www.instagram.com/enginable.global/p/DWsM_kQksX5/",
-        image: instagramSolarImage,
-        caption:
-          "Ever wondered the science behind solar panels and how they can provide energy for our households? Swipe along to find out!\n\nEnginAble helps convert concepts like these into simple visualizations to make engineering knowledge accessible for everyone!\n\n#engineering #solarpanels #highschool",
-      },
-    ],
-  },
-  {
-    slug: "arduino-101-getting-started",
-    publishedAt: "2026-03-04",
-    category: "Article",
-    title: "Arduino 101: Getting Started",
-    text: "A beginner-friendly stepping stone into circuits, prototyping, and playful engineering experimentation.",
-    image: instagramArduinoImage,
-    content: [
-      "Arduino gives beginners a practical way to enter engineering by combining simple electronics with code. A starter project might blink an LED, read a sensor, or control a buzzer or motor.",
-      "What makes Arduino useful is how quickly an idea can become a prototype. Students can test concepts, notice mistakes, revise their setup, and learn through direct feedback instead of only theory.",
-      "Engineering confidence often grows through this small-cycle experimentation. Wiring a circuit, uploading a sketch, and seeing a real response helps abstract technical ideas feel more approachable.",
-      "As a teaching tool, Arduino also supports collaboration. Teams can split roles across coding, physical assembly, troubleshooting, and presentation, which mirrors real engineering workflows in a manageable way.",
-    ],
-    instagramPosts: [
-      {
-        title: "Related Instagram Post",
-        url: "https://www.instagram.com/enginable.global/p/DYl__XEkUe-/",
-        image: instagramArduinoImage,
-        caption:
-          "A quick read on the mechanics behind Arduino — truly an incredible platform that any engineer would benefit from knowing!! 👨‍🔧👩‍🔧\n\nEnginable is excited to simplify many other tools like this for engineers alike ⭐️\n\n#arduino #engineering #studentopportunities",
-      },
-    ],
-  },
-];
-
-const sortedArticles = [...articleCards].sort(
-  (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
-);
-
-const infoBlocks = [
-  {
-    title: "Who We Are",
-    text: "A promoting-engineering organisation focused on widening access, sharing knowledge, and celebrating talent across different communities.",
-  },
-  {
-    title: "What We Do",
-    text: "We curate articles, host events, strengthen partnerships, and create visible entry points for people exploring engineering futures.",
-  },
-  {
-    title: "Why It Matters",
-    text: "Engineering becomes more innovative when more people can see themselves in it and access the guidance needed to participate.",
-  },
-];
-
-const eventCards = [
-  {
-    icon: "lightbulb",
-    title: "Engineering Discovery Day",
-    text: "A school-facing event format with speakers, demos, and hands-on stations for students and families.",
-    image: slideOne,
-  },
-  {
-    icon: "forum",
-    title: "Mentor Circles",
-    text: "Small-group conversations between learners and engineering professionals across disciplines.",
-    image: slideTwo,
-  },
-  {
-    icon: "handshake",
-    title: "Partner Showcase Forum",
-    text: "A presentation space for universities, companies, and community organizations to share opportunities.",
-    image: slideThree,
-  },
-];
-
-const partnerCards = [
-  {
-    title: "Education Partners",
-    text: "Program hosts, student communities, academic institutions.",
-    image: schoolImage,
-  },
-  {
-    title: "Industry Partners",
-    text: "Companies supporting outreach, mentorship, and applied learning.",
-    image: industryImage,
-  },
-  {
-    title: "Community Partners",
-    text: "Organisations advocating for inclusion, access, and local impact.",
-    image: nonprofitImage,
-  },
-];
-
-const partnerTypes = [
-  { title: "Schools", icon: "school", image: schoolImage },
-  { title: "Universities", icon: "account_balance", image: universityImage },
-  { title: "Industry", icon: "factory", image: industryImage },
-  { title: "Nonprofits", icon: "volunteer_activism", image: nonprofitImage },
-];
-
-const contactCards = [
-  {
-    icon: "mail",
-    title: "General Enquiries",
-    primary: "hello@enginable.global",
-    secondary: "+62 000 0000 0000",
-  },
-  {
-    icon: "handshake",
-    title: "Partnerships",
-    primary: "partners@enginable.global",
-    secondary: "For schools, companies, and community collaborations.",
-  },
-  {
-    icon: "description",
-    title: "Editorial",
-    primary: "stories@enginable.global",
-    secondary: "For article pitches, interviews, and spotlight opportunities.",
-  },
-  {
-    icon: "photo_camera",
-    title: "Instagram",
-    primary: "@enginable.global",
-    secondary: "Visit Instagram",
-    button: true,
-  },
-];
+import {
+  contactCards,
+  heroPhrases,
+  infoBlocks,
+  navItems,
+  partnerCards,
+  partnerTypes,
+} from "./content/siteContent";
+import { articleRepository } from "./lib/articleRepository";
+import { eventRepository } from "./lib/eventRepository";
 
 function readArticleSlugFromHash() {
   const hash = window.location.hash || "";
@@ -235,6 +24,16 @@ function readArticleSlugFromHash() {
 
 function isAllArticlesHash() {
   return (window.location.hash || "") === "#articles/all";
+}
+
+function readEventSlugFromHash() {
+  const hash = window.location.hash || "";
+
+  if (!hash.startsWith("#event/")) {
+    return null;
+  }
+
+  return hash.replace("#event/", "");
 }
 
 function Icon({ name, className = "site-icon" }) {
@@ -335,20 +134,95 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("#information");
   const [activeArticleSlug, setActiveArticleSlug] = useState(() => readArticleSlugFromHash());
+  const [activeEventSlug, setActiveEventSlug] = useState(() => readEventSlugFromHash());
   const [showAllArticlesPage, setShowAllArticlesPage] = useState(() => isAllArticlesHash());
-  const [activeSlide, setActiveSlide] = useState(0);
+  const [activeUpcomingSlide, setActiveUpcomingSlide] = useState(0);
+  const [activePastSlide, setActivePastSlide] = useState(0);
+  const [activeEventGallerySlide, setActiveEventGallerySlide] = useState(0);
   const [typedHeadline, setTypedHeadline] = useState("");
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const [isDeletingHeadline, setIsDeletingHeadline] = useState(false);
   const [reservedHeadlineHeight, setReservedHeadlineHeight] = useState(0);
+  const [articles, setArticles] = useState([]);
+  const [articlesLoaded, setArticlesLoaded] = useState(false);
+  const [pastEvents, setPastEvents] = useState([]);
+  const [eventsLoaded, setEventsLoaded] = useState(false);
   const measureRef = useRef(null);
+  const isEventRoute = Boolean(activeEventSlug);
+  const upcomingEvents = pastEvents.filter((eventItem) => eventItem.category === "Upcoming Event");
+  const pastEventArchive = pastEvents.filter((eventItem) => eventItem.category === "Past Event");
+  const activeEventPreview = pastEvents.find((card) => card.slug === activeEventSlug) ?? null;
+  const activeEventGallery = activeEventPreview
+    ? [
+        {
+          id: `${activeEventPreview.id}-cover`,
+          image: activeEventPreview.image,
+          alt: activeEventPreview.title,
+        },
+        ...(activeEventPreview.galleryImages ?? []),
+      ]
+    : [];
 
   useEffect(() => {
+    let isCancelled = false;
+
+    articleRepository.listPublished().then((records) => {
+      if (isCancelled) {
+        return;
+      }
+
+      startTransition(() => {
+        setArticles(records);
+        setArticlesLoaded(true);
+      });
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!upcomingEvents.length) {
+      return undefined;
+    }
+
     const slideIntervalId = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % slides.length);
+      setActiveUpcomingSlide((current) => (current + 1) % upcomingEvents.length);
     }, 5000);
 
     return () => window.clearInterval(slideIntervalId);
+  }, [upcomingEvents.length]);
+
+  useEffect(() => {
+    if (!pastEventArchive.length) {
+      return undefined;
+    }
+
+    const slideIntervalId = window.setInterval(() => {
+      setActivePastSlide((current) => (current + 1) % pastEventArchive.length);
+    }, 5000);
+
+    return () => window.clearInterval(slideIntervalId);
+  }, [pastEventArchive.length]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    eventRepository.listPublished().then((records) => {
+      if (isCancelled) {
+        return;
+      }
+
+      startTransition(() => {
+        setPastEvents(records);
+        setEventsLoaded(true);
+      });
+    });
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -407,6 +281,7 @@ export default function App() {
   useEffect(() => {
     function syncRoutesFromHash() {
       setActiveArticleSlug(readArticleSlugFromHash());
+      setActiveEventSlug(readEventSlugFromHash());
       setShowAllArticlesPage(isAllArticlesHash());
     }
 
@@ -417,7 +292,23 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (activeArticleSlug || showAllArticlesPage) {
+    setActiveEventGallerySlide(0);
+  }, [activeEventSlug]);
+
+  useEffect(() => {
+    if (!isEventRoute || activeEventGallery.length < 2) {
+      return undefined;
+    }
+
+    const slideIntervalId = window.setInterval(() => {
+      setActiveEventGallerySlide((current) => (current + 1) % activeEventGallery.length);
+    }, 4200);
+
+    return () => window.clearInterval(slideIntervalId);
+  }, [activeEventGallery.length, isEventRoute]);
+
+  useEffect(() => {
+    if (activeArticleSlug || activeEventSlug || showAllArticlesPage) {
       return undefined;
     }
 
@@ -480,10 +371,22 @@ export default function App() {
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
-  }, [activeArticleSlug, activeNav, showAllArticlesPage]);
+  }, [activeArticleSlug, activeEventSlug, activeNav, showAllArticlesPage]);
 
-  function goToSlide(index) {
-    setActiveSlide((index + slides.length) % slides.length);
+  function goToSlide(index, items, setSlide) {
+    if (!items.length) {
+      return;
+    }
+
+    setSlide((index + items.length) % items.length);
+  }
+
+  function goToEventGallerySlide(index, items) {
+    if (!items.length) {
+      return;
+    }
+
+    setActiveEventGallerySlide((index + items.length) % items.length);
   }
 
   function scrollToSectionByHref(href, behavior = "smooth") {
@@ -506,8 +409,9 @@ export default function App() {
   function scrollToSection(event, href) {
     event.preventDefault();
 
-    if (activeArticleSlug || showAllArticlesPage) {
+    if (activeArticleSlug || activeEventSlug || showAllArticlesPage) {
       setActiveArticleSlug(null);
+      setActiveEventSlug(null);
       setShowAllArticlesPage(false);
       window.history.replaceState(null, "", href);
 
@@ -524,6 +428,7 @@ export default function App() {
 
   function openArticle(slug) {
     setActiveArticleSlug(slug);
+    setActiveEventSlug(null);
     setShowAllArticlesPage(false);
     window.history.pushState(null, "", `#article/${slug}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -531,6 +436,7 @@ export default function App() {
 
   function closeArticle() {
     setActiveArticleSlug(null);
+    setActiveEventSlug(null);
     setShowAllArticlesPage(false);
     window.history.replaceState(null, "", "#articles");
 
@@ -544,6 +450,7 @@ export default function App() {
   function openAllArticlesPage(event) {
     event.preventDefault();
     setActiveArticleSlug(null);
+    setActiveEventSlug(null);
     setShowAllArticlesPage(true);
     window.history.pushState(null, "", "#articles/all");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -559,8 +466,110 @@ export default function App() {
     });
   }
 
-  const activeArticle = sortedArticles.find((card) => card.slug === activeArticleSlug) ?? null;
-  const latestArticles = sortedArticles.slice(0, 3);
+  function openEvent(slug) {
+    setActiveArticleSlug(null);
+    setActiveEventSlug(slug);
+    setShowAllArticlesPage(false);
+    window.history.pushState(null, "", `#event/${slug}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function closeEvent() {
+    setActiveArticleSlug(null);
+    setActiveEventSlug(null);
+    setShowAllArticlesPage(false);
+    window.history.replaceState(null, "", "#events");
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        scrollToSectionByHref("#events", "auto");
+      });
+    });
+  }
+
+  const isArticleRoute = Boolean(activeArticleSlug);
+  const activeArticle = articles.find((card) => card.slug === activeArticleSlug) ?? null;
+  const activeEvent = activeEventPreview;
+  const latestArticles = articles.slice(0, 3);
+
+  function renderEventCarousel(title, items, activeIndex, setSlide) {
+    if (!items.length) {
+      return null;
+    }
+
+    return (
+      <div className="events-carousel-block">
+        <div className="section-head section-head-carousel">
+          <h2 className="section-title">{title}</h2>
+        </div>
+
+        <div className="carousel-shell">
+          <button
+            className="carousel-control-square"
+            type="button"
+            aria-label={`Previous ${title.toLowerCase()} slide`}
+            onClick={() => goToSlide(activeIndex - 1, items, setSlide)}
+          >
+            <Icon name="arrow_back" />
+          </button>
+
+          <div className="carousel-stage">
+            {items.map((eventItem, index) => (
+              <article
+                key={eventItem.slug}
+                className={`carousel-panel ${index === activeIndex ? "active" : ""}`}
+                onClick={() => openEvent(eventItem.slug)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openEvent(eventItem.slug);
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+              >
+                <div
+                  className="carousel-media"
+                  style={{
+                    backgroundImage: `linear-gradient(rgba(0, 60, 131, 0.16), rgba(0, 60, 131, 0.16)), url(${eventItem.image})`,
+                  }}
+                ></div>
+                <div className="carousel-copy">
+                  <div>
+                    <span className="article-category">{eventItem.category}</span>
+                    <h3>{eventItem.title}</h3>
+                    <p>{eventItem.text}</p>
+                    <span className="carousel-link-hint">View event details</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <button
+            className="carousel-control-square"
+            type="button"
+            aria-label={`Next ${title.toLowerCase()} slide`}
+            onClick={() => goToSlide(activeIndex + 1, items, setSlide)}
+          >
+            <Icon name="arrow_forward" />
+          </button>
+        </div>
+
+        <div className="carousel-dots">
+          {items.map((eventItem, index) => (
+            <button
+              key={eventItem.slug}
+              className={`dot ${index === activeIndex ? "active" : ""}`}
+              type="button"
+              aria-label={`${title} slide ${index + 1}`}
+              onClick={() => goToSlide(index, items, setSlide)}
+            ></button>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="academic-shell">
@@ -573,8 +582,15 @@ export default function App() {
       <header className="academic-topbar">
         <div className="academic-topbar-inner">
           <div className="brand-cluster">
-            {activeArticle ? (
+            {isArticleRoute ? (
               <button type="button" className="back-button" onClick={closeArticle} aria-label="Back to articles">
+                <Icon name="arrow_back" className="site-icon site-icon-small" />
+                <span>Back</span>
+              </button>
+            ) : null}
+
+            {isEventRoute ? (
+              <button type="button" className="back-button" onClick={closeEvent} aria-label="Back to events">
                 <Icon name="arrow_back" className="site-icon site-icon-small" />
                 <span>Back</span>
               </button>
@@ -588,15 +604,20 @@ export default function App() {
             ) : null}
 
             <a
-              href={activeArticle || showAllArticlesPage ? "#articles" : "#home"}
+              href={isArticleRoute || isEventRoute || showAllArticlesPage ? "#articles" : "#home"}
               className="brand-link"
               aria-label="EnginAble Global home"
               onClick={
-                activeArticle
+                isArticleRoute
                   ? (event) => {
                       event.preventDefault();
                       closeArticle();
                     }
+                  : isEventRoute
+                    ? (event) => {
+                        event.preventDefault();
+                        closeEvent();
+                      }
                   : showAllArticlesPage
                     ? (event) => {
                         event.preventDefault();
@@ -609,7 +630,7 @@ export default function App() {
             </a>
           </div>
 
-          {activeArticle || showAllArticlesPage ? null : (
+          {isArticleRoute || isEventRoute || showAllArticlesPage ? null : (
             <>
               <button
                 className="menu-button"
@@ -663,54 +684,178 @@ export default function App() {
         </div>
       </header>
 
-      {activeArticle ? (
+      {isArticleRoute ? (
         <main className="page-main article-page-shell">
           <section className="section article-page-section">
             <div className="article-page-layout">
-              <div className="article-page-hero">
-                <span className="article-category">{activeArticle.category}</span>
-                <h1 className="article-page-title">{activeArticle.title}</h1>
-                <p className="article-page-intro">{activeArticle.text}</p>
-              </div>
-
-              <div className="article-page-image-wrap">
-                <img src={activeArticle.image} alt={activeArticle.title} className="article-page-image" />
-              </div>
-
-              <article className="glass-card article-page-card">
-                {activeArticle.content.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </article>
-
-              {activeArticle.instagramPosts?.length ? (
-                <section className="article-instagram-section">
-                  <div className="section-head section-head-carousel">
-                    <h2 className="section-title">Related Instagram Posts</h2>
+              {!articlesLoaded ? (
+                <article className="glass-card article-page-card">
+                  <p>Loading article...</p>
+                </article>
+              ) : activeArticle ? (
+                <>
+                  <div className="article-page-hero">
+                    <span className="article-category">{activeArticle.category}</span>
+                    <h1 className="article-page-title">{activeArticle.title}</h1>
+                    <p className="article-page-intro">{activeArticle.text}</p>
                   </div>
 
-                  <div className="instagram-grid">
-                    {activeArticle.instagramPosts.slice(0, 1).map((post) => (
-                      <article key={post.url} className="glass-card instagram-card">
-                        <img src={post.image} alt={post.title} className="instagram-custom-image" />
-                        <div className="instagram-caption-block">
-                          {post.caption.split("\n\n").map((paragraph) => (
-                            <p key={paragraph}>{paragraph}</p>
-                          ))}
-                          <a
-                            href={post.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="primary-button instagram-post-button"
-                          >
-                            Visit Post
-                          </a>
-                        </div>
-                      </article>
+                  <div className="article-page-image-wrap">
+                    <img src={activeArticle.image} alt={activeArticle.title} className="article-page-image" />
+                  </div>
+
+                  <article className="glass-card article-page-card">
+                    {activeArticle.content.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
                     ))}
+                  </article>
+
+                  {activeArticle.instagramPosts?.length ? (
+                    <section className="article-instagram-section">
+                      <div className="section-head section-head-carousel">
+                        <h2 className="section-title">Related Instagram Posts</h2>
+                      </div>
+
+                      <div className="instagram-grid">
+                        {activeArticle.instagramPosts.map((post) => (
+                          <article key={post.url} className="glass-card instagram-card">
+                            <img src={post.image} alt={post.title} className="instagram-custom-image" />
+                            <div className="instagram-caption-block">
+                              {post.caption.split("\n\n").map((paragraph) => (
+                                <p key={paragraph}>{paragraph}</p>
+                              ))}
+                              <a
+                                href={post.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="primary-button instagram-post-button"
+                              >
+                                Visit Post
+                              </a>
+                            </div>
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+                </>
+              ) : (
+                <article className="glass-card article-page-card">
+                  <p>That article could not be found.</p>
+                </article>
+              )}
+            </div>
+          </section>
+        </main>
+      ) : isEventRoute ? (
+        <main className="page-main article-page-shell">
+          <section className="section article-page-section">
+            <div className="article-page-layout">
+              {!eventsLoaded ? (
+                <article className="glass-card article-page-card">
+                  <p>Loading event...</p>
+                </article>
+              ) : activeEvent ? (
+                <>
+                  <div className="article-page-hero">
+                    <span className="article-category">{activeEvent.category}</span>
+                    <h1 className="article-page-title">{activeEvent.title}</h1>
+                    <p className="article-page-intro">{activeEvent.text}</p>
                   </div>
-                </section>
-              ) : null}
+
+                  <div className={`article-page-image-wrap ${activeEventGallery.length ? "article-page-image-wrap-gallery" : ""}`}>
+                    {activeEventGallery.length ? (
+                      <>
+                        <div className="event-gallery-stage event-gallery-stage-inline">
+                          {activeEventGallery.map((galleryItem, index) => (
+                            <figure
+                              key={galleryItem.id}
+                              className={`event-gallery-frame ${index === activeEventGallerySlide ? "active" : ""}`}
+                            >
+                              <img
+                                src={galleryItem.image}
+                                alt={galleryItem.alt}
+                                className="event-gallery-image"
+                              />
+                            </figure>
+                          ))}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="event-gallery-control event-gallery-control-left event-gallery-control-outside"
+                          aria-label="Previous gallery image"
+                          onClick={() => goToEventGallerySlide(activeEventGallerySlide - 1, activeEventGallery)}
+                        >
+                          <Icon name="arrow_back" className="site-icon site-icon-small" />
+                        </button>
+
+                        <button
+                          type="button"
+                          className="event-gallery-control event-gallery-control-right event-gallery-control-outside"
+                          aria-label="Next gallery image"
+                          onClick={() => goToEventGallerySlide(activeEventGallerySlide + 1, activeEventGallery)}
+                        >
+                          <Icon name="arrow_forward" className="site-icon site-icon-small" />
+                        </button>
+
+                        <div className="event-gallery-dots">
+                          {activeEventGallery.map((galleryItem, index) => (
+                            <button
+                              key={galleryItem.id}
+                              type="button"
+                              className={`dot ${index === activeEventGallerySlide ? "active" : ""}`}
+                              aria-label={`View gallery image ${index + 1}`}
+                              onClick={() => goToEventGallerySlide(index, activeEventGallery)}
+                            ></button>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <img src={activeEvent.image} alt={activeEvent.title} className="article-page-image" />
+                    )}
+                  </div>
+
+                  <article className="glass-card article-page-card">
+                    {activeEvent.content.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                  </article>
+
+                  {activeEvent.instagramPosts?.length ? (
+                    <section className="article-instagram-section">
+                      <div className="section-head section-head-carousel">
+                        <h2 className="section-title">Related Instagram Posts</h2>
+                      </div>
+
+                      <div className="instagram-grid">
+                        {activeEvent.instagramPosts.map((post) => (
+                          <article key={post.url} className="glass-card instagram-card">
+                            <img src={post.image} alt={post.title} className="instagram-custom-image" />
+                            <div className="instagram-caption-block">
+                              {post.caption.split("\n\n").map((paragraph) => (
+                                <p key={paragraph}>{paragraph}</p>
+                              ))}
+                              <a
+                                href={post.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="primary-button instagram-post-button"
+                              >
+                                Visit Post
+                              </a>
+                            </div>
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+                </>
+              ) : (
+                <article className="glass-card article-page-card">
+                  <p>That event could not be found.</p>
+                </article>
+              )}
             </div>
           </section>
         </main>
@@ -728,7 +873,7 @@ export default function App() {
               </div>
 
               <div className="feature-card-grid all-articles-grid">
-                {sortedArticles.map((card) => (
+                {articles.map((card) => (
                   <article
                     key={card.slug}
                     className="glass-card article-card article-card-hover"
@@ -866,119 +1011,60 @@ export default function App() {
           </section>
 
           <section id="events" className="section section-centered">
-            <h2 className="section-title section-title-centered">
-              Programs built for exposure, participation, and real connection.
-            </h2>
-
-            <div className="program-grid">
-              {eventCards.map((card) => (
-                <article key={card.title} className="glass-card program-card program-card-hover">
-                  <div className="program-image-wrap">
-                    <img src={card.image} alt={card.title} className="program-image" />
-                  </div>
-                  <div className="program-icon-wrap">
-                    <Icon name={card.icon} />
-                  </div>
-                  <h3>{card.title}</h3>
-                  <p>{card.text}</p>
-                </article>
-              ))}
-            </div>
-
-            <div className="events-carousel-block">
-              <div className="section-head section-head-carousel">
-                <h2 className="section-title">Past Events</h2>
-              </div>
-
-              <div className="carousel-shell">
-                <button
-                  className="carousel-control-square"
-                  type="button"
-                  aria-label="Previous slide"
-                  onClick={() => goToSlide(activeSlide - 1)}
-                >
-                  <Icon name="arrow_back" />
-                </button>
-
-                <div className="carousel-stage">
-                  {slides.map((slide, index) => (
-                    <article key={slide.title} className={`carousel-panel ${index === activeSlide ? "active" : ""}`}>
-                      <div
-                        className="carousel-media"
-                        style={{
-                          backgroundImage: `linear-gradient(${slide.overlay}, ${slide.overlay}), url(${slide.image})`,
-                        }}
-                      ></div>
-                      <div className="carousel-copy">
-                        <h3>{slide.title}</h3>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-
-                <button
-                  className="carousel-control-square"
-                  type="button"
-                  aria-label="Next slide"
-                  onClick={() => goToSlide(activeSlide + 1)}
-                >
-                  <Icon name="arrow_forward" />
-                </button>
-              </div>
-
-              <div className="carousel-dots">
-                {slides.map((slide, index) => (
-                  <button
-                    key={slide.title}
-                    className={`dot ${index === activeSlide ? "active" : ""}`}
-                    type="button"
-                    aria-label={`Slide ${index + 1}`}
-                    onClick={() => goToSlide(index)}
-                  ></button>
-                ))}
-              </div>
-            </div>
+            {renderEventCarousel("Upcoming Public Events", upcomingEvents, activeUpcomingSlide, setActiveUpcomingSlide)}
+            {renderEventCarousel("Past Events", pastEventArchive, activePastSlide, setActivePastSlide)}
           </section>
 
           <section id="partners" className="section">
             <div className="section-head">
               <h2 className="section-title">
-                Built to welcome schools, industry, and mission-aligned collaborators.
+                Our Partners and Collaborators
               </h2>
             </div>
 
-            <div className="collab-grid">
-              <div>
-                <p className="section-intro">
-                  This section can grow into a proper partner directory, sponsorship showcase, or
-                  collaboration page. For now it introduces the relationship model and the types of
-                  organisations EnginAble works with.
-                </p>
-                <div className="stack-list">
+            <div className="partners-showcase">
+              <article className="glass-card partners-feature">
+                <div className="partners-feature-copy">
+                  <span className="article-category">Collaboration Model</span>
+                  <h3>Built for schools, communities, and mission-aligned organisations.</h3>
+                  <p>
+                    EnginAble partnerships are designed to feel active, visible, and practical. We
+                    work with organisations that want to host events, open doors for students, and
+                    create more accessible entry points into engineering.
+                  </p>
+                </div>
+
+                <div className="partners-feature-stack">
                   {partnerCards.map((card) => (
-                    <article key={card.title} className="glass-card partner-list-card partner-list-card-hover">
+                    <article key={card.title} className="partners-mini-card">
                       <img src={card.image} alt={card.title} className="partner-list-image" />
-                      <h3>{card.title}</h3>
-                      <p>{card.text}</p>
+                      <div>
+                        <h3>{card.title}</h3>
+                        <p>{card.text}</p>
+                      </div>
                     </article>
                   ))}
                 </div>
-              </div>
+              </article>
 
-              <div>
-                <h2 className="section-title section-title-small">
-                  The types of organisations that EnginAble works with:
-                </h2>
-                <div className="icon-grid">
+              <div className="partners-type-block">
+                <div className="partners-type-head">
+                  <span className="article-category">Who We Work With</span>
+                  <h3 className="section-title section-title-small">Partnership pathways across education, industry, and impact work.</h3>
+                </div>
+
+                <div className="partners-type-grid">
                   {partnerTypes.map((card) => (
-                    <article key={card.title} className="glass-card icon-card icon-card-photo">
-                      <div className="icon-card-media">
+                    <article key={card.title} className="glass-card partners-type-card icon-card-photo">
+                      <div className="partners-type-image-wrap">
                         <img src={card.image} alt={card.title} className="icon-card-image" />
                       </div>
-                      <div className="icon-badge">
-                        <Icon name={card.icon} />
+                      <div className="partners-type-copy">
+                        <div className="icon-badge">
+                          <Icon name={card.icon} />
+                        </div>
+                        <h3>{card.title}</h3>
                       </div>
-                      <h3>{card.title}</h3>
                     </article>
                   ))}
                 </div>
