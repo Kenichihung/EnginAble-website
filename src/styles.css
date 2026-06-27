@@ -702,7 +702,7 @@ main[id] {
 
 .instagram-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
@@ -711,21 +711,41 @@ main[id] {
 }
 
 .instagram-card {
-  padding: 1rem;
+  padding: 1.2rem;
   display: grid;
-  gap: 1rem;
+  grid-template-columns: clamp(10rem, 28vw, 15rem) minmax(0, 1fr);
+  gap: 1.4rem;
+  align-items: start;
+  border-radius: 1.45rem;
 }
 
-.instagram-embed {
+.instagram-custom-image {
   width: 100%;
-  min-height: 37rem;
-  border: 0;
-  border-radius: 1.25rem;
+  aspect-ratio: 1 / 1;
+  border-radius: 1rem;
+  object-fit: cover;
   background: #fff;
+}
+
+.instagram-caption-block {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  min-width: 0;
+}
+
+.instagram-caption-block p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: var(--text-muted);
+  white-space: pre-line;
 }
 
 .instagram-post-button {
   justify-self: start;
+  align-self: start;
+  margin-top: 0.2rem;
 }
 
 .program-card,
@@ -1103,6 +1123,14 @@ main[id] {
 
   .carousel-stage {
     min-height: 38rem;
+  }
+
+  .instagram-card {
+    grid-template-columns: 1fr;
+  }
+
+  .instagram-custom-image {
+    max-width: min(100%, 18rem);
   }
 }
 

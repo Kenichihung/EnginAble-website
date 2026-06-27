@@ -12,6 +12,9 @@ import schoolImage from "./assets/partner-school.svg";
 import universityImage from "./assets/partner-university.svg";
 import industryImage from "./assets/partner-industry.svg";
 import nonprofitImage from "./assets/partner-nonprofit.svg";
+import instagramArduinoImage from "./assets/instagram-arduino.png";
+import instagramSolarImage from "./assets/instagram-solar.png";
+import instagramWaterImage from "./assets/instagram-water.png";
 
 const heroPhrases = [
   "Opening more doors into engineering through stories, programs, and community.",
@@ -55,7 +58,7 @@ const articleCards = [
     category: "Article",
     title: "How Do Water Filters Work?",
     text: "A practical explainer on filtration systems, clean water access, and the engineering logic behind them.",
-    image: waterFilterImage,
+    image: instagramWaterImage,
     content: [
       "Water filters work by guiding water through materials that capture, block, or neutralize unwanted particles. Depending on the design, a filter may target sediment, bacteria, odors, heavy metals, or chemical contaminants.",
       "A simple household filter often uses several stages. The first stage catches larger dirt and rust particles. Activated carbon then helps absorb chlorine, smells, and some dissolved compounds. More advanced systems may add membranes or ultraviolet treatment for stronger purification.",
@@ -66,10 +69,16 @@ const articleCards = [
       {
         title: "Related Instagram Post",
         url: "https://www.instagram.com/enginable.global/p/DWI5MGhEXz4/",
+        image: instagramWaterImage,
+        caption:
+          "Clean water is one example where simple engineering concepts can make a difference, yet not everyone is given the opportunity to explore them. EnginAble is built on the idea that access to knowledge can lead to action.\n\nIf you’re interested in being inched, feel free to reach out via DM or starry tunes for upcoming opportunities. EnginAble is currently open for Founding Team members all year round—register in our bio!\n\n#engineering #studentopportunities #highschool",
       },
       {
         title: "Related Instagram Post",
         url: "https://www.instagram.com/enginable.global/p/DZFf2CFEvOw/",
+        image: instagramWaterImage,
+        caption:
+          "Clean water is one example where simple engineering concepts can make a difference, yet not everyone is given the opportunity to explore them. EnginAble is built on the idea that access to knowledge can lead to action.\n\nIf you’re interested in being inched, feel free to reach out via DM or starry tunes for upcoming opportunities. EnginAble is currently open for Founding Team members all year round—register in our bio!\n\n#engineering #studentopportunities #highschool",
       },
     ],
   },
@@ -79,7 +88,7 @@ const articleCards = [
     category: "Article",
     title: "The Physics of Solar Panels",
     text: "A clear introduction to how sunlight becomes electricity and why solar design matters so much today.",
-    image: solarImage,
+    image: instagramSolarImage,
     content: [
       "Solar panels convert sunlight into electricity through photovoltaic cells. When sunlight hits the semiconductor material inside a cell, it energizes electrons and creates an electric current.",
       "The physics matters because panel performance depends on angle, light intensity, temperature, and material quality. Engineers study how to maximize energy output while making systems durable enough for long-term outdoor use.",
@@ -90,6 +99,9 @@ const articleCards = [
       {
         title: "Related Instagram Post",
         url: "https://www.instagram.com/enginable.global/p/DWsM_kQksX5/",
+        image: instagramSolarImage,
+        caption:
+          "Ever wondered the science behind solar panels and how they can provide energy for our households? Swipe along to find out!\n\nEnginAble helps convert concepts like these into simple visualizations to make engineering knowledge accessible for everyone!\n\n#engineering #solarpanels #highschool",
       },
     ],
   },
@@ -99,7 +111,7 @@ const articleCards = [
     category: "Article",
     title: "Arduino 101: Getting Started",
     text: "A beginner-friendly stepping stone into circuits, prototyping, and playful engineering experimentation.",
-    image: arduinoImage,
+    image: instagramArduinoImage,
     content: [
       "Arduino gives beginners a practical way to enter engineering by combining simple electronics with code. A starter project might blink an LED, read a sensor, or control a buzzer or motor.",
       "What makes Arduino useful is how quickly an idea can become a prototype. Students can test concepts, notice mistakes, revise their setup, and learn through direct feedback instead of only theory.",
@@ -110,6 +122,9 @@ const articleCards = [
       {
         title: "Related Instagram Post",
         url: "https://www.instagram.com/enginable.global/p/DYl__XEkUe-/",
+        image: instagramArduinoImage,
+        caption:
+          "A quick read on the mechanics behind Arduino — truly an incredible platform that any engineer would benefit from knowing!! 👨‍🔧👩‍🔧\n\nEnginable is excited to simplify many other tools like this for engineers alike ⭐️\n\n#arduino #engineering #studentopportunities",
       },
     ],
   },
@@ -675,18 +690,22 @@ export default function App() {
                   </div>
 
                   <div className="instagram-grid">
-                    {activeArticle.instagramPosts.map((post) => (
+                    {activeArticle.instagramPosts.slice(0, 1).map((post) => (
                       <article key={post.url} className="glass-card instagram-card">
-                        <iframe
-                          src={`${post.url}embed/captioned/`}
-                          title={post.title}
-                          className="instagram-embed"
-                          loading="lazy"
-                          allowTransparency="true"
-                        ></iframe>
-                        <a href={post.url} target="_blank" rel="noreferrer" className="primary-button instagram-post-button">
-                          View Full Post
-                        </a>
+                        <img src={post.image} alt={post.title} className="instagram-custom-image" />
+                        <div className="instagram-caption-block">
+                          {post.caption.split("\n\n").map((paragraph) => (
+                            <p key={paragraph}>{paragraph}</p>
+                          ))}
+                          <a
+                            href={post.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="primary-button instagram-post-button"
+                          >
+                            Visit Post
+                          </a>
+                        </div>
                       </article>
                     ))}
                   </div>
