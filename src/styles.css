@@ -626,6 +626,14 @@ main[id] {
   margin-bottom: 0;
 }
 
+.article-instagram-section {
+  margin-top: 1rem;
+}
+
+.all-articles-grid {
+  margin-top: 0.5rem;
+}
+
 .article-card-hover:hover h3 {
   color: var(--primary-strong);
 }
@@ -686,6 +694,38 @@ main[id] {
 
 .section-head-carousel {
   margin-bottom: 1.5rem;
+}
+
+.instagram-section-block {
+  margin-top: 3rem;
+}
+
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.5rem;
+}
+
+.collaboration-grid {
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+
+.instagram-card {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.instagram-embed {
+  width: 100%;
+  min-height: 37rem;
+  border: 0;
+  border-radius: 1.25rem;
+  background: #fff;
+}
+
+.instagram-post-button {
+  justify-self: start;
 }
 
 .program-card,
