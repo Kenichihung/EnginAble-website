@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from "react";
-import logo from "./assets/Logo.png";
+import React, { useEffect, useRef, useState } from "react";
+import logo from "./assets/enginable-header-logo.png";
 import slideOne from "./assets/slide-1.svg";
 import slideTwo from "./assets/slide-2.svg";
 import slideThree from "./assets/slide-3.svg";
 import slideFour from "./assets/slide-4.svg";
+import heroBackground from "./assets/hero-background.png";
+import waterFilterImage from "./assets/article-water.svg";
+import solarImage from "./assets/article-solar.svg";
+import arduinoImage from "./assets/article-arduino.svg";
+import schoolImage from "./assets/partner-school.svg";
+import universityImage from "./assets/partner-university.svg";
+import industryImage from "./assets/partner-industry.svg";
+import nonprofitImage from "./assets/partner-nonprofit.svg";
 
 const heroPhrases = [
   "Opening more doors into engineering through stories, programs, and community.",
@@ -15,7 +23,6 @@ const navItems = [
   { label: "Articles", href: "#articles" },
   { label: "Events", href: "#events" },
   { label: "Partners", href: "#partners" },
-  { label: "Contact Us", href: "#contact" },
 ];
 
 const slides = [
@@ -41,7 +48,49 @@ const slides = [
   },
 ];
 
-const infoCards = [
+const articleCards = [
+  {
+    slug: "how-do-water-filters-work",
+    category: "Featured Perspectives",
+    title: "How Do Water Filters Work?",
+    text: "A practical explainer on filtration systems, clean water access, and the engineering logic behind them.",
+    image: waterFilterImage,
+    content: [
+      "Water filters work by guiding water through materials that capture, block, or neutralize unwanted particles. Depending on the design, a filter may target sediment, bacteria, odors, heavy metals, or chemical contaminants.",
+      "A simple household filter often uses several stages. The first stage catches larger dirt and rust particles. Activated carbon then helps absorb chlorine, smells, and some dissolved compounds. More advanced systems may add membranes or ultraviolet treatment for stronger purification.",
+      "Engineers think carefully about flow rate, pore size, maintenance, and cost. A filter must clean water effectively without slowing it too much or becoming difficult to replace. That balance is what turns a science concept into a useful public product.",
+      "In outreach and education, water filtration is a strong example because it connects engineering directly to health, equity, and community impact. Students can quickly see how design decisions affect daily life.",
+    ],
+  },
+  {
+    slug: "the-physics-of-solar-panels",
+    category: "Featured Perspectives",
+    title: "The Physics of Solar Panels",
+    text: "A clear introduction to how sunlight becomes electricity and why solar design matters so much today.",
+    image: solarImage,
+    content: [
+      "Solar panels convert sunlight into electricity through photovoltaic cells. When sunlight hits the semiconductor material inside a cell, it energizes electrons and creates an electric current.",
+      "The physics matters because panel performance depends on angle, light intensity, temperature, and material quality. Engineers study how to maximize energy output while making systems durable enough for long-term outdoor use.",
+      "A solar installation is more than just the panel surface. Wiring, inverters, battery storage, and structural supports all play a role. Each part must work together so sunlight can become reliable power for homes, schools, or larger infrastructure.",
+      "For young learners, solar panels are a powerful entry point into engineering because they connect physics, sustainability, and real-world design into one visible technology.",
+    ],
+  },
+  {
+    slug: "arduino-101-getting-started",
+    category: "Featured Perspectives",
+    title: "Arduino 101: Getting Started",
+    text: "A beginner-friendly stepping stone into circuits, prototyping, and playful engineering experimentation.",
+    image: arduinoImage,
+    content: [
+      "Arduino gives beginners a practical way to enter engineering by combining simple electronics with code. A starter project might blink an LED, read a sensor, or control a buzzer or motor.",
+      "What makes Arduino useful is how quickly an idea can become a prototype. Students can test concepts, notice mistakes, revise their setup, and learn through direct feedback instead of only theory.",
+      "Engineering confidence often grows through this small-cycle experimentation. Wiring a circuit, uploading a sketch, and seeing a real response helps abstract technical ideas feel more approachable.",
+      "As a teaching tool, Arduino also supports collaboration. Teams can split roles across coding, physical assembly, troubleshooting, and presentation, which mirrors real engineering workflows in a manageable way.",
+    ],
+  },
+];
+
+const infoBlocks = [
   {
     title: "Who We Are",
     text: "A promoting-engineering organisation focused on widening access, sharing knowledge, and celebrating talent across different communities.",
@@ -56,33 +105,24 @@ const infoCards = [
   },
 ];
 
-const articleCards = [
-  {
-    title: "Building confidence before technical mastery",
-    text: "Early encouragement can be the difference between interest and action.",
-  },
-  {
-    title: "Engineering role models from different paths",
-    text: "Career journeys that make the field feel broad, human, and attainable.",
-  },
-  {
-    title: "What a strong outreach event actually looks like",
-    text: "Practical ingredients for high-impact sessions that people remember.",
-  },
-];
-
 const eventCards = [
   {
+    icon: "lightbulb",
     title: "Engineering Discovery Day",
     text: "A school-facing event format with speakers, demos, and hands-on stations for students and families.",
+    image: slideOne,
   },
   {
+    icon: "forum",
     title: "Mentor Circles",
     text: "Small-group conversations between learners and engineering professionals across disciplines.",
+    image: slideTwo,
   },
   {
+    icon: "handshake",
     title: "Partner Showcase Forum",
     text: "A presentation space for universities, companies, and community organizations to share opportunities.",
+    image: slideThree,
   },
 ];
 
@@ -90,51 +130,176 @@ const partnerCards = [
   {
     title: "Education Partners",
     text: "Program hosts, student communities, academic institutions.",
+    image: schoolImage,
   },
   {
     title: "Industry Partners",
     text: "Companies supporting outreach, mentorship, and applied learning.",
+    image: industryImage,
   },
   {
     title: "Community Partners",
     text: "Organisations advocating for inclusion, access, and local impact.",
+    image: nonprofitImage,
   },
+];
+
+const partnerTypes = [
+  { title: "Schools", icon: "school", image: schoolImage },
+  { title: "Universities", icon: "account_balance", image: universityImage },
+  { title: "Industry", icon: "factory", image: industryImage },
+  { title: "Nonprofits", icon: "volunteer_activism", image: nonprofitImage },
 ];
 
 const contactCards = [
   {
+    icon: "mail",
     title: "General Enquiries",
-    lines: ["hello@enginable.global", "+62 000 0000 0000"],
+    primary: "hello@enginable.global",
+    secondary: "+62 000 0000 0000",
   },
   {
+    icon: "handshake",
     title: "Partnerships",
-    lines: ["partners@enginable.global", "For schools, companies, and community collaborations."],
+    primary: "partners@enginable.global",
+    secondary: "For schools, companies, and community collaborations.",
   },
   {
+    icon: "description",
     title: "Editorial",
-    lines: ["stories@enginable.global", "For article pitches, interviews, and spotlight opportunities."],
+    primary: "stories@enginable.global",
+    secondary: "For article pitches, interviews, and spotlight opportunities.",
   },
   {
+    icon: "photo_camera",
     title: "Instagram",
-    lines: ["@enginable.global", "https://www.instagram.com/enginable.global/"],
+    primary: "@enginable.global",
+    secondary: "Visit Instagram",
+    button: true,
   },
 ];
 
+function readArticleSlugFromHash() {
+  const hash = window.location.hash || "";
+
+  if (!hash.startsWith("#article/")) {
+    return null;
+  }
+
+  return hash.replace("#article/", "");
+}
+
+function Icon({ name, className = "site-icon" }) {
+  const commonProps = {
+    className,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    "aria-hidden": "true",
+  };
+
+  const icons = {
+    mail: (
+      <svg {...commonProps}>
+        <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M5.5 7L12 12L18.5 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    handshake: (
+      <svg {...commonProps}>
+        <path d="M8 12L11 9C12.2 7.8 14.2 7.8 15.4 9L18 11.6C19.2 12.8 19.2 14.8 18 16L16.5 17.5C15.7 18.3 14.4 18.3 13.6 17.5L10.5 14.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M9.5 14.5L7.7 16.3C6.8 17.2 5.4 17.2 4.5 16.3L4 15.8C3.1 14.9 3.1 13.5 4 12.6L8.6 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    description: (
+      <svg {...commonProps}>
+        <rect x="5" y="3.5" width="14" height="17" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M8 8H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M8 12H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M8 16H13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    photo_camera: (
+      <svg {...commonProps}>
+        <path d="M5 8.5H7.5L9 6.5H15L16.5 8.5H19C20.1 8.5 21 9.4 21 10.5V17C21 18.1 20.1 19 19 19H5C3.9 19 3 18.1 3 17V10.5C3 9.4 3.9 8.5 5 8.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <circle cx="12" cy="13.5" r="3.2" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    ),
+    lightbulb: (
+      <svg {...commonProps}>
+        <path d="M9 18H15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M10 21H14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M8.5 15.5C7 14.4 6 12.6 6 10.5C6 7.46 8.46 5 11.5 5H12.5C15.54 5 18 7.46 18 10.5C18 12.6 17 14.4 15.5 15.5L14.8 17H9.2L8.5 15.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    ),
+    forum: (
+      <svg {...commonProps}>
+        <path d="M5 6H14C15.1 6 16 6.9 16 8V13C16 14.1 15.1 15 14 15H9L5 18V6Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M16 9H19C20.1 9 21 9.9 21 11V18L17.5 15H17" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    ),
+    school: (
+      <svg {...commonProps}>
+        <path d="M3 9L12 5L21 9L12 13L3 9Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M7 11.5V15.5C7 17.2 9.24 18.5 12 18.5C14.76 18.5 17 17.2 17 15.5V11.5" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    ),
+    account_balance: (
+      <svg {...commonProps}>
+        <path d="M3 9H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M5 9V18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M10 9V18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M14 9V18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M19 9V18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M2 20H22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M12 4L3 8H21L12 4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    ),
+    factory: (
+      <svg {...commonProps}>
+        <path d="M3 20V10L10 13V10L17 13V7L21 9.5V20H3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M7 20V16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    volunteer_activism: (
+      <svg {...commonProps}>
+        <path d="M12 20C9.5 18.2 5 14.8 5 10.8C5 8.7 6.6 7 8.6 7C10 7 11 7.7 12 8.9C13 7.7 14 7 15.4 7C17.4 7 19 8.7 19 10.8C19 14.8 14.5 18.2 12 20Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    ),
+    arrow_back: (
+      <svg {...commonProps}>
+        <path d="M10 6L4 12L10 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M5 12H20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    arrow_forward: (
+      <svg {...commonProps}>
+        <path d="M14 6L20 12L14 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M4 12H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+  };
+
+  return icons[name] ?? null;
+}
+
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState("#information");
+  const [activeArticleSlug, setActiveArticleSlug] = useState(() => readArticleSlugFromHash());
   const [activeSlide, setActiveSlide] = useState(0);
   const [typedHeadline, setTypedHeadline] = useState("");
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const [isDeletingHeadline, setIsDeletingHeadline] = useState(false);
   const [reservedHeadlineHeight, setReservedHeadlineHeight] = useState(0);
-  const measureRef = React.useRef(null);
+  const measureRef = useRef(null);
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => {
+    const slideIntervalId = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % slides.length);
     }, 5000);
 
-    return () => window.clearInterval(intervalId);
+    return () => window.clearInterval(slideIntervalId);
   }, []);
 
   useEffect(() => {
@@ -176,11 +341,11 @@ export default function App() {
       let tallestHeight = 0;
 
       heroPhrases.forEach((phrase) => {
-        measureElement.textContent = `${phrase}\u00A0`;
+        measureElement.textContent = phrase;
         tallestHeight = Math.max(tallestHeight, measureElement.getBoundingClientRect().height);
       });
 
-      measureElement.textContent = `${heroPhrases[0]}\u00A0`;
+      measureElement.textContent = heroPhrases[0];
       setReservedHeadlineHeight(Math.ceil(tallestHeight));
     }
 
@@ -190,259 +355,516 @@ export default function App() {
     return () => window.removeEventListener("resize", measureHeadlineHeight);
   }, []);
 
+  useEffect(() => {
+    function syncArticleFromHash() {
+      setActiveArticleSlug(readArticleSlugFromHash());
+    }
+
+    syncArticleFromHash();
+    window.addEventListener("hashchange", syncArticleFromHash);
+
+    return () => window.removeEventListener("hashchange", syncArticleFromHash);
+  }, []);
+
+  useEffect(() => {
+    if (activeArticleSlug) {
+      return undefined;
+    }
+
+    const sectionIds = ["#information", "#articles", "#events", "#partners"];
+    const sections = sectionIds
+      .map((sectionId) => document.querySelector(sectionId))
+      .filter(Boolean);
+
+    if (!sections.length) {
+      return undefined;
+    }
+
+    const visibleSections = new Map();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const sectionId = `#${entry.target.id}`;
+
+          if (entry.isIntersecting) {
+            visibleSections.set(sectionId, entry.intersectionRatio);
+          } else {
+            visibleSections.delete(sectionId);
+          }
+        });
+
+        if (!visibleSections.size) {
+          return;
+        }
+
+        let nextActiveNav = activeNav;
+        let bestRatio = -1;
+
+        visibleSections.forEach((ratio, sectionId) => {
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            nextActiveNav = sectionId;
+          }
+        });
+
+        setActiveNav(nextActiveNav);
+      },
+      {
+        rootMargin: "-18% 0px -45% 0px",
+        threshold: [0.2, 0.35, 0.5, 0.65, 0.8],
+      },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [activeArticleSlug, activeNav]);
+
   function goToSlide(index) {
     setActiveSlide((index + slides.length) % slides.length);
   }
 
+  function scrollToSectionByHref(href, behavior = "smooth") {
+    const target = document.querySelector(href);
+
+    if (!target) {
+      return;
+    }
+
+    const headerOffset = 92;
+    const top = window.scrollY + target.getBoundingClientRect().top - headerOffset;
+
+    window.history.replaceState(null, "", href);
+    window.scrollTo({
+      top,
+      behavior,
+    });
+  }
+
+  function scrollToSection(event, href) {
+    event.preventDefault();
+
+    if (activeArticleSlug) {
+      setActiveArticleSlug(null);
+      window.history.replaceState(null, "", href);
+
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          scrollToSectionByHref(href);
+        });
+      });
+      return;
+    }
+
+    scrollToSectionByHref(href);
+  }
+
+  function openArticle(slug) {
+    setActiveArticleSlug(slug);
+    window.history.pushState(null, "", `#article/${slug}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function closeArticle() {
+    setActiveArticleSlug(null);
+    window.history.replaceState(null, "", "#articles");
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        scrollToSectionByHref("#articles", "auto");
+      });
+    });
+  }
+
+  const activeArticle = articleCards.find((card) => card.slug === activeArticleSlug) ?? null;
+
   return (
-    <div className="site-shell">
-      <header className="topbar">
-        <div className="brand-lockup">
-          <img src={logo} alt="EnginAble Global logo" className="brand-logo" />
-          <div>
-            <a href="#home" className="brand-name">
-              EnginAble Global
+    <div className="academic-shell">
+      <div className="academic-blobs" aria-hidden="true">
+        <div className="blob blob-one"></div>
+        <div className="blob blob-two"></div>
+        <div className="blob blob-three"></div>
+      </div>
+
+      <header className="academic-topbar">
+        <div className="academic-topbar-inner">
+          <div className="brand-cluster">
+            {activeArticle ? (
+              <button type="button" className="back-button" onClick={closeArticle} aria-label="Back to articles">
+                <Icon name="arrow_back" className="site-icon site-icon-small" />
+                <span>Back</span>
+              </button>
+            ) : null}
+
+            <a
+              href={activeArticle ? "#articles" : "#home"}
+              className="brand-link"
+              aria-label="EnginAble Global home"
+              onClick={
+                activeArticle
+                  ? (event) => {
+                      event.preventDefault();
+                      closeArticle();
+                    }
+                  : undefined
+              }
+            >
+              <img src={logo} alt="EnginAble Global logo" className="brand-logo-wide" />
             </a>
-            <p className="brand-subtitle">Promoting engineering for everyone</p>
           </div>
+
+          {activeArticle ? null : (
+            <>
+              <button
+                className="menu-button"
+                type="button"
+                aria-expanded={menuOpen}
+                aria-controls="site-navigation"
+                onClick={() => setMenuOpen((open) => !open)}
+              >
+                Menu
+              </button>
+
+              <nav id="site-navigation" className={`academic-nav ${menuOpen ? "is-open" : ""}`}>
+                {navItems.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className={activeNav === item.href ? "is-active" : ""}
+                    onClick={(event) => {
+                      scrollToSection(event, item.href);
+                      setActiveNav(item.href);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <a
+                  href="#contact"
+                  className="nav-pill nav-pill-outline"
+                  onClick={(event) => {
+                    scrollToSection(event, "#contact");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Contact Us
+                </a>
+                <a
+                  href="#partners"
+                  className="nav-pill nav-pill-solid"
+                  onClick={(event) => {
+                    scrollToSection(event, "#partners");
+                    setActiveNav("#partners");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Join
+                </a>
+              </nav>
+            </>
+          )}
         </div>
-        <button
-          className="menu-toggle"
-          type="button"
-          aria-expanded={menuOpen}
-          aria-controls="site-navigation"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          Menu
-        </button>
-        <nav id="site-navigation" className={`site-nav ${menuOpen ? "is-open" : ""}`}>
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
       </header>
 
-      <main id="home">
-        <section className="hero">
-          <div className="hero-copy reveal">
-            <h1
-              className="typewriter-heading"
-              style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
-            >
-              <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
-                {heroPhrases[0]}
-              </span>
-              <span className="typewriter-live">
-                <span>{typedHeadline}</span>
-                <span className="typewriter-cursor" aria-hidden="true"></span>
-              </span>
-            </h1>
-            <p className="hero-text">
-              EnginAble Global is a modern platform for aspiring engineers, educators, and industry
-              allies. We spotlight opportunities, publish ideas, and connect people with meaningful
-              events and partnerships.
-            </p>
-            <div className="hero-actions">
-              <a href="#events" className="button button-primary">
-                Explore Events
-              </a>
-              <a href="#articles" className="button button-secondary">
-                Read Articles
-              </a>
-            </div>
-            <dl className="hero-stats">
-              <div>
-                <dt>12+</dt>
-                <dd>program ideas ready to scale</dd>
+      {activeArticle ? (
+        <main className="page-main article-page-shell">
+          <section className="section article-page-section">
+            <div className="article-page-layout">
+              <div className="article-page-hero">
+                <span className="article-category">{activeArticle.category}</span>
+                <h1 className="article-page-title">{activeArticle.title}</h1>
+                <p className="article-page-intro">{activeArticle.text}</p>
               </div>
-              <div>
-                <dt>4</dt>
-                <dd>core content pillars</dd>
-              </div>
-              <div>
-                <dt>1</dt>
-                <dd>shared mission: engineering for all</dd>
-              </div>
-            </dl>
-          </div>
 
-          <aside className="hero-panel reveal delay-1">
-            <div className="panel-card panel-highlight">
-              <h2>Future-ready engineering communities start with belonging.</h2>
-              <p>
-                Build a public-facing presence for initiatives, thought leadership, and partner
-                activations in one place.
-              </p>
-            </div>
-            <div className="panel-grid">
-              <article className="panel-card">
-                <h3>Career Pathways</h3>
-                <p>Profiles, explainers, and engineering journeys that feel practical and inspiring.</p>
-              </article>
-              <article className="panel-card">
-                <h3>Mentor Studio</h3>
-                <p>Live sessions that bring professionals, students, and institutions together.</p>
+              <div className="article-page-image-wrap">
+                <img src={activeArticle.image} alt={activeArticle.title} className="article-page-image" />
+              </div>
+
+              <article className="glass-card article-page-card">
+                {activeArticle.content.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
               </article>
             </div>
-          </aside>
-        </section>
+          </section>
+        </main>
+      ) : (
+        <main id="home" className="page-main">
+          <section
+            className="hero-section section"
+            style={{
+              backgroundImage: `linear-gradient(180deg, rgba(47, 98, 159, 0.58), rgba(47, 98, 159, 0.66)), url(${heroBackground})`,
+            }}
+          >
+            <div className="hero-layout">
+              <div className="hero-copy">
+                <h1
+                  className="hero-title typewriter-heading"
+                  style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
+                >
+                  <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
+                    {heroPhrases[0]}
+                  </span>
+                  <span className="typewriter-live">
+                    <span>{typedHeadline}</span>
+                    <span className="typewriter-cursor" aria-hidden="true"></span>
+                  </span>
+                </h1>
+                <p className="hero-description">
+                  EnginAble Global is a modern platform for aspiring engineers, educators, and industry
+                  allies. We spotlight opportunities, publish ideas, and connect people with meaningful
+                  events and partnerships.
+                </p>
+                <div className="hero-actions">
+                  <a href="#events" className="primary-button">
+                    Explore Events
+                  </a>
+                  <a href="#articles" className="secondary-button">
+                    Read Articles
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
 
-        <section className="carousel-section reveal delay-2" aria-labelledby="carousel-heading">
-          <div className="section-heading">
-            <h2 id="carousel-heading">A mock carousel for future campaign visuals</h2>
-            <p>Four rotating placeholders ready for future campaigns, program photos, or event highlights.</p>
-          </div>
+          <section id="information" className="section">
+            <div className="section-head">
+              <h2 className="section-title">
+                About Us
+              </h2>
+            </div>
 
-          <div className="carousel" aria-roledescription="carousel">
-            <button className="carousel-control prev" type="button" aria-label="Previous slide" onClick={() => goToSlide(activeSlide - 1)}>
-              &#8592;
-            </button>
-            <div className="carousel-track">
-              {slides.map((slide, index) => (
-                <article key={slide.title} className={`carousel-slide ${index === activeSlide ? "active" : ""}`}>
-                  <div
-                    className="slide-media"
-                    style={{
-                      backgroundImage: `linear-gradient(${slide.overlay}, ${slide.overlay}), url(${slide.image})`,
-                    }}
-                  ></div>
-                  <div className="slide-copy">
-                    <h3>{slide.title}</h3>
+            <div className="editorial-grid">
+              <div className="editorial-column">
+                {infoBlocks.map((block) => (
+                  <article key={block.title} className="editorial-text-block">
+                    <h2 className="section-title section-title-small">{block.title}</h2>
+                    <p>{block.text}</p>
+                  </article>
+                ))}
+              </div>
+
+              <article className="glass-card-dark feature-essay">
+                <h2 className="section-title section-title-light">
+                  How engineering communities can make opportunity feel visible.
+                </h2>
+                <p>
+                  A flagship long-form article slot for interviews, opinion pieces, or thought
+                  leadership from educators, practitioners, and young innovators.
+                </p>
+                <a href="#contact" className="essay-button">
+                  Pitch future stories
+                </a>
+              </article>
+            </div>
+          </section>
+
+          <section id="articles" className="section section-wide">
+            <div className="section-head">
+              <h2 className="section-title">Featured Perspectives</h2>
+              <a href="#contact" className="section-link">
+                View All
+              </a>
+            </div>
+
+            <div className="feature-card-grid">
+              {articleCards.map((card) => (
+                <article
+                  key={card.slug}
+                  className="glass-card article-card article-card-hover"
+                  onClick={() => openArticle(card.slug)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      openArticle(card.slug);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                >
+                  <div className="article-image-frame">
+                    <div className="article-image-tint"></div>
+                    <img src={card.image} alt={card.title} className="article-image" />
+                  </div>
+                  <div className="article-copy">
+                    <span className="article-category">{card.category}</span>
+                    <h3>{card.title}</h3>
+                    <p>{card.text}</p>
                   </div>
                 </article>
               ))}
             </div>
-            <button className="carousel-control next" type="button" aria-label="Next slide" onClick={() => goToSlide(activeSlide + 1)}>
-              &#8594;
-            </button>
-          </div>
+          </section>
 
-          <div className="carousel-dots" aria-label="Carousel navigation">
-            {slides.map((slide, index) => (
-              <button
-                key={slide.title}
-                className={`dot ${index === activeSlide ? "active" : ""}`}
-                type="button"
-                aria-label={`Slide ${index + 1}`}
-                onClick={() => goToSlide(index)}
-              ></button>
-            ))}
-          </div>
-        </section>
+          <section id="events" className="section section-centered">
+            <h2 className="section-title section-title-centered">
+              Programs built for exposure, participation, and real connection.
+            </h2>
 
-        <section id="information" className="content-section">
-          <div className="section-heading reveal">
-            <h2>Clear pathways into EnginAble's mission, approach, and public value.</h2>
-          </div>
-          <div className="info-grid">
-            {infoCards.map((card, index) => (
-              <article key={card.title} className={`info-card reveal ${index > 0 ? `delay-${index}` : ""}`}>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="articles" className="content-section alt-section">
-          <div className="section-heading reveal">
-            <h2>Editorial content for discovery, reflection, and momentum.</h2>
-          </div>
-          <div className="feature-layout">
-            <article className="feature-story reveal">
-              <h3>How engineering communities can make opportunity feel visible.</h3>
-              <p>
-                A flagship long-form article slot for interviews, opinion pieces, or thought
-                leadership from educators, practitioners, and young innovators.
-              </p>
-              <a href="#contact" className="text-link">
-                Pitch future stories
-              </a>
-            </article>
-            <div className="article-list">
-              {articleCards.map((card, index) => (
-                <article key={card.title} className={`article-card reveal delay-${index + 1}`}>
+            <div className="program-grid">
+              {eventCards.map((card) => (
+                <article key={card.title} className="glass-card program-card program-card-hover">
+                  <div className="program-image-wrap">
+                    <img src={card.image} alt={card.title} className="program-image" />
+                  </div>
+                  <div className="program-icon-wrap">
+                    <Icon name={card.icon} />
+                  </div>
                   <h3>{card.title}</h3>
                   <p>{card.text}</p>
                 </article>
               ))}
             </div>
-          </div>
-        </section>
 
-        <section id="events" className="content-section">
-          <div className="section-heading reveal">
-            <h2>Programs built for exposure, participation, and real connection.</h2>
-          </div>
-          <div className="event-grid">
-            {eventCards.map((card, index) => (
-              <article key={card.title} className={`event-card reveal ${index > 0 ? `delay-${index}` : ""}`}>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+            <div className="events-carousel-block">
+              <div className="section-head section-head-carousel">
+                <h2 className="section-title">Past Events</h2>
+              </div>
 
-        <section id="partners" className="content-section alt-section">
-          <div className="section-heading reveal">
-            <h2>Built to welcome schools, industry, and mission-aligned collaborators.</h2>
-          </div>
-          <div className="partners-layout">
-            <div className="partner-copy reveal">
-              <p>
-                This section can grow into a proper partner directory, sponsorship showcase, or
-                collaboration page. For now it introduces the relationship model and the types of
-                organisations EnginAble works with.
-              </p>
-              <div className="partner-tags">
-                <span>Schools</span>
-                <span>Universities</span>
-                <span>Industry</span>
-                <span>Nonprofits</span>
+              <div className="carousel-shell">
+                <button
+                  className="carousel-control-square"
+                  type="button"
+                  aria-label="Previous slide"
+                  onClick={() => goToSlide(activeSlide - 1)}
+                >
+                  <Icon name="arrow_back" />
+                </button>
+
+                <div className="carousel-stage">
+                  {slides.map((slide, index) => (
+                    <article key={slide.title} className={`carousel-panel ${index === activeSlide ? "active" : ""}`}>
+                      <div
+                        className="carousel-media"
+                        style={{
+                          backgroundImage: `linear-gradient(${slide.overlay}, ${slide.overlay}), url(${slide.image})`,
+                        }}
+                      ></div>
+                      <div className="carousel-copy">
+                        <h3>{slide.title}</h3>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <button
+                  className="carousel-control-square"
+                  type="button"
+                  aria-label="Next slide"
+                  onClick={() => goToSlide(activeSlide + 1)}
+                >
+                  <Icon name="arrow_forward" />
+                </button>
+              </div>
+
+              <div className="carousel-dots">
+                {slides.map((slide, index) => (
+                  <button
+                    key={slide.title}
+                    className={`dot ${index === activeSlide ? "active" : ""}`}
+                    type="button"
+                    aria-label={`Slide ${index + 1}`}
+                    onClick={() => goToSlide(index)}
+                  ></button>
+                ))}
               </div>
             </div>
-            <div className="partner-grid">
-              {partnerCards.map((card, index) => (
-                <article key={card.title} className={`partner-card reveal delay-${index + 1}`}>
+          </section>
+
+          <section id="partners" className="section">
+            <div className="section-head">
+              <h2 className="section-title">
+                Built to welcome schools, industry, and mission-aligned collaborators.
+              </h2>
+            </div>
+
+            <div className="collab-grid">
+              <div>
+                <p className="section-intro">
+                  This section can grow into a proper partner directory, sponsorship showcase, or
+                  collaboration page. For now it introduces the relationship model and the types of
+                  organisations EnginAble works with.
+                </p>
+                <div className="stack-list">
+                  {partnerCards.map((card) => (
+                    <article key={card.title} className="glass-card partner-list-card partner-list-card-hover">
+                      <img src={card.image} alt={card.title} className="partner-list-image" />
+                      <h3>{card.title}</h3>
+                      <p>{card.text}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h2 className="section-title section-title-small">
+                  The types of organisations that EnginAble works with:
+                </h2>
+                <div className="icon-grid">
+                  {partnerTypes.map((card) => (
+                    <article key={card.title} className="glass-card icon-card icon-card-photo">
+                      <div className="icon-card-media">
+                        <img src={card.image} alt={card.title} className="icon-card-image" />
+                      </div>
+                      <div className="icon-badge">
+                        <Icon name={card.icon} />
+                      </div>
+                      <h3>{card.title}</h3>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="contact" className="section section-centered">
+            <h2 className="section-title section-title-centered">
+              Start a conversation about content, events, or collaboration.
+            </h2>
+            <div className="contact-grid">
+              {contactCards.map((card) => (
+                <article key={card.title} className="glass-card contact-card-academic">
+                  <div className="icon-badge">
+                    <Icon name={card.icon} />
+                  </div>
                   <h3>{card.title}</h3>
-                  <p>{card.text}</p>
+                  <p className="contact-primary">{card.primary}</p>
+                  {card.button ? (
+                    <a
+                      href="https://www.instagram.com/enginable.global/"
+                      className="secondary-button secondary-button-small"
+                    >
+                      {card.secondary}
+                    </a>
+                  ) : (
+                    <p className="contact-secondary">{card.secondary}</p>
+                  )}
                 </article>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
+        </main>
+      )}
 
-        <section id="contact" className="content-section contact-section">
-          <div className="section-heading reveal">
-            <h2>Start a conversation about content, events, or collaboration.</h2>
+      <footer className="academic-footer">
+        <div className="academic-footer-inner">
+          <div className="footer-brand">
+            <img src={logo} alt="EnginAble Global logo" className="footer-brand-logo" />
+            <div>
+              <div className="brand-wordmark brand-wordmark-footer">EnginAble Global</div>
+              <p>Promoting engineering through information, stories, events, and partnerships.</p>
+            </div>
           </div>
-          <div className="contact-layout">
-            {contactCards.map((card, index) => (
-              <article key={card.title} className={`contact-card reveal ${index > 0 ? `delay-${index}` : ""}`}>
-                <h3>{card.title}</h3>
-                {card.lines.map((line) => (
-                  <p key={line}>
-                    {line.startsWith("https://") ? (
-                      <a className="contact-link-button" href={line} target="_blank" rel="noreferrer">
-                        Visit Instagram
-                      </a>
-                    ) : (
-                      line
-                    )}
-                  </p>
-                ))}
-              </article>
-            ))}
-          </div>
-        </section>
-      </main>
 
-      <footer className="site-footer">
-        <p>EnginAble Global</p>
-        <p>Promoting engineering through information, stories, events, and partnerships.</p>
+          <div className="footer-links">
+            <a href="#contact">Privacy Policy</a>
+            <a href="#contact">Terms of Service</a>
+            <a href="#articles">Press Kit</a>
+            <a href="#partners">Careers</a>
+          </div>
+        </div>
       </footer>
     </div>
   );

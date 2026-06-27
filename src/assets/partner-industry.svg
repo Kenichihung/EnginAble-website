@@ -1,0 +1,16 @@
+<svg width="640" height="640" viewBox="0 0 640 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="640" rx="52" fill="#EEF4FF"/>
+  <path d="M124 466V244L274 188V466H124Z" fill="#123B86"/>
+  <path d="M274 466V296L430 232V466H274Z" fill="#0B1C30"/>
+  <path d="M430 466V334L516 300V466H430Z" fill="#123B86"/>
+  <rect x="164" y="250" width="34" height="34" rx="8" fill="#D6E6FF"/>
+  <rect x="212" y="250" width="34" height="34" rx="8" fill="#D6E6FF"/>
+  <rect x="164" y="306" width="34" height="34" rx="8" fill="#D6E6FF"/>
+  <rect x="212" y="306" width="34" height="34" rx="8" fill="#D6E6FF"/>
+  <rect x="316" y="294" width="36" height="36" rx="8" fill="#B9D4FF"/>
+  <rect x="366" y="294" width="36" height="36" rx="8" fill="#B9D4FF"/>
+  <rect x="316" y="348" width="36" height="36" rx="8" fill="#B9D4FF"/>
+  <rect x="366" y="348" width="36" height="36" rx="8" fill="#B9D4FF"/>
+  <rect x="88" y="466" width="464" height="22" rx="11" fill="#0B1C30"/>
+  <path d="M176 162H226V216H176V162Z" fill="#7CD5FF"/>
+</svg>

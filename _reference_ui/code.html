@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EnginAble | Opening pathways to engineering</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-background": "#0b1c30",
+                "secondary-container": "#bcd2fe",
+                "on-secondary-container": "#445a7f",
+                "surface-container": "#e5eeff",
+                "on-tertiary": "#ffffff",
+                "inverse-on-surface": "#eaf1ff",
+                "surface-dim": "#cbdbf5",
+                "secondary": "#495f84",
+                "on-surface-variant": "#434653",
+                "on-secondary-fixed": "#001b3d",
+                "surface-container-low": "#eff4ff",
+                "on-tertiary-fixed-variant": "#004e5f",
+                "on-primary-fixed": "#001847",
+                "error-container": "#ffdad6",
+                "primary-fixed": "#dae2ff",
+                "on-primary": "#ffffff",
+                "on-secondary": "#ffffff",
+                "outline": "#737784",
+                "on-primary-container": "#a5bdff",
+                "on-secondary-fixed-variant": "#31476b",
+                "secondary-fixed": "#d6e3ff",
+                "on-primary-fixed-variant": "#0040a0",
+                "surface-tint": "#2559bf",
+                "on-tertiary-container": "#00cef8",
+                "surface-variant": "#d3e4fe",
+                "surface-bright": "#f8f9ff",
+                "on-tertiary-fixed": "#001f27",
+                "on-error-container": "#93000a",
+                "surface-container-high": "#dce9ff",
+                "background": "#f8f9ff",
+                "primary-fixed-dim": "#b2c5ff",
+                "on-error": "#ffffff",
+                "inverse-primary": "#b2c5ff",
+                "surface-container-highest": "#d3e4fe",
+                "on-surface": "#0b1c30",
+                "primary": "#00317e",
+                "tertiary-fixed-dim": "#3cd7ff",
+                "secondary-fixed-dim": "#b1c7f2",
+                "tertiary": "#003b49",
+                "inverse-surface": "#213145",
+                "surface-container-lowest": "#ffffff",
+                "tertiary-container": "#005467",
+                "tertiary-fixed": "#b4ebff",
+                "primary-container": "#0046ad",
+                "outline-variant": "#c3c6d5",
+                "error": "#ba1a1a",
+                "surface": "#f8f9ff"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem",
+                "2xl": "1rem",
+                "3xl": "1.5rem"
+        },
+        "spacing": {
+                "max-width": "1200px",
+                "margin-mobile": "16px",
+                "base": "8px",
+                "gutter": "24px",
+                "margin-desktop": "64px"
+        },
+        "fontFamily": {
+                "headline-md": [
+                        "IBM Plex Serif"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "IBM Plex Serif"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-xl": [
+                        "IBM Plex Serif"
+                ],
+                "label-caps": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "IBM Plex Serif"
+                ]
+        },
+        "fontSize": {
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "1.4",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-xl": [
+                        "48px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-caps": [
+                        "12px",
+                        {
+                                "lineHeight": "1.0",
+                                "letterSpacing": "0.1em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                        }
+                ]
+        },
+        "transitionTimingFunction": {
+            'apple': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        },
+        "animation": {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'blob': 'blob 10s infinite',
+        },
+        "keyframes": {
+            float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+            },
+            blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            }
+        }
+    },
+  }
+}
+</script>
+<style>
+        body {
+            background-color: #f8f9ff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Dynamic Background Blobs */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.6;
+            border-radius: 50%;
+            animation: blob 15s infinite alternate;
+        }
+        
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: rgba(0, 49, 126, 0.15); /* Primary */
+            animation-delay: 0s;
+        }
+        
+        .blob-2 {
+            top: 40%;
+            right: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: rgba(0, 206, 248, 0.15); /* Tertiary Container */
+            animation-delay: 2s;
+        }
+        
+        .blob-3 {
+            bottom: -20%;
+            left: 20%;
+            width: 60vw;
+            height: 60vw;
+            background: rgba(178, 197, 255, 0.15); /* Inverse Primary */
+            animation-delay: 4s;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(0, 24, 71, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+        }
+        
+        .glass-panel-dark {
+            background: rgba(0, 49, 126, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-nav {
+            background: rgba(248, 249, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Micro-interactions */
+        .btn-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 20px -10px rgba(0, 49, 126, 0.3);
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+        }
+    </style>
+</head>
+<body class="text-on-background font-body-md min-h-screen flex flex-col">
+<!-- Ambient Background Lighting -->
+<div class="bg-blobs">
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+</div>
+<!-- TopNavBar -->
+<nav class="glass-nav w-full sticky top-0 z-50 transition-all duration-300">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-max-width mx-auto">
+<div class="flex items-center gap-4">
+<img class="h-8 w-auto mix-blend-multiply" data-alt="EnginAble logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnhYaoqkj9AFbkxSsH-aB9xe3FUI5RkwmsXiHsEOuqybFYPNG-uTYMEbT37YRkjLDxWKBUDXk3GpjTJDLqkZJADaUk7yZU0BcrR6M9IhCYmyr54BKYy8WXqv9NxKxtHZ4NFxvptyBA1s4_uOXamz7AhexHLfEmISW5tWpCu2H8-mpohS6oGgq_S7yOXoq-qBrAZ--lY0-PAXMLJ_MgnxK8hqZdp87lgvWXr4UZS-vKFKz5BMWbT-POEMKtQc2pFbSVGP4a0A0Alw"/>
+<a class="text-headline-md font-headline-md font-bold text-primary" href="#">EnginAble</a>
+</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="text-on-surface-variant font-label-caps hover:text-primary transition-colors duration-apple" href="#">Information</a>
+<a class="text-on-surface-variant font-label-caps hover:text-primary transition-colors duration-apple" href="#">Articles</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-caps transition-colors duration-apple" href="#">Events</a>
+<a class="text-on-surface-variant font-label-caps hover:text-primary transition-colors duration-apple" href="#">Partners</a>
+</div>
+<div class="hidden md:flex items-center gap-4">
+<button class="px-5 py-2.5 border border-primary/20 rounded-full font-label-caps text-primary hover:bg-primary/5 btn-hover">Contact Us</button>
+<button class="px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-caps font-bold shadow-lg shadow-primary/20 btn-hover">Join</button>
+</div>
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="py-32 md:py-48 px-margin-mobile md:px-margin-desktop relative">
+<div class="max-w-max-width mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+<div class="lg:col-span-7 space-y-10 relative z-10">
+<h1 class="font-headline-xl text-headline-xl text-primary leading-tight tracking-tight">Opening clearer pathways to engineering.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                        EnginAble Global is a modern platform for aspiring engineers, educators, and industry allies. We spotlight opportunities, publish ideas, and connect people with meaningful events and partnerships.
+                    </p>
+<div class="flex flex-wrap gap-6 pt-4">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-full font-label-caps tracking-wider shadow-xl shadow-primary/20 btn-hover">Explore Events</button>
+<button class="glass-panel text-primary px-8 py-4 rounded-full font-label-caps tracking-wider hover:bg-white/80 btn-hover">Read Articles</button>
+</div>
+</div>
+<!-- Impact Stats Bento (Glassmorphism) -->
+<div class="lg:col-span-5 grid grid-cols-2 gap-6 animate-float relative z-10">
+<div class="glass-panel p-10 rounded-3xl flex flex-col justify-center transition-all duration-apple hover:scale-105">
+<div class="font-headline-xl text-headline-xl text-primary mb-3">12+</div>
+<div class="font-body-md text-body-md text-on-surface-variant font-medium">Program ideas ready to scale</div>
+</div>
+<div class="glass-panel p-10 rounded-3xl flex flex-col justify-center transition-all duration-apple hover:scale-105">
+<div class="font-headline-xl text-headline-xl text-tertiary-container mb-3">4</div>
+<div class="font-body-md text-body-md text-on-surface-variant font-medium">Core content pillars</div>
+</div>
+<div class="col-span-2 glass-panel-dark text-on-primary p-12 rounded-3xl transition-all duration-apple hover:scale-[1.02]">
+<div class="font-headline-xl text-headline-xl text-on-tertiary-container mb-4">1</div>
+<div class="font-body-lg text-body-lg font-bold opacity-90">Shared mission: engineering for all</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Stories -->
+<section class="py-32 px-margin-mobile md:px-margin-desktop relative">
+<div class="max-w-max-width mx-auto space-y-16">
+<div class="flex justify-between items-end border-b border-primary/10 pb-6">
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Featured Perspectives</h2>
+<a class="font-label-caps text-label-caps text-primary hover:text-tertiary-container transition-colors duration-apple flex items-center gap-2 group" href="#">
+                        View All <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform duration-apple">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+<!-- Article Card 1 -->
+<div class="group cursor-pointer glass-panel p-6 rounded-3xl transition-all duration-apple hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+<div class="aspect-[4/3] rounded-2xl overflow-hidden mb-8 relative">
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay z-10 group-hover:opacity-0 transition-opacity duration-apple"></div>
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[800ms] ease-out" data-alt="Water filtration system" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRdQEXek2RD-OfQWqRn8wJfybStcLh05o6BVBEhHbizYggfHhjrCaj7xCp7CIPiNB_5ZC6Wt9f7M7ByMyAGNpvM71h6Y8bCOZAgIbCDP2-phBY47E0JmMy0YV6tlxxWXmoeytbycwQD5igkJdZ6zIKyBf9GQiksSDW3TrKHc0MZhFRLXZ_sDQJXZK22tvCHXgcqXPgo9YJrTI_mYDrJd-3qRVOuDKrxq1Zte-y9iGw9_pHyzwWkheN14zQz8ElSStPsjpmkLgHBw"/>
+</div>
+<div class="space-y-4 px-2">
+<span class="inline-block px-3 py-1 rounded-full bg-primary/5 font-label-caps text-label-caps text-primary tracking-wider">Biomedical Engineering</span>
+<h3 class="font-headline-md text-headline-md text-on-background group-hover:text-primary transition-colors duration-apple leading-snug">How Do Water Filters Work?</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3 leading-relaxed">Understanding the mechanics behind clean water access and the engineering principles that save lives.</p>
+</div>
+</div>
+<!-- Article Card 2 -->
+<div class="group cursor-pointer glass-panel p-6 rounded-3xl transition-all duration-apple hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+<div class="aspect-[4/3] rounded-2xl overflow-hidden mb-8 relative">
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay z-10 group-hover:opacity-0 transition-opacity duration-apple"></div>
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[800ms] ease-out" data-alt="Solar panels" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALXJYNCKmclO42UKjLM-ODBg9Pzx6WAWOxAKXyLWA3-stWKikR-0vAXoC_0NTefuPXQ6J7-LdTHW1NfvYpEWLFnDdY1b9OcPmxQu1bFmwErCNVftv6yEAf_fYD1sL4QxpNC5M7Mjz_XqZEWqnOxffxdN_zmuODsYZiHoHXYrj2tjXW0UiQTqHnSB7VbG5-B2BGtHW6bNGOPl5N1O9g2FxD642Ln-mS-6ZJBXLT7_ao755QyK38kyDnRiW1t_tPfNsBpDa-KQbD4Q"/>
+</div>
+<div class="space-y-4 px-2">
+<span class="inline-block px-3 py-1 rounded-full bg-primary/5 font-label-caps text-label-caps text-primary tracking-wider">Sustainable Energy</span>
+<h3 class="font-headline-md text-headline-md text-on-background group-hover:text-primary transition-colors duration-apple leading-snug">The Physics of Solar Panels</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3 leading-relaxed">A deep dive into the technology capturing sunlight and converting it into usable power for communities.</p>
+</div>
+</div>
+<!-- Article Card 3 -->
+<div class="group cursor-pointer glass-panel p-6 rounded-3xl transition-all duration-apple hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
+<div class="aspect-[4/3] rounded-2xl overflow-hidden mb-8 relative">
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay z-10 group-hover:opacity-0 transition-opacity duration-apple"></div>
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[800ms] ease-out" data-alt="Arduino board" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARuq27wpZw44y6h7dwm4zVDAi3ByljPRQTEKinABKfw70r_OpHjAIypjqir-IDCKfbU00fATGARPpWWuNJyhAP35ZB7kjaIoxADuTtEXwXZLB5HLvl5PWaaEWcaKvMmfBlUamFi2W1oQrjL6YJB0mLDktJ_4vvzJSzepM_CvyWGxMecyBK1Q_4flNJjBqJqmpvKrjdSr2OevOhGJoGY7xhL7YIgGqtaj_xFYTS2iLahpUk-dCuGMNNfMIbIV2lkXP0ZL6JH2Mmuw"/>
+</div>
+<div class="space-y-4 px-2">
+<span class="inline-block px-3 py-1 rounded-full bg-primary/5 font-label-caps text-label-caps text-primary tracking-wider">Robotics</span>
+<h3 class="font-headline-md text-headline-md text-on-background group-hover:text-primary transition-colors duration-apple leading-snug">Arduino 101: Getting Started</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3 leading-relaxed">The foundational guide for high school students looking to build their first programmable circuit.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Who We Are / What We Do -->
+<section class="py-32 px-margin-mobile md:px-margin-desktop relative">
+<div class="max-w-max-width mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-20">
+<div class="lg:col-span-5 space-y-20">
+<div class="relative pl-8">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-transparent rounded-full"></div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6">Who We Are</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                                A promoting-engineering organisation focused on widening access, sharing knowledge, and celebrating talent across different communities.
+                            </p>
+</div>
+<div class="relative pl-8">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-tertiary-container to-transparent rounded-full"></div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6">What We Do</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                                We curate articles, host events, strengthen partnerships, and create visible entry points for people exploring engineering futures.
+                            </p>
+</div>
+</div>
+<div class="lg:col-span-7 glass-panel-dark text-on-primary p-16 rounded-[2rem] relative overflow-hidden shadow-2xl shadow-primary/20 hover:shadow-primary/30 transition-shadow duration-apple">
+<!-- Abstract inner glow -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-on-tertiary-container/30 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+<div class="absolute -top-16 -right-16 opacity-[0.03] mix-blend-overlay">
+<span class="material-symbols-outlined text-[300px]">settings</span>
+</div>
+<div class="relative z-10 flex flex-col h-full justify-center">
+<h2 class="font-headline-lg text-headline-lg mb-8 leading-tight">How engineering communities can make opportunities feel visible</h2>
+<p class="font-body-lg text-body-lg text-on-primary/80 mb-12 max-w-lg leading-relaxed">
+                                A flagship long-form article slot for interviews, opinion pieces, or thought leadership from educators, practitioners, and young innovators.
+                            </p>
+<div>
+<button class="bg-white text-primary px-8 py-4 rounded-full font-label-caps tracking-wider shadow-lg hover:shadow-xl hover:bg-surface-bright btn-hover inline-flex items-center gap-2">
+                                    Pitch Future Stories <span class="material-symbols-outlined text-[18px]">edit_square</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Programs -->
+<section class="py-32 px-margin-mobile md:px-margin-desktop relative">
+<div class="max-w-max-width mx-auto">
+<h2 class="font-headline-lg text-headline-lg text-center text-primary mb-24 max-w-3xl mx-auto leading-tight">Programs built for exposure, participation, and real connection</h2>
+<div class="bento-grid">
+<div class="glass-panel p-12 rounded-3xl relative overflow-hidden group hover:-translate-y-2 transition-all duration-apple hover:shadow-xl hover:shadow-primary/5">
+<div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-primary/30"></div>
+<div class="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-[800ms] ease-out pointer-events-none">
+<span class="material-symbols-outlined text-[200px]">lightbulb</span>
+</div>
+<div class="relative z-10">
+<div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary text-[32px]">lightbulb</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-6 leading-snug">Engineering Discovery Day</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">A school-facing event format with speakers, demos, and hands-on stations for students and families.</p>
+</div>
+</div>
+<div class="glass-panel p-12 rounded-3xl relative overflow-hidden group hover:-translate-y-2 transition-all duration-apple hover:shadow-xl hover:shadow-tertiary-container/5">
+<div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-tertiary-container to-tertiary-container/30"></div>
+<div class="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-[800ms] ease-out pointer-events-none">
+<span class="material-symbols-outlined text-[200px]">forum</span>
+</div>
+<div class="relative z-10">
+<div class="w-16 h-16 rounded-2xl bg-tertiary-container/10 flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-tertiary-container text-[32px]">forum</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-6 leading-snug">Mentor Circles</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">Small-group conversations between learners and engineering professionals across disciplines.</p>
+</div>
+</div>
+<div class="glass-panel p-12 rounded-3xl relative overflow-hidden group hover:-translate-y-2 transition-all duration-apple hover:shadow-xl hover:shadow-primary/5">
+<div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-secondary-fixed-variant to-secondary-fixed-variant/30"></div>
+<div class="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-[800ms] ease-out pointer-events-none">
+<span class="material-symbols-outlined text-[200px]">handshake</span>
+</div>
+<div class="relative z-10">
+<div class="w-16 h-16 rounded-2xl bg-secondary-fixed-variant/10 flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-secondary-fixed-variant text-[32px]">handshake</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-6 leading-snug">Partner Showcase Forum</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">A presentation space for universities, companies, and community organizations to share opportunities.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Collaborators -->
+<section class="py-32 px-margin-mobile md:px-margin-desktop relative">
+<div class="max-w-max-width mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-12 leading-tight">Built to welcome schools, industry, and mission-aligned collaborators</h2>
+<div class="space-y-6">
+<div class="glass-panel p-8 rounded-2xl hover:bg-white/80 transition-colors duration-apple">
+<h4 class="font-headline-md text-headline-md text-primary mb-3">Explore Events</h4>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Program hosts, student communities, academic institutions.</p>
+</div>
+<div class="glass-panel p-8 rounded-2xl hover:bg-white/80 transition-colors duration-apple">
+<h4 class="font-headline-md text-headline-md text-primary mb-3">Industry Partners</h4>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Companies supporting outreach, mentorship, and applied learning.</p>
+</div>
+<div class="glass-panel p-8 rounded-2xl hover:bg-white/80 transition-colors duration-apple">
+<h4 class="font-headline-md text-headline-md text-primary mb-3">Community Partners</h4>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Organisations advocating for inclusion, access, and local impact.</p>
+</div>
+</div>
+</div>
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-12 leading-tight">The types of organisations that EnginAble works with:</h2>
+<div class="grid grid-cols-2 gap-8">
+<div class="aspect-square glass-panel rounded-3xl flex flex-col items-center justify-center p-8 text-center hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5 transition-all duration-apple group">
+<div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-apple">
+<span class="material-symbols-outlined text-[40px] text-primary">school</span>
+</div>
+<span class="font-headline-md text-headline-md text-primary">Schools</span>
+</div>
+<div class="aspect-square glass-panel rounded-3xl flex flex-col items-center justify-center p-8 text-center hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5 transition-all duration-apple group">
+<div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-apple">
+<span class="material-symbols-outlined text-[40px] text-primary">account_balance</span>
+</div>
+<span class="font-headline-md text-headline-md text-primary">Universities</span>
+</div>
+<div class="aspect-square glass-panel rounded-3xl flex flex-col items-center justify-center p-8 text-center hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5 transition-all duration-apple group">
+<div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-apple">
+<span class="material-symbols-outlined text-[40px] text-primary">factory</span>
+</div>
+<span class="font-headline-md text-headline-md text-primary">Industry</span>
+</div>
+<div class="aspect-square glass-panel rounded-3xl flex flex-col items-center justify-center p-8 text-center hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5 transition-all duration-apple group">
+<div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-apple">
+<span class="material-symbols-outlined text-[40px] text-primary">volunteer_activism</span>
+</div>
+<span class="font-headline-md text-headline-md text-primary">Non-Profits</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="py-32 px-margin-mobile md:px-margin-desktop relative">
+<div class="max-w-max-width mx-auto">
+<h2 class="font-headline-lg text-headline-lg text-center text-primary mb-16">Contact us</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<div class="glass-panel p-10 rounded-3xl flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-apple">
+<div class="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-[28px]">mail</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">General Enquiries</h3>
+<a class="font-body-lg text-body-lg text-primary hover:text-tertiary-container transition-colors mb-3" href="mailto:hello@enginable.global">hello@enginable.global</a>
+<p class="font-body-md text-body-md text-on-surface-variant">+62 000 0000 0000</p>
+</div>
+<div class="glass-panel p-10 rounded-3xl flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-apple">
+<div class="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-[28px]">handshake</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Partnerships</h3>
+<a class="font-body-lg text-body-lg text-primary hover:text-tertiary-container transition-colors mb-4" href="mailto:partners@enginable.global">partners@enginable.global</a>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">For schools, companies, and community celebrations</p>
+</div>
+<div class="glass-panel p-10 rounded-3xl flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-apple">
+<div class="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-[28px]">edit_document</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Editorial</h3>
+<a class="font-body-lg text-body-lg text-primary hover:text-tertiary-container transition-colors mb-4" href="mailto:stories@enginable.global">stories@enginable.global</a>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">For article pitches, interviews, and spotlight opportunities.</p>
+</div>
+<div class="glass-panel p-10 rounded-3xl flex flex-col items-center text-center justify-center hover:-translate-y-1 transition-transform duration-apple">
+<div class="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-[28px]">photo_camera</span>
+</div>
+<a class="font-body-lg text-body-lg text-primary hover:text-tertiary-container transition-colors mb-8" href="#">@enginable.global</a>
+<button class="px-8 py-3 border border-primary/20 text-primary rounded-full font-label-caps tracking-wider hover:bg-primary/5 btn-hover">Visit Instagram</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="glass-panel-dark text-on-primary w-full relative z-10 border-t border-white/10 mt-16">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter px-margin-mobile md:px-margin-desktop py-20 max-w-max-width mx-auto">
+<div class="md:col-span-6 space-y-6">
+<a class="text-headline-md font-headline-md flex items-center gap-3" href="#">
+<img class="h-8 w-auto mix-blend-screen opacity-90" data-alt="EnginAble logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnhYaoqkj9AFbkxSsH-aB9xe3FUI5RkwmsXiHsEOuqybFYPNG-uTYMEbT37YRkjLDxWKBUDXk3GpjTJDLqkZJADaUk7yZU0BcrR6M9IhCYmyr54BKYy8WXqv9NxKxtHZ4NFxvptyBA1s4_uOXamz7AhexHLfEmISW5tWpCu2H8-mpohS6oGgq_S7yOXoq-qBrAZ--lY0-PAXMLJ_MgnxK8hqZdp87lgvWXr4UZS-vKFKz5BMWbT-POEMKtQc2pFbSVGP4a0A0Alw"/>
+                    EnginAble
+                </a>
+<p class="text-body-md font-body-md text-on-primary/70">© 2024 EnginAble Global. Engineering for all.</p>
+</div>
+<div class="md:col-span-6 flex flex-wrap gap-x-10 gap-y-6 md:justify-end items-start pt-2">
+<a class="text-on-primary/70 font-label-caps text-label-caps tracking-wider hover:text-white transition-colors duration-apple" href="#">Privacy Policy</a>
+<a class="text-on-primary/70 font-label-caps text-label-caps tracking-wider hover:text-white transition-colors duration-apple" href="#">Terms of Service</a>
+<a class="text-on-primary/70 font-label-caps text-label-caps tracking-wider hover:text-white transition-colors duration-apple" href="#">Press Kit</a>
+<a class="text-on-primary/70 font-label-caps text-label-caps tracking-wider hover:text-white transition-colors duration-apple" href="#">Careers</a>
+</div>
+</div>
+</footer>
+</body></html>
