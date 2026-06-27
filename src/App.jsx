@@ -51,7 +51,8 @@ const slides = [
 const articleCards = [
   {
     slug: "how-do-water-filters-work",
-    category: "Featured Perspectives",
+    publishedAt: "2026-01-12",
+    category: "Article",
     title: "How Do Water Filters Work?",
     text: "A practical explainer on filtration systems, clean water access, and the engineering logic behind them.",
     image: waterFilterImage,
@@ -61,10 +62,21 @@ const articleCards = [
       "Engineers think carefully about flow rate, pore size, maintenance, and cost. A filter must clean water effectively without slowing it too much or becoming difficult to replace. That balance is what turns a science concept into a useful public product.",
       "In outreach and education, water filtration is a strong example because it connects engineering directly to health, equity, and community impact. Students can quickly see how design decisions affect daily life.",
     ],
+    instagramPosts: [
+      {
+        title: "Related Instagram Post",
+        url: "https://www.instagram.com/enginable.global/p/DWI5MGhEXz4/",
+      },
+      {
+        title: "Related Instagram Post",
+        url: "https://www.instagram.com/enginable.global/p/DZFf2CFEvOw/",
+      },
+    ],
   },
   {
     slug: "the-physics-of-solar-panels",
-    category: "Featured Perspectives",
+    publishedAt: "2026-02-08",
+    category: "Article",
     title: "The Physics of Solar Panels",
     text: "A clear introduction to how sunlight becomes electricity and why solar design matters so much today.",
     image: solarImage,
@@ -74,10 +86,17 @@ const articleCards = [
       "A solar installation is more than just the panel surface. Wiring, inverters, battery storage, and structural supports all play a role. Each part must work together so sunlight can become reliable power for homes, schools, or larger infrastructure.",
       "For young learners, solar panels are a powerful entry point into engineering because they connect physics, sustainability, and real-world design into one visible technology.",
     ],
+    instagramPosts: [
+      {
+        title: "Related Instagram Post",
+        url: "https://www.instagram.com/enginable.global/p/DWsM_kQksX5/",
+      },
+    ],
   },
   {
     slug: "arduino-101-getting-started",
-    category: "Featured Perspectives",
+    publishedAt: "2026-03-04",
+    category: "Article",
     title: "Arduino 101: Getting Started",
     text: "A beginner-friendly stepping stone into circuits, prototyping, and playful engineering experimentation.",
     image: arduinoImage,
@@ -87,8 +106,18 @@ const articleCards = [
       "Engineering confidence often grows through this small-cycle experimentation. Wiring a circuit, uploading a sketch, and seeing a real response helps abstract technical ideas feel more approachable.",
       "As a teaching tool, Arduino also supports collaboration. Teams can split roles across coding, physical assembly, troubleshooting, and presentation, which mirrors real engineering workflows in a manageable way.",
     ],
+    instagramPosts: [
+      {
+        title: "Related Instagram Post",
+        url: "https://www.instagram.com/enginable.global/p/DYl__XEkUe-/",
+      },
+    ],
   },
 ];
+
+const sortedArticles = [...articleCards].sort(
+  (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime(),
+);
 
 const infoBlocks = [
   {
@@ -189,6 +218,10 @@ function readArticleSlugFromHash() {
   return hash.replace("#article/", "");
 }
 
+function isAllArticlesHash() {
+  return (window.location.hash || "") === "#articles/all";
+}
+
 function Icon({ name, className = "site-icon" }) {
   const commonProps = {
     className,
@@ -287,6 +320,7 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("#information");
   const [activeArticleSlug, setActiveArticleSlug] = useState(() => readArticleSlugFromHash());
+  const [showAllArticlesPage, setShowAllArticlesPage] = useState(() => isAllArticlesHash());
   const [activeSlide, setActiveSlide] = useState(0);
   const [typedHeadline, setTypedHeadline] = useState("");
   const [headlineIndex, setHeadlineIndex] = useState(0);
@@ -356,18 +390,19 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    function syncArticleFromHash() {
+    function syncRoutesFromHash() {
       setActiveArticleSlug(readArticleSlugFromHash());
+      setShowAllArticlesPage(isAllArticlesHash());
     }
 
-    syncArticleFromHash();
-    window.addEventListener("hashchange", syncArticleFromHash);
+    syncRoutesFromHash();
+    window.addEventListener("hashchange", syncRoutesFromHash);
 
-    return () => window.removeEventListener("hashchange", syncArticleFromHash);
+    return () => window.removeEventListener("hashchange", syncRoutesFromHash);
   }, []);
 
   useEffect(() => {
-    if (activeArticleSlug) {
+    if (activeArticleSlug || showAllArticlesPage) {
       return undefined;
     }
 
@@ -384,6 +419,17 @@ export default function App() {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        const informationSection = document.querySelector("#information");
+
+        if (informationSection) {
+          const infoTop = informationSection.getBoundingClientRect().top;
+
+          if (infoTop > 140) {
+            setActiveNav("");
+            return;
+          }
+        }
+
         entries.forEach((entry) => {
           const sectionId = `#${entry.target.id}`;
 
@@ -419,7 +465,7 @@ export default function App() {
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
-  }, [activeArticleSlug, activeNav]);
+  }, [activeArticleSlug, activeNav, showAllArticlesPage]);
 
   function goToSlide(index) {
     setActiveSlide((index + slides.length) % slides.length);
@@ -445,8 +491,9 @@ export default function App() {
   function scrollToSection(event, href) {
     event.preventDefault();
 
-    if (activeArticleSlug) {
+    if (activeArticleSlug || showAllArticlesPage) {
       setActiveArticleSlug(null);
+      setShowAllArticlesPage(false);
       window.history.replaceState(null, "", href);
 
       window.requestAnimationFrame(() => {
@@ -462,12 +509,14 @@ export default function App() {
 
   function openArticle(slug) {
     setActiveArticleSlug(slug);
+    setShowAllArticlesPage(false);
     window.history.pushState(null, "", `#article/${slug}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function closeArticle() {
     setActiveArticleSlug(null);
+    setShowAllArticlesPage(false);
     window.history.replaceState(null, "", "#articles");
 
     window.requestAnimationFrame(() => {
@@ -477,7 +526,26 @@ export default function App() {
     });
   }
 
-  const activeArticle = articleCards.find((card) => card.slug === activeArticleSlug) ?? null;
+  function openAllArticlesPage(event) {
+    event.preventDefault();
+    setActiveArticleSlug(null);
+    setShowAllArticlesPage(true);
+    window.history.pushState(null, "", "#articles/all");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function closeAllArticlesPage() {
+    setShowAllArticlesPage(false);
+    window.history.replaceState(null, "", "#articles");
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        scrollToSectionByHref("#articles", "auto");
+      });
+    });
+  }
+
+  const activeArticle = sortedArticles.find((card) => card.slug === activeArticleSlug) ?? null;
+  const latestArticles = sortedArticles.slice(0, 3);
 
   return (
     <div className="academic-shell">
@@ -497,8 +565,15 @@ export default function App() {
               </button>
             ) : null}
 
+            {showAllArticlesPage ? (
+              <button type="button" className="back-button" onClick={closeAllArticlesPage} aria-label="Back to homepage articles">
+                <Icon name="arrow_back" className="site-icon site-icon-small" />
+                <span>Back</span>
+              </button>
+            ) : null}
+
             <a
-              href={activeArticle ? "#articles" : "#home"}
+              href={activeArticle || showAllArticlesPage ? "#articles" : "#home"}
               className="brand-link"
               aria-label="EnginAble Global home"
               onClick={
@@ -507,14 +582,19 @@ export default function App() {
                       event.preventDefault();
                       closeArticle();
                     }
-                  : undefined
+                  : showAllArticlesPage
+                    ? (event) => {
+                        event.preventDefault();
+                        closeAllArticlesPage();
+                      }
+                    : undefined
               }
             >
               <img src={logo} alt="EnginAble Global logo" className="brand-logo-wide" />
             </a>
           </div>
 
-          {activeArticle ? null : (
+          {activeArticle || showAllArticlesPage ? null : (
             <>
               <button
                 className="menu-button"
@@ -587,6 +667,74 @@ export default function App() {
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </article>
+
+              {activeArticle.instagramPosts?.length ? (
+                <section className="article-instagram-section">
+                  <div className="section-head section-head-carousel">
+                    <h2 className="section-title">Related Instagram Posts</h2>
+                  </div>
+
+                  <div className="instagram-grid">
+                    {activeArticle.instagramPosts.map((post) => (
+                      <article key={post.url} className="glass-card instagram-card">
+                        <iframe
+                          src={`${post.url}embed/captioned/`}
+                          title={post.title}
+                          className="instagram-embed"
+                          loading="lazy"
+                          allowTransparency="true"
+                        ></iframe>
+                        <a href={post.url} target="_blank" rel="noreferrer" className="primary-button instagram-post-button">
+                          View Full Post
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+            </div>
+          </section>
+        </main>
+      ) : showAllArticlesPage ? (
+        <main className="page-main article-page-shell">
+          <section className="section article-page-section">
+            <div className="article-page-layout">
+              <div className="article-page-hero">
+                <span className="article-category">Archive</span>
+                <h1 className="article-page-title">All Articles</h1>
+                <p className="article-page-intro">
+                  Browse the full article collection. The homepage shows only the three most recently
+                  published articles, while this page lists the entire archive.
+                </p>
+              </div>
+
+              <div className="feature-card-grid all-articles-grid">
+                {sortedArticles.map((card) => (
+                  <article
+                    key={card.slug}
+                    className="glass-card article-card article-card-hover"
+                    onClick={() => openArticle(card.slug)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openArticle(card.slug);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                  >
+                    <div className="article-image-frame">
+                      <div className="article-image-tint"></div>
+                      <img src={card.image} alt={card.title} className="article-image" />
+                    </div>
+                    <div className="article-copy">
+                      <span className="article-category">{card.category}</span>
+                      <h3>{card.title}</h3>
+                      <p>{card.text}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
         </main>
@@ -632,7 +780,7 @@ export default function App() {
           <section id="information" className="section">
             <div className="section-head">
               <h2 className="section-title">
-                About Us
+                Clear pathways into EnginAble&apos;s mission, approach, and public value.
               </h2>
             </div>
 
@@ -663,14 +811,14 @@ export default function App() {
 
           <section id="articles" className="section section-wide">
             <div className="section-head">
-              <h2 className="section-title">Featured Perspectives</h2>
-              <a href="#contact" className="section-link">
+              <h2 className="section-title">Articles</h2>
+              <a href="#articles/all" className="section-link" onClick={openAllArticlesPage}>
                 View All
               </a>
             </div>
 
             <div className="feature-card-grid">
-              {articleCards.map((card) => (
+              {latestArticles.map((card) => (
                 <article
                   key={card.slug}
                   className="glass-card article-card article-card-hover"
