@@ -26,6 +26,8 @@ npm run build
 
 # Collaboration Guide
 
+notes: if u are using agentic coding workflow, make sure to brief ur agent with the .md file(dm me if theres none) and tell it to analyse before putting ur changes.
+
 This guide explains how to clone this private repository, make changes, and push your work to GitHub.
 
 Assuming u can read this, so you've done steps 0 and 1 so skip to 2
