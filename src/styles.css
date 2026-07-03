@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=Inter:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=IBM+Plex+Serif:wght@500;600&family=Inter:wght@400;500;700&family=Quicksand:wght@500;600;700&display=swap");
 
 :root {
   --blue: #2f629f;
@@ -119,8 +119,15 @@ main[id] {
 }
 
 #information {
+  width: 100%;
   scroll-margin-top: 5.9rem;
-  padding-top: 2rem;
+  padding: 5rem max(1rem, calc((100% - var(--max-width)) / 2)) 5.5rem;
+  background:
+    radial-gradient(circle at 12% 38%, rgba(62, 139, 226, 0.62) 0 24rem, transparent 24.2rem),
+    radial-gradient(circle at 88% 0%, rgba(69, 143, 231, 0.72) 0 17rem, transparent 17.2rem),
+    linear-gradient(135deg, #327ed1 0%, #06487d 58%, #003c83 100%);
+  color: #fff;
+  overflow: hidden;
 }
 
 .academic-topbar {
@@ -273,7 +280,7 @@ main[id] {
 
 .hero-title {
   margin: 0 0 1.5rem;
-  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-size: clamp(2.85rem, 4.75vw, 4.25rem);
   line-height: 1.16;
   color: #fff;
 }
@@ -308,7 +315,6 @@ main[id] {
 .section-intro,
 .article-copy p,
 .editorial-text-block p,
-.feature-essay p,
 .program-card p,
 .partner-list-card p,
 .contact-card-academic p,
@@ -332,8 +338,7 @@ main[id] {
 }
 
 .primary-button,
-.secondary-button,
-.essay-button {
+.secondary-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -348,8 +353,7 @@ main[id] {
 }
 
 .primary-button:hover,
-.secondary-button:hover,
-.essay-button:hover {
+.secondary-button:hover {
   transform: translateY(-2px);
 }
 
@@ -366,6 +370,11 @@ main[id] {
   backdrop-filter: blur(18px);
 }
 
+.secondary-button-as-button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
 .secondary-button-small {
   min-height: 2.8rem;
   padding-inline: 1.2rem;
@@ -375,11 +384,6 @@ main[id] {
   background: var(--primary);
   color: #fff;
   border-color: transparent;
-}
-
-.essay-button {
-  background: rgba(255, 255, 255, 0.94);
-  color: var(--primary);
 }
 
 .glass-card,
@@ -721,40 +725,66 @@ main[id] {
   align-items: start;
 }
 
+.editorial-grid {
+  grid-template-columns: minmax(0, 34rem);
+}
+
 .editorial-column {
   display: grid;
-  gap: 3rem;
+  gap: 1.6rem;
 }
 
 .editorial-text-block {
-  padding-left: 1.6rem;
-  border-left: 4px solid rgba(47, 98, 159, 0.2);
-}
-
-.feature-essay {
-  position: relative;
-  overflow: hidden;
-  padding: 3rem;
-  border-radius: 2rem;
-}
-
-.feature-essay::before {
-  content: "";
-  position: absolute;
-  top: -3rem;
-  right: -3rem;
-  width: 18rem;
-  height: 18rem;
-  border-radius: 999px;
-  background: rgba(124, 213, 255, 0.18);
-  filter: blur(40px);
-}
-
-.feature-essay p {
-  position: relative;
   max-width: 28rem;
-  margin: 0 0 2rem;
-  color: rgba(255, 255, 255, 0.86);
+  padding-bottom: 1.4rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.68);
+  font-family: "Quicksand", sans-serif;
+}
+
+.editorial-text-block:last-child {
+  border-bottom: 0;
+}
+
+.editorial-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  margin: 0 0 0.25rem;
+  color: #fff;
+  font-family: "Quicksand", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.editorial-title-script {
+  margin-right: -0.08em;
+  font-family: "Great Vibes", cursive;
+  font-size: 2.45em;
+  font-weight: 400;
+  line-height: 0.55;
+}
+
+.editorial-text-block p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+#information .section-head {
+  border-bottom-color: rgba(255, 255, 255, 0.22);
+}
+
+#information .section-title {
+  color: #fff;
+}
+
+#information .section-head > .section-title {
+  max-width: 54rem;
+  font-family: "IBM Plex Serif", serif;
+  font-weight: 600;
 }
 
 .program-grid {
@@ -764,10 +794,43 @@ main[id] {
 }
 
 .events-carousel-block {
+  position: relative;
+  z-index: 1;
   margin-top: 3rem;
 }
 
+.events-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.events-section::before,
+.events-section::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 2.5rem;
+  width: clamp(14rem, 22vw, 24rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 47%, rgba(0, 60, 131, 0.88) 48% 61%, transparent 62%),
+    repeating-conic-gradient(rgba(0, 60, 131, 0.88) 0 9deg, transparent 9deg 16deg);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.events-section::before {
+  left: clamp(-14rem, -12vw, -7rem);
+}
+
+.events-section::after {
+  right: clamp(-14rem, -12vw, -7rem);
+}
+
 .section-head-carousel {
+  position: relative;
+  z-index: 1;
   margin-bottom: 1.5rem;
 }
 
@@ -1076,6 +1139,134 @@ main[id] {
 
 .contact-secondary {
   margin: 0;
+}
+
+.upcoming-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(7, 22, 52, 0.28);
+  backdrop-filter: blur(14px);
+}
+
+.upcoming-popup {
+  position: relative;
+  width: min(100%, 44rem);
+  max-height: min(92vh, 48rem);
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 1.6rem;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 34px 80px rgba(0, 42, 95, 0.28);
+}
+
+.upcoming-popup-close {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.65rem;
+  height: 2.65rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--darkblue);
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(0, 60, 131, 0.18);
+}
+
+.upcoming-popup-close span {
+  display: block;
+  font-size: 1.7rem;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.upcoming-popup-media-wrap {
+  overflow: hidden;
+  border-radius: 1.1rem;
+  background: #dbe8ff;
+}
+
+.upcoming-popup-media {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.upcoming-popup-copy {
+  padding: 1.25rem 0.35rem 0;
+}
+
+.upcoming-popup-copy h2 {
+  margin: 0;
+  font-family: "IBM Plex Serif", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.16;
+  color: var(--primary);
+}
+
+.upcoming-popup-copy p {
+  margin: 0.9rem 0 0;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.upcoming-popup-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.upcoming-popup-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(0, 60, 131, 0.1);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.upcoming-popup-dots {
+  margin-top: 0;
+}
+
+.upcoming-popup-actions {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.25rem;
+}
+
+.primary-button-popup,
+.secondary-button-popup {
+  width: 100%;
+  min-height: 3.2rem;
+}
+
+.secondary-button-popup {
+  border-color: rgba(0, 60, 131, 0.12);
+  background: rgba(0, 60, 131, 0.08);
+  color: var(--darkblue);
+  cursor: pointer;
+}
+
+.primary-button-popup {
+  background: var(--darkblue);
+  color: #fff;
 }
 
 .carousel-shell {
@@ -1393,6 +1584,25 @@ main[id] {
   .event-gallery-control-right {
     right: 0.75rem;
   }
+
+  .events-section::before,
+  .events-section::after {
+    width: 16rem;
+    opacity: 0.08;
+  }
+
+  .events-section::before {
+    left: -12rem;
+  }
+
+  .events-section::after {
+    right: -12rem;
+  }
+
+  .upcoming-popup {
+    width: min(100%, 34rem);
+  }
+
 }
 
 @media (max-width: 640px) {
@@ -1408,7 +1618,25 @@ main[id] {
   }
 
   .hero-title {
-    font-size: 2.45rem;
+    font-size: 2.3rem;
+  }
+
+  .upcoming-popup-backdrop {
+    padding: 0.9rem;
+  }
+
+  .upcoming-popup {
+    max-height: 88vh;
+    padding: 0.8rem;
+    border-radius: 1.25rem;
+  }
+
+  .upcoming-popup-copy {
+    padding-top: 1rem;
+  }
+
+  .upcoming-popup-copy h2 {
+    font-size: 1.9rem;
   }
 
   .section-title,
@@ -1416,7 +1644,6 @@ main[id] {
     font-size: 1.9rem;
   }
 
-  .feature-essay,
   .program-card,
   .partner-list-card,
   .contact-card-academic,

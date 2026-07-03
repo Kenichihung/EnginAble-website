@@ -26,6 +26,7 @@ function mapEventRecord(record) {
     updatedAt: record.updatedAt,
     category: record.category,
     title: record.title,
+    registrationUrl: record.registrationUrl,
     text: record.excerpt,
     image: record.coverImage,
     content: record.body,

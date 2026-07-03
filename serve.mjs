@@ -1,9 +1,10 @@
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import http from "node:http";
+import os from "node:os";
 
-const host = "127.0.0.1";
-const port = 4175;
+const host = process.env.HOST ?? "0.0.0.0";
+const port = Number(process.env.PORT ?? 4175);
 const root = join(process.cwd(), "dist");
 
 const contentTypes = {
@@ -34,5 +35,17 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`EnginAble frontend running at http://${host}:${port}`);
+  const networkUrls = Object.values(os.networkInterfaces())
+    .flat()
+    .filter((networkInterface) => networkInterface?.family === "IPv4" && !networkInterface.internal)
+    .map((networkInterface) => `http://${networkInterface.address}:${port}`);
+
+  console.log(`EnginAble frontend running at http://localhost:${port}`);
+
+  if (networkUrls.length > 0) {
+    console.log("Available on your local network:");
+    for (const url of networkUrls) {
+      console.log(`  ${url}`);
+    }
+  }
 });

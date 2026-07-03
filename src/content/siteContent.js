@@ -8,8 +8,8 @@ import industryImage from "../assets/partner-industry.svg";
 import nonprofitImage from "../assets/partner-nonprofit.svg";
 
 export const heroPhrases = [
-  "Opening more doors into engineering through stories, programs, and community.",
-  "Opening clearer pathways into engineering through mentorship, ideas, and action.",
+  "Making engineering accessible and empowering for young people to use STEM to change the world.",
+  "Provide hands-on engineering education through workshops, community outreach, and creative learning.",
 ];
 
 export const navItems = [

@@ -139,6 +139,7 @@ export default function App() {
   const [activeUpcomingSlide, setActiveUpcomingSlide] = useState(0);
   const [activePastSlide, setActivePastSlide] = useState(0);
   const [activeEventGallerySlide, setActiveEventGallerySlide] = useState(0);
+  const [showUpcomingPopup, setShowUpcomingPopup] = useState(true);
   const [typedHeadline, setTypedHeadline] = useState("");
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const [isDeletingHeadline, setIsDeletingHeadline] = useState(false);
@@ -491,6 +492,9 @@ export default function App() {
   const activeArticle = articles.find((card) => card.slug === activeArticleSlug) ?? null;
   const activeEvent = activeEventPreview;
   const latestArticles = articles.slice(0, 3);
+  const activeUpcomingEvent = upcomingEvents[activeUpcomingSlide] ?? upcomingEvents[0] ?? null;
+  const shouldShowUpcomingPopup =
+    showUpcomingPopup && !isArticleRoute && !isEventRoute && !showAllArticlesPage && Boolean(activeUpcomingEvent);
 
   function renderEventCarousel(title, items, activeIndex, setSlide) {
     if (!items.length) {
@@ -578,6 +582,93 @@ export default function App() {
         <div className="blob blob-two"></div>
         <div className="blob blob-three"></div>
       </div>
+
+      {shouldShowUpcomingPopup ? (
+        <div className="upcoming-popup-backdrop" role="presentation">
+          <aside
+            className="upcoming-popup"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="upcoming-popup-title"
+          >
+            <button
+              type="button"
+              className="upcoming-popup-close"
+              aria-label="Close upcoming event popup"
+              onClick={() => setShowUpcomingPopup(false)}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+
+            <div className="upcoming-popup-media-wrap">
+              <img
+                src={activeUpcomingEvent.image}
+                alt={activeUpcomingEvent.title}
+                className="upcoming-popup-media"
+              />
+            </div>
+
+            <div className="upcoming-popup-copy">
+              <span className="article-category">{activeUpcomingEvent.category}</span>
+              <h2 id="upcoming-popup-title">{activeUpcomingEvent.title}</h2>
+              <p>{activeUpcomingEvent.text}</p>
+            </div>
+
+            {upcomingEvents.length > 1 ? (
+              <div className="upcoming-popup-controls" aria-label="Upcoming event carousel controls">
+                <button
+                  type="button"
+                  className="upcoming-popup-arrow"
+                  aria-label="Previous upcoming event"
+                  onClick={() => goToSlide(activeUpcomingSlide - 1, upcomingEvents, setActiveUpcomingSlide)}
+                >
+                  <Icon name="arrow_back" className="site-icon site-icon-small" />
+                </button>
+                <div className="carousel-dots upcoming-popup-dots">
+                  {upcomingEvents.map((eventItem, index) => (
+                    <button
+                      key={eventItem.slug}
+                      className={`dot ${index === activeUpcomingSlide ? "active" : ""}`}
+                      type="button"
+                      aria-label={`Upcoming event slide ${index + 1}`}
+                      onClick={() => goToSlide(index, upcomingEvents, setActiveUpcomingSlide)}
+                    ></button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="upcoming-popup-arrow"
+                  aria-label="Next upcoming event"
+                  onClick={() => goToSlide(activeUpcomingSlide + 1, upcomingEvents, setActiveUpcomingSlide)}
+                >
+                  <Icon name="arrow_forward" className="site-icon site-icon-small" />
+                </button>
+              </div>
+            ) : null}
+
+            <div className="upcoming-popup-actions">
+              <button
+                type="button"
+                className="secondary-button secondary-button-popup"
+                onClick={() => {
+                  setShowUpcomingPopup(false);
+                  openEvent(activeUpcomingEvent.slug);
+                }}
+              >
+                Event Details
+              </button>
+              <a
+                href={activeUpcomingEvent.registrationUrl || "#contact"}
+                className="primary-button primary-button-popup"
+                target={activeUpcomingEvent.registrationUrl ? "_blank" : undefined}
+                rel={activeUpcomingEvent.registrationUrl ? "noreferrer" : undefined}
+              >
+                Sign Up
+              </a>
+            </div>
+          </aside>
+        </div>
+      ) : null}
 
       <header className="academic-topbar">
         <div className="academic-topbar-inner">
@@ -952,24 +1043,15 @@ export default function App() {
               <div className="editorial-column">
                 {infoBlocks.map((block) => (
                   <article key={block.title} className="editorial-text-block">
-                    <h2 className="section-title section-title-small">{block.title}</h2>
+                    <h2 className="section-title section-title-small editorial-title">
+                      <span className="editorial-title-script">{block.title.charAt(0)}</span>
+                      <span>{block.title.slice(1)}</span>
+                    </h2>
                     <p>{block.text}</p>
                   </article>
                 ))}
               </div>
 
-              <article className="glass-card-dark feature-essay">
-                <h2 className="section-title section-title-light">
-                  How engineering communities can make opportunity feel visible.
-                </h2>
-                <p>
-                  A flagship long-form article slot for interviews, opinion pieces, or thought
-                  leadership from educators, practitioners, and young innovators.
-                </p>
-                <a href="#contact" className="essay-button">
-                  Pitch future stories
-                </a>
-              </article>
             </div>
           </section>
 
@@ -1010,7 +1092,7 @@ export default function App() {
             </div>
           </section>
 
-          <section id="events" className="section section-centered">
+          <section id="events" className="section section-centered events-section">
             {renderEventCarousel("Upcoming Public Events", upcomingEvents, activeUpcomingSlide, setActiveUpcomingSlide)}
             {renderEventCarousel("Past Events", pastEventArchive, activePastSlide, setActivePastSlide)}
           </section>

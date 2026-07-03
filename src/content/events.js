@@ -64,6 +64,7 @@ export const eventRecords = [
     updatedAt: "2026-08-01",
     category: "Upcoming Event",
     title: "Courts x Motion with Courts for Cause",
+    registrationUrl: "https://forms.gle/JPEXisLbNv3DDUB86",
     excerpt:
       "A collaborative fitness event that brings movement, community energy, and cross-disciplinary curiosity into one welcoming Saturday experience.",
     coverImage: courtsMotionEventImage,

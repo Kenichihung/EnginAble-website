@@ -9,7 +9,20 @@ npm install
 npm start
 ```
 
-Open `http://127.0.0.1:4173/`.
+Open `http://localhost:4173/` on your Mac.
+
+To view it on your phone, keep the dev server running and make sure your phone is on the same Wi-Fi network as your Mac. Then open the Network URL shown by Vite in your Terminal, for example `http://192.168.1.23:4173/`.
+
+If that port is already busy, Vite will print another local URL such as `http://127.0.0.1:4174/`. Open the URL shown in your Terminal.
+
+If you use the static server after building:
+
+```bash
+npm run build
+npm run serve:static
+```
+
+It will print both the local URL and the LAN URLs you can open from your phone.
 
 ## Build
 
