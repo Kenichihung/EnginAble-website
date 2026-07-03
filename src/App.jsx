@@ -911,6 +911,16 @@ export default function App() {
                     {activeEvent.content.map((paragraph) => (
                       <p key={paragraph}>{paragraph}</p>
                     ))}
+                    {activeEvent.registrationUrl ? (
+                      <a
+                        href={activeEvent.registrationUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="primary-button event-registration-button"
+                      >
+                        Register Now
+                      </a>
+                    ) : null}
                   </article>
 
                   {activeEvent.instagramPosts?.length ? (

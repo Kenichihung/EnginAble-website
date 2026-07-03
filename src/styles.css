@@ -638,6 +638,13 @@ main[id] {
   margin-bottom: 0;
 }
 
+.event-registration-button {
+  margin-top: 1.2rem;
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 16px 30px rgba(47, 98, 159, 0.2);
+}
+
 .article-instagram-section {
   margin-top: 1rem;
 }
