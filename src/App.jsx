@@ -6,8 +6,7 @@ import {
   heroPhrases,
   infoBlocks,
   navItems,
-  partnerCards,
-  partnerTypes,
+  partnerLogoPages,
 } from "./content/siteContent";
 import { articleRepository } from "./lib/articleRepository";
 import { eventRepository } from "./lib/eventRepository";
@@ -138,6 +137,7 @@ export default function App() {
   const [showAllArticlesPage, setShowAllArticlesPage] = useState(() => isAllArticlesHash());
   const [activeUpcomingSlide, setActiveUpcomingSlide] = useState(0);
   const [activePastSlide, setActivePastSlide] = useState(0);
+  const [activePartnerPage, setActivePartnerPage] = useState(0);
   const [activeEventGallerySlide, setActiveEventGallerySlide] = useState(0);
   const [showUpcomingPopup, setShowUpcomingPopup] = useState(true);
   const [typedHeadline, setTypedHeadline] = useState("");
@@ -149,6 +149,9 @@ export default function App() {
   const [pastEvents, setPastEvents] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(false);
   const measureRef = useRef(null);
+  const pendingNavRef = useRef(null);
+  const navScrollTimeoutRef = useRef(null);
+  const navScrollCleanupRef = useRef(null);
   const isEventRoute = Boolean(activeEventSlug);
   const upcomingEvents = pastEvents.filter((eventItem) => eventItem.category === "Upcoming Event");
   const pastEventArchive = pastEvents.filter((eventItem) => eventItem.category === "Past Event");
@@ -309,6 +312,20 @@ export default function App() {
   }, [activeEventGallery.length, isEventRoute]);
 
   useEffect(() => {
+    if (!activeArticleSlug && !activeEventSlug && !showAllArticlesPage) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    });
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
+
+  useEffect(() => {
     if (activeArticleSlug || activeEventSlug || showAllArticlesPage) {
       return undefined;
     }
@@ -326,6 +343,10 @@ export default function App() {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (pendingNavRef.current) {
+          return;
+        }
+
         const informationSection = document.querySelector("#information");
 
         if (informationSection) {
@@ -351,7 +372,7 @@ export default function App() {
           return;
         }
 
-        let nextActiveNav = activeNav;
+        let nextActiveNav = "";
         let bestRatio = -1;
 
         visibleSections.forEach((ratio, sectionId) => {
@@ -361,7 +382,7 @@ export default function App() {
           }
         });
 
-        setActiveNav(nextActiveNav);
+        setActiveNav((current) => (current === nextActiveNav ? current : nextActiveNav));
       },
       {
         rootMargin: "-18% 0px -45% 0px",
@@ -372,7 +393,7 @@ export default function App() {
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
-  }, [activeArticleSlug, activeEventSlug, activeNav, showAllArticlesPage]);
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
   function goToSlide(index, items, setSlide) {
     if (!items.length) {
@@ -397,6 +418,15 @@ export default function App() {
       return;
     }
 
+    const isTrackedNavSection = navItems.some((item) => item.href === href);
+
+    if (isTrackedNavSection) {
+      pendingNavRef.current = href;
+      setActiveNav(href);
+      window.clearTimeout(navScrollTimeoutRef.current);
+      navScrollCleanupRef.current?.();
+    }
+
     const headerOffset = 92;
     const top = window.scrollY + target.getBoundingClientRect().top - headerOffset;
 
@@ -405,6 +435,63 @@ export default function App() {
       top,
       behavior,
     });
+
+    if (isTrackedNavSection) {
+      let didReleasePendingNav = false;
+
+      let cleanupPendingNavScroll;
+
+      const releasePendingNav = () => {
+        if (didReleasePendingNav) {
+          return;
+        }
+
+        didReleasePendingNav = true;
+
+        if (pendingNavRef.current === href) {
+          pendingNavRef.current = null;
+        }
+
+        if (navScrollCleanupRef.current === cleanupPendingNavScroll) {
+          navScrollCleanupRef.current();
+        }
+      };
+
+      if (behavior === "smooth" && "onscrollend" in window) {
+        window.addEventListener("scrollend", releasePendingNav, { once: true });
+      }
+
+      const cancelPendingNavScroll = () => {
+        if (pendingNavRef.current !== href) {
+          return;
+        }
+
+        window.scrollTo({
+          top: window.scrollY,
+          left: window.scrollX,
+          behavior: "auto",
+        });
+
+        releasePendingNav();
+      };
+
+      cleanupPendingNavScroll = () => {
+        window.removeEventListener("wheel", cancelPendingNavScroll);
+        window.removeEventListener("touchstart", cancelPendingNavScroll);
+        window.removeEventListener("keydown", cancelPendingNavScroll);
+        navScrollCleanupRef.current = null;
+      };
+
+      navScrollCleanupRef.current = cleanupPendingNavScroll;
+
+      if (behavior === "smooth") {
+        window.addEventListener("wheel", cancelPendingNavScroll, { once: true, passive: true });
+        window.addEventListener("touchstart", cancelPendingNavScroll, { once: true, passive: true });
+        window.addEventListener("keydown", cancelPendingNavScroll, { once: true });
+      }
+
+      navScrollTimeoutRef.current = window.setTimeout(releasePendingNav, behavior === "smooth" ? 450 : 0);
+    }
   }
 
   function scrollToSection(event, href) {
@@ -493,8 +580,27 @@ export default function App() {
   const activeEvent = activeEventPreview;
   const latestArticles = articles.slice(0, 3);
   const activeUpcomingEvent = upcomingEvents[activeUpcomingSlide] ?? upcomingEvents[0] ?? null;
+  const hasDetailTopbar = isArticleRoute || isEventRoute || showAllArticlesPage;
   const shouldShowUpcomingPopup =
     showUpcomingPopup && !isArticleRoute && !isEventRoute && !showAllArticlesPage && Boolean(activeUpcomingEvent);
+
+  useEffect(() => {
+    if (!shouldShowUpcomingPopup) {
+      return undefined;
+    }
+
+    function handleUpcomingPopupEscape(event) {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      setShowUpcomingPopup(false);
+    }
+
+    window.addEventListener("keydown", handleUpcomingPopupEscape);
+
+    return () => window.removeEventListener("keydown", handleUpcomingPopupEscape);
+  }, [shouldShowUpcomingPopup]);
 
   function renderEventCarousel(title, items, activeIndex, setSlide) {
     if (!items.length) {
@@ -672,30 +778,27 @@ export default function App() {
 
       <header className="academic-topbar">
         <div className="academic-topbar-inner">
-          <div className="brand-cluster">
-            {isArticleRoute ? (
-              <button type="button" className="back-button" onClick={closeArticle} aria-label="Back to articles">
+          <div className={`brand-cluster ${hasDetailTopbar ? "brand-cluster-detail" : ""}`}>
+            <div className={`topbar-back-slot ${hasDetailTopbar ? "is-visible" : ""}`}>
+              <button
+                type="button"
+                className="back-button"
+                onClick={isArticleRoute ? closeArticle : showAllArticlesPage ? closeAllArticlesPage : closeEvent}
+                aria-label={
+                  isArticleRoute
+                    ? "Back to articles"
+                    : showAllArticlesPage
+                      ? "Back to homepage articles"
+                      : "Back to events"
+                }
+              >
                 <Icon name="arrow_back" className="site-icon site-icon-small" />
                 <span>Back</span>
               </button>
-            ) : null}
-
-            {isEventRoute ? (
-              <button type="button" className="back-button" onClick={closeEvent} aria-label="Back to events">
-                <Icon name="arrow_back" className="site-icon site-icon-small" />
-                <span>Back</span>
-              </button>
-            ) : null}
-
-            {showAllArticlesPage ? (
-              <button type="button" className="back-button" onClick={closeAllArticlesPage} aria-label="Back to homepage articles">
-                <Icon name="arrow_back" className="site-icon site-icon-small" />
-                <span>Back</span>
-              </button>
-            ) : null}
+            </div>
 
             <a
-              href={isArticleRoute || isEventRoute || showAllArticlesPage ? "#articles" : "#home"}
+              href={hasDetailTopbar ? "#articles" : "#home"}
               className="brand-link"
               aria-label="EnginAble Global home"
               onClick={
@@ -721,57 +824,55 @@ export default function App() {
             </a>
           </div>
 
-          {isArticleRoute || isEventRoute || showAllArticlesPage ? null : (
-            <>
-              <button
-                className="menu-button"
-                type="button"
-                aria-expanded={menuOpen}
-                aria-controls="site-navigation"
-                onClick={() => setMenuOpen((open) => !open)}
-              >
-                Menu
-              </button>
+          <div className={`topbar-nav-area ${hasDetailTopbar ? "is-hidden" : ""}`}>
+            <button
+              className="menu-button"
+              type="button"
+              aria-expanded={menuOpen}
+              aria-controls="site-navigation"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              Menu
+            </button>
 
-              <nav id="site-navigation" className={`academic-nav ${menuOpen ? "is-open" : ""}`}>
-                {navItems.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className={activeNav === item.href ? "is-active" : ""}
-                    onClick={(event) => {
-                      scrollToSection(event, item.href);
-                      setActiveNav(item.href);
-                      setMenuOpen(false);
-                    }}
-                  >
-                    {item.label}
-                  </a>
-                ))}
+            <nav id="site-navigation" className={`academic-nav ${menuOpen ? "is-open" : ""}`}>
+              {navItems.map((item) => (
                 <a
-                  href="#contact"
-                  className="nav-pill nav-pill-outline"
+                  key={item.href}
+                  href={item.href}
+                  className={activeNav === item.href ? "is-active" : ""}
                   onClick={(event) => {
-                    scrollToSection(event, "#contact");
+                    scrollToSection(event, item.href);
+                    setActiveNav(item.href);
                     setMenuOpen(false);
                   }}
                 >
-                  Contact Us
+                  {item.label}
                 </a>
-                <a
-                  href="#partners"
-                  className="nav-pill nav-pill-solid"
-                  onClick={(event) => {
-                    scrollToSection(event, "#partners");
-                    setActiveNav("#partners");
-                    setMenuOpen(false);
-                  }}
-                >
-                  Join
-                </a>
-              </nav>
-            </>
-          )}
+              ))}
+              <a
+                href="#contact"
+                className="nav-pill nav-pill-outline"
+                onClick={(event) => {
+                  scrollToSection(event, "#contact");
+                  setMenuOpen(false);
+                }}
+              >
+                Contact Us
+              </a>
+              <a
+                href="#partners"
+                className="nav-pill nav-pill-solid"
+                onClick={(event) => {
+                  scrollToSection(event, "#partners");
+                  setActiveNav("#partners");
+                  setMenuOpen(false);
+                }}
+              >
+                Join
+              </a>
+            </nav>
+          </div>
         </div>
       </header>
 
@@ -841,17 +942,19 @@ export default function App() {
       ) : isEventRoute ? (
         <main className="page-main article-page-shell">
           <section className="section article-page-section">
-            <div className="article-page-layout">
+            <div className="article-page-layout article-page-layout-event">
               {!eventsLoaded ? (
                 <article className="glass-card article-page-card">
                   <p>Loading event...</p>
                 </article>
               ) : activeEvent ? (
                 <>
-                  <div className="article-page-hero">
-                    <span className="article-category">{activeEvent.category}</span>
-                    <h1 className="article-page-title">{activeEvent.title}</h1>
-                    <p className="article-page-intro">{activeEvent.text}</p>
+                  <div className="article-page-hero article-page-hero-event">
+                    <div className="article-page-event-copy">
+                      <span className="article-category article-category-event">{activeEvent.category}</span>
+                      <h1 className="article-page-title">{activeEvent.title}</h1>
+                      <p className="article-page-intro">{activeEvent.text}</p>
+                    </div>
                   </div>
 
                   <div className={`article-page-image-wrap ${activeEventGallery.length ? "article-page-image-wrap-gallery" : ""}`}>
@@ -1026,9 +1129,7 @@ export default function App() {
                   </span>
                 </h1>
                 <p className="hero-description">
-                  EnginAble Global is a modern platform for aspiring engineers, educators, and industry
-                  allies. We spotlight opportunities, publish ideas, and connect people with meaningful
-                  events and partnerships.
+                  EnginAble is a youth-led organization dedicated to making engineering education more accessible, creative, and meaningful for young learners. Through hands-on workshops, community projects, and educational resources, we introduce students to engineering as a way to solve real-world problems and create a positive change. We believe engineering should not feel distant, intimidating, or limited to textbooks. Instead, it should be something students can experience, question, build, and use to understand the world around them.
                 </p>
                 <div className="hero-actions">
                   <a href="#events" className="primary-button">
@@ -1114,52 +1215,58 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="partners-showcase">
-              <article className="glass-card partners-feature">
-                <div className="partners-feature-copy">
-                  <span className="article-category">Collaboration Model</span>
-                  <h3>Built for schools, communities, and mission-aligned organisations.</h3>
-                  <p>
-                    EnginAble partnerships are designed to feel active, visible, and practical. We
-                    work with organisations that want to host events, open doors for students, and
-                    create more accessible entry points into engineering.
-                  </p>
-                </div>
+            <div className="partner-portfolio">
+              <div className="partner-portfolio-stage">
+                {partnerLogoPages.map((page, pageIndex) => (
+                  <div
+                    key={page.id}
+                    className={`partner-logo-page ${pageIndex === activePartnerPage ? "active" : ""}`}
+                    aria-hidden={pageIndex !== activePartnerPage}
+                  >
+                    <h3 className="partner-logo-page-title">{page.title}</h3>
 
-                <div className="partners-feature-stack">
-                  {partnerCards.map((card) => (
-                    <article key={card.title} className="partners-mini-card">
-                      <img src={card.image} alt={card.title} className="partner-list-image" />
-                      <div>
-                        <h3>{card.title}</h3>
-                        <p>{card.text}</p>
-                      </div>
-                    </article>
+                    <div className="partner-logo-grid">
+                      {page.logos.map((logo) => (
+                        <article key={logo.name} className="partner-logo-item">
+                          <img src={logo.image} alt={logo.name} className="partner-logo-image" />
+                          <span>{logo.name}</span>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="partner-portfolio-controls">
+                <button
+                  type="button"
+                  className="partner-portfolio-arrow"
+                  aria-label="Previous partner logo page"
+                  onClick={() => goToSlide(activePartnerPage - 1, partnerLogoPages, setActivePartnerPage)}
+                >
+                  <Icon name="arrow_back" className="site-icon site-icon-small" />
+                </button>
+
+                <div className="partner-portfolio-dashes">
+                  {partnerLogoPages.map((page, pageIndex) => (
+                    <button
+                      key={page.id}
+                      type="button"
+                      className={`partner-portfolio-dash ${pageIndex === activePartnerPage ? "active" : ""}`}
+                      aria-label={`Partner logo page ${pageIndex + 1}`}
+                      onClick={() => goToSlide(pageIndex, partnerLogoPages, setActivePartnerPage)}
+                    ></button>
                   ))}
                 </div>
-              </article>
 
-              <div className="partners-type-block">
-                <div className="partners-type-head">
-                  <span className="article-category">Who We Work With</span>
-                  <h3 className="section-title section-title-small">Partnership pathways across education, industry, and impact work.</h3>
-                </div>
-
-                <div className="partners-type-grid">
-                  {partnerTypes.map((card) => (
-                    <article key={card.title} className="glass-card partners-type-card icon-card-photo">
-                      <div className="partners-type-image-wrap">
-                        <img src={card.image} alt={card.title} className="icon-card-image" />
-                      </div>
-                      <div className="partners-type-copy">
-                        <div className="icon-badge">
-                          <Icon name={card.icon} />
-                        </div>
-                        <h3>{card.title}</h3>
-                      </div>
-                    </article>
-                  ))}
-                </div>
+                <button
+                  type="button"
+                  className="partner-portfolio-arrow"
+                  aria-label="Next partner logo page"
+                  onClick={() => goToSlide(activePartnerPage + 1, partnerLogoPages, setActivePartnerPage)}
+                >
+                  <Icon name="arrow_forward" className="site-icon site-icon-small" />
+                </button>
               </div>
             </div>
           </section>
