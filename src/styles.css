@@ -652,24 +652,32 @@ main[id] {
 }
 
 .article-page-layout {
-  width: min(calc(100% - 2rem), 960px);
+  --detail-back-rail: 8.5rem;
+  --detail-back-gap: clamp(1.5rem, 3vw, 3rem);
+  --detail-content-width: 960px;
+  width: min(
+    calc(100% - 2rem),
+    calc(var(--detail-back-rail) + var(--detail-back-gap) + var(--detail-content-width))
+  );
   margin: 0 auto;
   display: grid;
-  gap: 2rem;
+  grid-template-columns: var(--detail-back-rail) minmax(0, var(--detail-content-width));
+  row-gap: 2rem;
+  column-gap: var(--detail-back-gap);
 }
 
 .article-page-layout-event {
-  width: min(calc(100% - 8rem), 1080px);
+  --detail-content-width: 1080px;
 }
 
 .article-page-header {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  align-items: start;
-  column-gap: clamp(2rem, 4vw, 4.5rem);
+  display: contents;
 }
 
 .detail-back-button {
+  grid-column: 1;
+  justify-self: start;
+  align-self: start;
   margin-top: 0.15rem;
   border-color: rgba(47, 98, 159, 0.26);
   background: rgba(255, 255, 255, 0.54);
@@ -684,6 +692,7 @@ main[id] {
 }
 
 .article-page-hero {
+  grid-column: 2;
   display: grid;
   gap: 1rem;
 }
@@ -723,6 +732,7 @@ main[id] {
 }
 
 .article-page-image-wrap {
+  grid-column: 2;
   position: relative;
   overflow: hidden;
   border-radius: 2rem;
@@ -745,6 +755,7 @@ main[id] {
 }
 
 .article-page-card {
+  grid-column: 2;
   padding: 2rem;
 }
 
@@ -767,6 +778,7 @@ main[id] {
 }
 
 .article-instagram-section {
+  grid-column: 2;
   margin-top: 1rem;
 }
 
@@ -1784,17 +1796,28 @@ main[id] {
     min-height: 40rem;
   }
 
+  .article-page-layout,
   .article-page-layout-event {
     width: min(calc(100% - 2rem), 960px);
+    grid-template-columns: 1fr;
+    column-gap: 0;
   }
 
   .article-page-header {
-    grid-template-columns: 1fr;
+    display: grid;
     row-gap: 1.35rem;
   }
 
   .detail-back-button {
+    grid-column: 1;
     justify-self: start;
+  }
+
+  .article-page-hero,
+  .article-page-image-wrap,
+  .article-page-card,
+  .article-instagram-section {
+    grid-column: 1;
   }
 
   .academic-footer-inner {
