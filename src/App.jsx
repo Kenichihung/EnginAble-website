@@ -780,21 +780,6 @@ export default function App() {
         <div className="academic-topbar-inner">
           <div className={`brand-cluster ${hasDetailTopbar ? "brand-cluster-detail" : ""}`}>
             <div className={`topbar-back-slot ${hasDetailTopbar ? "is-visible" : ""}`}>
-              <button
-                type="button"
-                className="back-button"
-                onClick={isArticleRoute ? closeArticle : showAllArticlesPage ? closeAllArticlesPage : closeEvent}
-                aria-label={
-                  isArticleRoute
-                    ? "Back to articles"
-                    : showAllArticlesPage
-                      ? "Back to homepage articles"
-                      : "Back to events"
-                }
-              >
-                <Icon name="arrow_back" className="site-icon site-icon-small" />
-                <span>Back</span>
-              </button>
             </div>
 
             <a
@@ -886,10 +871,21 @@ export default function App() {
                 </article>
               ) : activeArticle ? (
                 <>
-                  <div className="article-page-hero">
-                    <span className="article-category">{activeArticle.category}</span>
-                    <h1 className="article-page-title">{activeArticle.title}</h1>
-                    <p className="article-page-intro">{activeArticle.text}</p>
+                  <div className="article-page-header">
+                    <button
+                      type="button"
+                      className="back-button detail-back-button"
+                      onClick={closeArticle}
+                      aria-label="Back to articles"
+                    >
+                      <Icon name="arrow_back" className="site-icon site-icon-small" />
+                      <span>Back</span>
+                    </button>
+                    <div className="article-page-hero">
+                      <span className="article-category">{activeArticle.category}</span>
+                      <h1 className="article-page-title">{activeArticle.title}</h1>
+                      <p className="article-page-intro">{activeArticle.text}</p>
+                    </div>
                   </div>
 
                   <div className="article-page-image-wrap">
@@ -949,11 +945,22 @@ export default function App() {
                 </article>
               ) : activeEvent ? (
                 <>
-                  <div className="article-page-hero article-page-hero-event">
-                    <div className="article-page-event-copy">
-                      <span className="article-category article-category-event">{activeEvent.category}</span>
-                      <h1 className="article-page-title">{activeEvent.title}</h1>
-                      <p className="article-page-intro">{activeEvent.text}</p>
+                  <div className="article-page-header article-page-header-event">
+                    <button
+                      type="button"
+                      className="back-button detail-back-button"
+                      onClick={closeEvent}
+                      aria-label="Back to events"
+                    >
+                      <Icon name="arrow_back" className="site-icon site-icon-small" />
+                      <span>Back</span>
+                    </button>
+                    <div className="article-page-hero article-page-hero-event">
+                      <div className="article-page-event-copy">
+                        <span className="article-category article-category-event">{activeEvent.category}</span>
+                        <h1 className="article-page-title">{activeEvent.title}</h1>
+                        <p className="article-page-intro">{activeEvent.text}</p>
+                      </div>
                     </div>
                   </div>
 
@@ -1067,13 +1074,24 @@ export default function App() {
         <main className="page-main article-page-shell">
           <section className="section article-page-section">
             <div className="article-page-layout">
-              <div className="article-page-hero">
-                <span className="article-category">Archive</span>
-                <h1 className="article-page-title">All Articles</h1>
-                <p className="article-page-intro">
-                  Browse the full article collection. The homepage shows only the three most recently
-                  published articles, while this page lists the entire archive.
-                </p>
+              <div className="article-page-header">
+                <button
+                  type="button"
+                  className="back-button detail-back-button"
+                  onClick={closeAllArticlesPage}
+                  aria-label="Back to homepage articles"
+                >
+                  <Icon name="arrow_back" className="site-icon site-icon-small" />
+                  <span>Back</span>
+                </button>
+                <div className="article-page-hero">
+                  <span className="article-category">Archive</span>
+                  <h1 className="article-page-title">All Articles</h1>
+                  <p className="article-page-intro">
+                    Browse the full article collection. The homepage shows only the three most recently
+                    published articles, while this page lists the entire archive.
+                  </p>
+                </div>
               </div>
 
               <div className="feature-card-grid all-articles-grid">
