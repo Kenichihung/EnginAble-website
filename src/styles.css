@@ -1209,12 +1209,12 @@ body.menu-locked {
 
 .partner-portfolio-stage {
   position: relative;
+  display: grid;
   min-height: 26rem;
 }
 
 .partner-logo-page {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2012,7 +2012,7 @@ body.menu-locked {
   }
 
   .partner-portfolio-stage {
-    min-height: 42rem;
+    min-height: 0;
   }
 
   .partner-logo-grid {
@@ -2144,16 +2144,23 @@ body.menu-locked {
     aspect-ratio: 4 / 3;
   }
 
-  .partner-portfolio-stage {
-    min-height: 67rem;
-  }
-
   .partner-logo-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
   }
 
   .partner-logo-item {
-    min-height: 13rem;
+    min-height: 0;
+    padding: 1.25rem 0.75rem;
+    gap: 0.8rem;
+  }
+
+  .partner-logo-image {
+    width: clamp(4.5rem, 22vw, 6rem);
+  }
+
+  .partner-logo-item span {
+    font-size: 0.92rem;
   }
 
   .partner-portfolio-controls {
