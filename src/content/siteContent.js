@@ -143,7 +143,7 @@ export const contactCards = [
     icon: "handshake",
     title: "Partnerships",
     primary: "enginable.global@gmail.com",
-    secondary: "For Schools, foundations, industry and organizations.",
+    secondary: "For schools, foundations, industry and organizations.",
   },
   {
     icon: "photo_camera",
