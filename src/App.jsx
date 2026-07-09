@@ -585,6 +585,28 @@ export default function App() {
     showUpcomingPopup && !isArticleRoute && !isEventRoute && !showAllArticlesPage && Boolean(activeUpcomingEvent);
 
   useEffect(() => {
+    if (!menuOpen) {
+      return undefined;
+    }
+
+    const mobileNavQuery = window.matchMedia("(max-width: 860px)");
+
+    function closeMenuOnDesktop(event) {
+      if (!event.matches) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.body.classList.add("menu-locked");
+    mobileNavQuery.addEventListener("change", closeMenuOnDesktop);
+
+    return () => {
+      document.body.classList.remove("menu-locked");
+      mobileNavQuery.removeEventListener("change", closeMenuOnDesktop);
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
     if (!shouldShowUpcomingPopup) {
       return undefined;
     }
@@ -811,14 +833,25 @@ export default function App() {
 
           <div className={`topbar-nav-area ${hasDetailTopbar ? "is-hidden" : ""}`}>
             <button
-              className="menu-button"
+              className={`menu-button ${menuOpen ? "is-open" : ""}`}
               type="button"
               aria-expanded={menuOpen}
               aria-controls="site-navigation"
+              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
               onClick={() => setMenuOpen((open) => !open)}
             >
-              Menu
+              <span className="menu-icon" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
             </button>
+
+            <div
+              className={`mobile-nav-backdrop ${menuOpen ? "is-open" : ""}`}
+              role="presentation"
+              onClick={() => setMenuOpen(false)}
+            ></div>
 
             <nav id="site-navigation" className={`academic-nav ${menuOpen ? "is-open" : ""}`}>
               {navItems.map((item) => (
