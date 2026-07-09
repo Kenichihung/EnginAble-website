@@ -2101,6 +2101,10 @@ body.menu-locked {
     padding-top: 0;
   }
 
+  .article-page-shell {
+    padding-top: 5.4rem;
+  }
+
   .hero-section {
     padding: calc(4.3rem + 3rem) 0 3.5rem;
     background-attachment: scroll;
