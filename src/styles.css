@@ -2003,6 +2003,14 @@ body.menu-locked {
     grid-template-columns: 1fr;
   }
 
+  .editorial-title {
+    margin-bottom: 1.1rem;
+  }
+
+  .editorial-title-script {
+    font-size: 2.2em;
+  }
+
   .partner-portfolio-stage {
     min-height: 42rem;
   }
