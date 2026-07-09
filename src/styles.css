@@ -60,7 +60,9 @@ img {
 .academic-shell {
   position: relative;
   min-height: 100vh;
+  /* clip keeps position: sticky working; hidden would break it */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .academic-blobs {
@@ -466,22 +468,6 @@ body.menu-locked {
   max-width: 80rem;
   font-size: 1.05rem;
   color: rgba(255, 255, 255, 0.86);
-}
-
-.hero-see-more {
-  display: none;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #fff;
-  font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: underline;
-  text-underline-offset: 0.3em;
-  cursor: pointer;
 }
 
 .hero-actions {
@@ -2127,8 +2113,22 @@ body.menu-locked {
   }
 
   .hero-section {
-    padding: calc(4.3rem + 2.6rem) 0 3rem;
+    min-height: 190vh;
+    padding: 0;
     background-attachment: scroll;
+  }
+
+  .hero-sticky {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: flex-start;
+    min-height: 100svh;
+    padding: calc(4.3rem + 2.2rem) 0 2.5rem;
+  }
+
+  .hero-layout {
+    width: min(calc(100% - 1.5rem), var(--max-width));
   }
 
   .hero-title {
@@ -2138,20 +2138,17 @@ body.menu-locked {
   }
 
   .hero-description {
-    font-size: 0.98rem;
-    line-height: 1.68;
+    font-size: 0.95rem;
+    line-height: 1.62;
   }
 
-  .hero-description.is-clamped {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .hero-description-scrub .scrub-word {
+    opacity: 0.22;
+    transition: opacity 260ms ease;
   }
 
-  .hero-see-more {
-    display: inline-block;
-    margin-top: 0.8rem;
+  .hero-description-scrub .scrub-word.on {
+    opacity: 1;
   }
 
   .hero-actions {
@@ -2159,6 +2156,14 @@ body.menu-locked {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
     margin-top: 1.6rem;
+    opacity: 0;
+    transform: translateY(0.9rem);
+    transition: opacity 420ms ease, transform 420ms ease;
+  }
+
+  .hero-actions.is-in {
+    opacity: 1;
+    transform: none;
   }
 
   .hero-actions .primary-button,
@@ -2234,5 +2239,27 @@ body.menu-locked {
 
   .partner-portfolio-dash {
     width: 1.7rem;
+  }
+}
+
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  .hero-section {
+    min-height: 0;
+  }
+
+  .hero-sticky {
+    position: static;
+    min-height: 0;
+  }
+
+  .hero-description-scrub .scrub-word {
+    opacity: 1;
+    transition: none;
+  }
+
+  .hero-actions {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

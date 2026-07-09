@@ -12,6 +12,10 @@ import {
 import { articleRepository } from "./lib/articleRepository";
 import { eventRepository } from "./lib/eventRepository";
 
+const heroDescriptionText =
+  "EnginAble is a youth-led organization dedicated to making engineering education more accessible, creative, and meaningful for young learners. Through hands-on workshops, community projects, and educational resources, we introduce students to engineering as a way to solve real-world problems and create a positive change. We believe engineering should not feel distant, intimidating, or limited to textbooks. Instead, it should be something students can experience, question, build, and use to understand the world around them.";
+const heroDescriptionWords = heroDescriptionText.split(" ");
+
 function readArticleSlugFromHash() {
   const hash = window.location.hash || "";
 
@@ -148,7 +152,8 @@ export default function App() {
   const [isCompactHero, setIsCompactHero] = useState(
     () => window.matchMedia("(max-width: 640px)").matches,
   );
-  const [heroExpanded, setHeroExpanded] = useState(false);
+  const [heroRevealCount, setHeroRevealCount] = useState(0);
+  const heroSectionRef = useRef(null);
   const [articles, setArticles] = useState([]);
   const [articlesLoaded, setArticlesLoaded] = useState(false);
   const [pastEvents, setPastEvents] = useState([]);
@@ -250,6 +255,55 @@ export default function App() {
 
     return () => compactHeroQuery.removeEventListener("change", syncCompactHero);
   }, []);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!isCompactHero || prefersReducedMotion) {
+      setHeroRevealCount(heroDescriptionWords.length);
+      return undefined;
+    }
+
+    let frameId = null;
+
+    function updateHeroReveal() {
+      frameId = null;
+      const section = heroSectionRef.current;
+
+      if (!section) {
+        return;
+      }
+
+      const scrubRange = section.offsetHeight - window.innerHeight;
+
+      if (scrubRange <= 0) {
+        setHeroRevealCount(heroDescriptionWords.length);
+        return;
+      }
+
+      const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrubRange));
+      setHeroRevealCount(Math.round(progress * heroDescriptionWords.length));
+    }
+
+    function requestHeroReveal() {
+      if (frameId === null) {
+        frameId = window.requestAnimationFrame(updateHeroReveal);
+      }
+    }
+
+    updateHeroReveal();
+    window.addEventListener("scroll", requestHeroReveal, { passive: true });
+    window.addEventListener("resize", requestHeroReveal);
+
+    return () => {
+      window.removeEventListener("scroll", requestHeroReveal);
+      window.removeEventListener("resize", requestHeroReveal);
+
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
+  }, [isCompactHero, activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
   useEffect(() => {
     const currentPhrase = activeHeroPhrases[headlineIndex];
@@ -1182,43 +1236,49 @@ export default function App() {
       ) : (
         <main id="home" className="page-main">
           <section
+            ref={heroSectionRef}
             className="hero-section section"
             style={{
               backgroundImage: `linear-gradient(180deg, rgba(47, 98, 159, 0.58), rgba(47, 98, 159, 0.66)), url(${heroBackground})`,
             }}
           >
-            <div className="hero-layout">
-              <div className="hero-copy">
-                <h1
-                  className="hero-title typewriter-heading"
-                  style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
-                >
-                  <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
-                    {activeHeroPhrases[0]}
-                  </span>
-                  <span className="typewriter-live">
-                    <span>{typedHeadline}</span>
-                    <span className="typewriter-cursor" aria-hidden="true"></span>
-                  </span>
-                </h1>
-                <p className={`hero-description ${heroExpanded ? "" : "is-clamped"}`}>
-                  EnginAble is a youth-led organization dedicated to making engineering education more accessible, creative, and meaningful for young learners. Through hands-on workshops, community projects, and educational resources, we introduce students to engineering as a way to solve real-world problems and create a positive change. We believe engineering should not feel distant, intimidating, or limited to textbooks. Instead, it should be something students can experience, question, build, and use to understand the world around them.
-                </p>
-                <button
-                  type="button"
-                  className="hero-see-more"
-                  aria-expanded={heroExpanded}
-                  onClick={() => setHeroExpanded((expanded) => !expanded)}
-                >
-                  {heroExpanded ? "See less" : "See more..."}
-                </button>
-                <div className="hero-actions">
-                  <a href="#events" className="primary-button">
-                    Explore Events
-                  </a>
-                  <a href="#articles" className="secondary-button">
-                    Read Articles
-                  </a>
+            <div className="hero-sticky">
+              <div className="hero-layout">
+                <div className="hero-copy">
+                  <h1
+                    className="hero-title typewriter-heading"
+                    style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
+                  >
+                    <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
+                      {activeHeroPhrases[0]}
+                    </span>
+                    <span className="typewriter-live">
+                      <span>{typedHeadline}</span>
+                      <span className="typewriter-cursor" aria-hidden="true"></span>
+                    </span>
+                  </h1>
+                  <p className="hero-description hero-description-scrub">
+                    {heroDescriptionWords.map((word, index) => (
+                      <span
+                        key={`${word}-${index}`}
+                        className={`scrub-word ${index < heroRevealCount ? "on" : ""}`}
+                      >
+                        {index < heroDescriptionWords.length - 1 ? `${word} ` : word}
+                      </span>
+                    ))}
+                  </p>
+                  <div
+                    className={`hero-actions ${
+                      heroRevealCount >= Math.ceil(heroDescriptionWords.length * 0.82) ? "is-in" : ""
+                    }`}
+                  >
+                    <a href="#events" className="primary-button">
+                      Explore Events
+                    </a>
+                    <a href="#articles" className="secondary-button">
+                      Read Articles
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
