@@ -1886,10 +1886,19 @@ body.menu-locked {
 
   .academic-footer-inner {
     grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 1.75rem;
+    text-align: center;
+  }
+
+  .footer-brand {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .footer-links {
-    justify-content: flex-start;
+    justify-content: center;
+    gap: 1.25rem;
   }
 }
 

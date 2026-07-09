@@ -1362,10 +1362,12 @@ export default function App() {
           </div>
 
           <div className="footer-links">
-            <a href="#contact">Privacy Policy</a>
-            <a href="#contact">Terms of Service</a>
-            <a href="#articles">Press Kit</a>
-            <a href="#partners">Careers</a>
+            <a href="#articles">Articles</a>
+            <a href="#events">Events</a>
+            <a href="#contact">Contact</a>
+            <a href="https://www.instagram.com/enginable.global/" target="_blank" rel="noreferrer">
+              Instagram
+            </a>
           </div>
         </div>
       </footer>
