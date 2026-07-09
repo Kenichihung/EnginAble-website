@@ -468,6 +468,22 @@ body.menu-locked {
   color: rgba(255, 255, 255, 0.86);
 }
 
+.hero-see-more {
+  display: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2111,12 +2127,43 @@ body.menu-locked {
   }
 
   .hero-section {
-    padding: calc(4.3rem + 3rem) 0 3.5rem;
+    padding: calc(4.3rem + 2.6rem) 0 3rem;
     background-attachment: scroll;
   }
 
   .hero-title {
-    font-size: 2.3rem;
+    margin-bottom: 1.15rem;
+    font-size: 2.15rem;
+    line-height: 1.22;
+  }
+
+  .hero-description {
+    font-size: 0.98rem;
+    line-height: 1.68;
+  }
+
+  .hero-description.is-clamped {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-see-more {
+    display: inline-block;
+    margin-top: 0.8rem;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.6rem;
+  }
+
+  .hero-actions .primary-button,
+  .hero-actions .secondary-button {
+    padding-inline: 0.5rem;
   }
 
   .upcoming-popup-backdrop {

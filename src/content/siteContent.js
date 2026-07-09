@@ -19,6 +19,12 @@ export const heroPhrases = [
   "Provide hands-on engineering education through workshops, community outreach, and creative learning.",
 ];
 
+// Shorter variants for small screens, where the full phrases fill the viewport
+export const heroPhrasesMobile = [
+  "Empowering young people to change the world with STEM.",
+  "Hands-on workshops, outreach, and creative learning.",
+];
+
 export const navItems = [
   { label: "Information", href: "#information" },
   { label: "Articles", href: "#articles" },

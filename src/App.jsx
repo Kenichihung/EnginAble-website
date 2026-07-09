@@ -4,6 +4,7 @@ import heroBackground from "./assets/hero-background.png";
 import {
   contactCards,
   heroPhrases,
+  heroPhrasesMobile,
   infoBlocks,
   navItems,
   partnerLogoPages,
@@ -144,6 +145,10 @@ export default function App() {
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const [isDeletingHeadline, setIsDeletingHeadline] = useState(false);
   const [reservedHeadlineHeight, setReservedHeadlineHeight] = useState(0);
+  const [isCompactHero, setIsCompactHero] = useState(
+    () => window.matchMedia("(max-width: 640px)").matches,
+  );
+  const [heroExpanded, setHeroExpanded] = useState(false);
   const [articles, setArticles] = useState([]);
   const [articlesLoaded, setArticlesLoaded] = useState(false);
   const [pastEvents, setPastEvents] = useState([]);
@@ -229,8 +234,25 @@ export default function App() {
     };
   }, []);
 
+  const activeHeroPhrases = isCompactHero ? heroPhrasesMobile : heroPhrases;
+
   useEffect(() => {
-    const currentPhrase = heroPhrases[headlineIndex];
+    const compactHeroQuery = window.matchMedia("(max-width: 640px)");
+
+    function syncCompactHero(event) {
+      setIsCompactHero(event.matches);
+      setTypedHeadline("");
+      setHeadlineIndex(0);
+      setIsDeletingHeadline(false);
+    }
+
+    compactHeroQuery.addEventListener("change", syncCompactHero);
+
+    return () => compactHeroQuery.removeEventListener("change", syncCompactHero);
+  }, []);
+
+  useEffect(() => {
+    const currentPhrase = activeHeroPhrases[headlineIndex];
     const isPhraseComplete = typedHeadline === currentPhrase;
     const isPhraseEmpty = typedHeadline === "";
     let timeoutId;
@@ -242,7 +264,7 @@ export default function App() {
     } else if (isDeletingHeadline && isPhraseEmpty) {
       timeoutId = window.setTimeout(() => {
         setIsDeletingHeadline(false);
-        setHeadlineIndex((current) => (current + 1) % heroPhrases.length);
+        setHeadlineIndex((current) => (current + 1) % activeHeroPhrases.length);
       }, 250);
     } else {
       timeoutId = window.setTimeout(() => {
@@ -255,7 +277,7 @@ export default function App() {
     }
 
     return () => window.clearTimeout(timeoutId);
-  }, [typedHeadline, headlineIndex, isDeletingHeadline]);
+  }, [typedHeadline, headlineIndex, isDeletingHeadline, activeHeroPhrases]);
 
   useEffect(() => {
     function measureHeadlineHeight() {
@@ -267,12 +289,12 @@ export default function App() {
 
       let tallestHeight = 0;
 
-      heroPhrases.forEach((phrase) => {
+      activeHeroPhrases.forEach((phrase) => {
         measureElement.textContent = phrase;
         tallestHeight = Math.max(tallestHeight, measureElement.getBoundingClientRect().height);
       });
 
-      measureElement.textContent = heroPhrases[0];
+      measureElement.textContent = activeHeroPhrases[0];
       setReservedHeadlineHeight(Math.ceil(tallestHeight));
     }
 
@@ -280,7 +302,7 @@ export default function App() {
     window.addEventListener("resize", measureHeadlineHeight);
 
     return () => window.removeEventListener("resize", measureHeadlineHeight);
-  }, []);
+  }, [activeHeroPhrases]);
 
   useEffect(() => {
     function syncRoutesFromHash() {
@@ -1172,16 +1194,24 @@ export default function App() {
                   style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
                 >
                   <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
-                    {heroPhrases[0]}
+                    {activeHeroPhrases[0]}
                   </span>
                   <span className="typewriter-live">
                     <span>{typedHeadline}</span>
                     <span className="typewriter-cursor" aria-hidden="true"></span>
                   </span>
                 </h1>
-                <p className="hero-description">
+                <p className={`hero-description ${heroExpanded ? "" : "is-clamped"}`}>
                   EnginAble is a youth-led organization dedicated to making engineering education more accessible, creative, and meaningful for young learners. Through hands-on workshops, community projects, and educational resources, we introduce students to engineering as a way to solve real-world problems and create a positive change. We believe engineering should not feel distant, intimidating, or limited to textbooks. Instead, it should be something students can experience, question, build, and use to understand the world around them.
                 </p>
+                <button
+                  type="button"
+                  className="hero-see-more"
+                  aria-expanded={heroExpanded}
+                  onClick={() => setHeroExpanded((expanded) => !expanded)}
+                >
+                  {heroExpanded ? "See less" : "See more..."}
+                </button>
                 <div className="hero-actions">
                   <a href="#events" className="primary-button">
                     Explore Events
