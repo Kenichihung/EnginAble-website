@@ -1639,12 +1639,12 @@ body.menu-locked {
 
 .carousel-stage {
   position: relative;
+  display: grid;
   min-height: 31rem;
 }
 
 .carousel-panel {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: 1rem;
@@ -1853,7 +1853,11 @@ body.menu-locked {
   }
 
   .carousel-stage {
-    min-height: 40rem;
+    min-height: 0;
+  }
+
+  .carousel-media {
+    aspect-ratio: 4 / 3;
   }
 
   .article-page-layout,
@@ -2032,10 +2036,6 @@ body.menu-locked {
     display: none;
   }
 
-  .carousel-stage {
-    min-height: 38rem;
-  }
-
   .event-gallery-stage {
     min-height: 18rem;
   }
@@ -2132,8 +2132,8 @@ body.menu-locked {
     width: min(10rem, 48vw);
   }
 
-  .carousel-stage {
-    min-height: 31rem;
+  .upcoming-popup-media {
+    aspect-ratio: 4 / 3;
   }
 
   .partner-portfolio-stage {
