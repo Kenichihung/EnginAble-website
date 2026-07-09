@@ -2097,6 +2097,11 @@ body.menu-locked {
     width: min(calc(100% - 1.25rem), var(--max-width));
   }
 
+  .hero-section,
+  .events-section {
+    width: 100%;
+  }
+
   .page-main {
     padding-top: 0;
   }
