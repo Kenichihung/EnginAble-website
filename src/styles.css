@@ -2143,12 +2143,16 @@ body.menu-locked {
   }
 
   .hero-description-scrub .scrub-word {
-    opacity: 0.22;
-    transition: opacity 260ms ease;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.45em);
+    transition: opacity 340ms ease, transform 340ms ease;
+    white-space: pre-wrap;
   }
 
   .hero-description-scrub .scrub-word.on {
     opacity: 1;
+    transform: none;
   }
 
   .hero-actions {
@@ -2254,6 +2258,7 @@ body.menu-locked {
 
   .hero-description-scrub .scrub-word {
     opacity: 1;
+    transform: none;
     transition: none;
   }
 

@@ -264,10 +264,7 @@ export default function App() {
       return undefined;
     }
 
-    let frameId = null;
-
     function updateHeroReveal() {
-      frameId = null;
       const section = heroSectionRef.current;
 
       if (!section) {
@@ -285,23 +282,13 @@ export default function App() {
       setHeroRevealCount(Math.round(progress * heroDescriptionWords.length));
     }
 
-    function requestHeroReveal() {
-      if (frameId === null) {
-        frameId = window.requestAnimationFrame(updateHeroReveal);
-      }
-    }
-
     updateHeroReveal();
-    window.addEventListener("scroll", requestHeroReveal, { passive: true });
-    window.addEventListener("resize", requestHeroReveal);
+    window.addEventListener("scroll", updateHeroReveal, { passive: true });
+    window.addEventListener("resize", updateHeroReveal);
 
     return () => {
-      window.removeEventListener("scroll", requestHeroReveal);
-      window.removeEventListener("resize", requestHeroReveal);
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
+      window.removeEventListener("scroll", updateHeroReveal);
+      window.removeEventListener("resize", updateHeroReveal);
     };
   }, [isCompactHero, activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
