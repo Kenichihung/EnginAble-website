@@ -1233,7 +1233,7 @@ export default function App() {
             </div>
             <div className="hero-sticky">
               <div className="hero-layout">
-                <div className="hero-copy">
+                <div className="hero-copy" style={{ "--hero-reveal": heroProgress }}>
                   <h1
                     className="hero-title typewriter-heading"
                     style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
@@ -1246,7 +1246,7 @@ export default function App() {
                       <span className="typewriter-cursor" aria-hidden="true"></span>
                     </span>
                   </h1>
-                  <div className="hero-story-card" style={{ "--hero-reveal": heroProgress }}>
+                  <div className="hero-story-card">
                     <div className="hero-story-head" aria-hidden="true">
                       <span className="hero-story-label">Who we are</span>
                       <span className="hero-story-hint">
@@ -1267,7 +1267,12 @@ export default function App() {
                       ))}
                     </p>
                   </div>
-                  <div className={`hero-actions ${heroProgress >= 0.82 ? "is-in" : ""}`}>
+                  <div className="hero-chips" aria-hidden="true">
+                    <span className="hero-chip">Hands-on workshops</span>
+                    <span className="hero-chip">Community outreach</span>
+                    <span className="hero-chip">Creative learning</span>
+                  </div>
+                  <div className="hero-actions">
                     <a href="#events" className="primary-button">
                       Explore Events
                     </a>

@@ -423,6 +423,10 @@ body.menu-locked {
   display: none;
 }
 
+.hero-chips {
+  display: none;
+}
+
 .hero-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
@@ -2165,13 +2169,19 @@ body.menu-locked {
     position: sticky;
     top: 0;
     display: flex;
-    align-items: flex-start;
-    min-height: 100svh;
-    padding: calc(4.3rem + 2.1rem) 0 2.5rem;
+    align-items: stretch;
+    height: 100svh;
+    padding: calc(4.3rem + 1.9rem) 0 2.3rem;
   }
 
   .hero-layout {
-    width: min(calc(100% - 1.5rem), var(--max-width));
+    width: min(calc(100% - 1.9rem), var(--max-width));
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .hero-title {
@@ -2240,19 +2250,39 @@ body.menu-locked {
     transform: none;
   }
 
+  .hero-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-top: auto;
+    margin-bottom: calc((1 - var(--hero-reveal, 0)) * 1rem);
+    max-height: calc((1 - var(--hero-reveal, 0)) * 7rem);
+    opacity: calc(1 - var(--hero-reveal, 0) * 2.5);
+    overflow: hidden;
+  }
+
+  .hero-chip {
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    background: rgba(3, 28, 62, 0.34);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   .hero-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
-    margin-top: 1.6rem;
-    opacity: 0;
-    transform: translateY(0.9rem);
-    transition: opacity 420ms ease, transform 420ms ease;
-  }
-
-  .hero-actions.is-in {
-    opacity: 1;
-    transform: none;
+    margin-top: 0;
+    flex-shrink: 0;
   }
 
   .hero-actions .primary-button,
@@ -2338,7 +2368,17 @@ body.menu-locked {
 
   .hero-sticky {
     position: static;
+    height: auto;
     min-height: 0;
+    padding-bottom: 3rem;
+  }
+
+  .hero-copy {
+    height: auto;
+  }
+
+  .hero-chips {
+    display: none;
   }
 
   .hero-backdrop {
