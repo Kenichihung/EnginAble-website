@@ -152,7 +152,7 @@ export default function App() {
   const [isCompactHero, setIsCompactHero] = useState(
     () => window.matchMedia("(max-width: 640px)").matches,
   );
-  const [heroRevealCount, setHeroRevealCount] = useState(0);
+  const [heroProgress, setHeroProgress] = useState(0);
   const heroSectionRef = useRef(null);
   const [articles, setArticles] = useState([]);
   const [articlesLoaded, setArticlesLoaded] = useState(false);
@@ -260,7 +260,7 @@ export default function App() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!isCompactHero || prefersReducedMotion) {
-      setHeroRevealCount(heroDescriptionWords.length);
+      setHeroProgress(1);
       return undefined;
     }
 
@@ -274,12 +274,12 @@ export default function App() {
       const scrubRange = section.offsetHeight - window.innerHeight;
 
       if (scrubRange <= 0) {
-        setHeroRevealCount(heroDescriptionWords.length);
+        setHeroProgress(1);
         return;
       }
 
       const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrubRange));
-      setHeroRevealCount(Math.round(progress * heroDescriptionWords.length));
+      setHeroProgress(Math.round(progress * 200) / 200);
     }
 
     updateHeroReveal();
@@ -1222,13 +1222,15 @@ export default function App() {
         </main>
       ) : (
         <main id="home" className="page-main">
-          <section
-            ref={heroSectionRef}
-            className="hero-section section"
-            style={{
-              backgroundImage: `linear-gradient(180deg, rgba(47, 98, 159, 0.58), rgba(47, 98, 159, 0.66)), url(${heroBackground})`,
-            }}
-          >
+          <section ref={heroSectionRef} className="hero-section section">
+            <div className="hero-backdrop-track" aria-hidden="true">
+              <div
+                className="hero-backdrop"
+                style={{
+                  backgroundImage: `linear-gradient(180deg, rgba(47, 98, 159, 0.58), rgba(47, 98, 159, 0.66)), url(${heroBackground})`,
+                }}
+              ></div>
+            </div>
             <div className="hero-sticky">
               <div className="hero-layout">
                 <div className="hero-copy">
@@ -1244,21 +1246,28 @@ export default function App() {
                       <span className="typewriter-cursor" aria-hidden="true"></span>
                     </span>
                   </h1>
-                  <p className="hero-description hero-description-scrub">
-                    {heroDescriptionWords.map((word, index) => (
-                      <span
-                        key={`${word}-${index}`}
-                        className={`scrub-word ${index < heroRevealCount ? "on" : ""}`}
-                      >
-                        {index < heroDescriptionWords.length - 1 ? `${word} ` : word}
+                  <div className="hero-story-card" style={{ "--hero-reveal": heroProgress }}>
+                    <div className="hero-story-head" aria-hidden="true">
+                      <span className="hero-story-label">Who we are</span>
+                      <span className="hero-story-hint">
+                        Scroll
+                        <Icon name="arrow_forward" className="site-icon hero-story-hint-icon" />
                       </span>
-                    ))}
-                  </p>
-                  <div
-                    className={`hero-actions ${
-                      heroRevealCount >= Math.ceil(heroDescriptionWords.length * 0.82) ? "is-in" : ""
-                    }`}
-                  >
+                    </div>
+                    <p className="hero-description hero-description-scrub">
+                      {heroDescriptionWords.map((word, index) => (
+                        <span
+                          key={`${word}-${index}`}
+                          className={`scrub-word ${
+                            index < Math.round(heroProgress * heroDescriptionWords.length) ? "on" : ""
+                          }`}
+                        >
+                          {index < heroDescriptionWords.length - 1 ? `${word} ` : word}
+                        </span>
+                      ))}
+                    </p>
+                  </div>
+                  <div className={`hero-actions ${heroProgress >= 0.82 ? "is-in" : ""}`}>
                     <a href="#events" className="primary-button">
                       Explore Events
                     </a>

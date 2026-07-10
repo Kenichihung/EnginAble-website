@@ -392,13 +392,35 @@ body.menu-locked {
 }
 
 .hero-section {
+  position: relative;
   width: 100%;
   padding: calc(5.8rem + 4.4rem) 0 4rem;
   background-color: var(--blue);
+}
+
+.hero-backdrop-track {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-backdrop {
+  width: 100%;
+  height: 100%;
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.hero-sticky {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-story-head {
+  display: none;
 }
 
 .hero-layout {
@@ -1812,6 +1834,17 @@ body.menu-locked {
   color: rgba(255, 255, 255, 0.7);
 }
 
+@keyframes heroHintNudge {
+  0%,
+  100% {
+    transform: rotate(90deg) translateX(0);
+  }
+
+  50% {
+    transform: rotate(90deg) translateX(0.22rem);
+  }
+}
+
 @keyframes blinkCursor {
   0%,
   49% {
@@ -2115,7 +2148,17 @@ body.menu-locked {
   .hero-section {
     min-height: 190vh;
     padding: 0;
+  }
+
+  .hero-backdrop {
+    position: sticky;
+    top: calc(4.3rem + 0.45rem);
+    height: calc(100svh - 4.3rem - 0.9rem);
+    margin: 0 0.55rem;
+    width: auto;
+    border-radius: 1.75rem;
     background-attachment: scroll;
+    box-shadow: 0 1.2rem 2.6rem rgba(2, 20, 50, 0.3);
   }
 
   .hero-sticky {
@@ -2124,7 +2167,7 @@ body.menu-locked {
     display: flex;
     align-items: flex-start;
     min-height: 100svh;
-    padding: calc(4.3rem + 2.2rem) 0 2.5rem;
+    padding: calc(4.3rem + 2.1rem) 0 2.5rem;
   }
 
   .hero-layout {
@@ -2135,6 +2178,48 @@ body.menu-locked {
     margin-bottom: 1.15rem;
     font-size: 2.15rem;
     line-height: 1.22;
+  }
+
+  .hero-story-card {
+    margin-top: 0.9rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(3, 28, 62, 0.38);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    overflow: hidden;
+    max-height: calc(3.5rem + var(--hero-reveal, 0) * 27rem);
+  }
+
+  .hero-story-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.7rem;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .hero-story-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    opacity: calc(1 - var(--hero-reveal, 0) * 4);
+  }
+
+  .hero-story-hint-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    transform: rotate(90deg);
+    animation: heroHintNudge 1.6s ease-in-out infinite;
+  }
+
+  .hero-story-card .hero-description {
+    margin: 0;
   }
 
   .hero-description {
@@ -2254,6 +2339,22 @@ body.menu-locked {
   .hero-sticky {
     position: static;
     min-height: 0;
+  }
+
+  .hero-backdrop {
+    position: static;
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .hero-story-card {
+    max-height: none;
+  }
+
+  .hero-story-hint {
+    display: none;
   }
 
   .hero-description-scrub .scrub-word {
