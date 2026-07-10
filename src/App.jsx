@@ -1,9 +1,10 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import logo from "./assets/enginable-header-logo.png";
 import heroBackground from "./assets/hero-background.png";
+import earthTexture from "./assets/earth-day.jpg";
+import gearSpace from "./assets/gear-space.svg";
 import {
   contactCards,
-  heroPhrases,
   heroPhrasesMobile,
   infoBlocks,
   navItems,
@@ -14,7 +15,6 @@ import { eventRepository } from "./lib/eventRepository";
 
 const heroDescriptionText =
   "EnginAble is a youth-led organization dedicated to making engineering education more accessible, creative, and meaningful for young learners. Through hands-on workshops, community projects, and educational resources, we introduce students to engineering as a way to solve real-world problems and create a positive change. We believe engineering should not feel distant, intimidating, or limited to textbooks. Instead, it should be something students can experience, question, build, and use to understand the world around them.";
-const heroDescriptionWords = heroDescriptionText.split(" ");
 
 function readArticleSlugFromHash() {
   const hash = window.location.hash || "";
@@ -149,10 +149,8 @@ export default function App() {
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const [isDeletingHeadline, setIsDeletingHeadline] = useState(false);
   const [reservedHeadlineHeight, setReservedHeadlineHeight] = useState(0);
-  const [isCompactHero, setIsCompactHero] = useState(
-    () => window.matchMedia("(max-width: 640px)").matches,
-  );
   const [heroProgress, setHeroProgress] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
   const heroSectionRef = useRef(null);
   const [articles, setArticles] = useState([]);
   const [articlesLoaded, setArticlesLoaded] = useState(false);
@@ -239,28 +237,26 @@ export default function App() {
     };
   }, []);
 
-  const activeHeroPhrases = isCompactHero ? heroPhrasesMobile : heroPhrases;
+  // The space intro uses the short phrases at every size; the long
+  // originals live on in the intro description paragraph.
+  const activeHeroPhrases = heroPhrasesMobile;
 
   useEffect(() => {
-    const compactHeroQuery = window.matchMedia("(max-width: 640px)");
-
-    function syncCompactHero(event) {
-      setIsCompactHero(event.matches);
-      setTypedHeadline("");
-      setHeadlineIndex(0);
-      setIsDeletingHeadline(false);
+    function syncScrolledHeader() {
+      setIsScrolled(window.scrollY > 28);
     }
 
-    compactHeroQuery.addEventListener("change", syncCompactHero);
+    syncScrolledHeader();
+    window.addEventListener("scroll", syncScrolledHeader, { passive: true });
 
-    return () => compactHeroQuery.removeEventListener("change", syncCompactHero);
+    return () => window.removeEventListener("scroll", syncScrolledHeader);
   }, []);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!isCompactHero || prefersReducedMotion) {
-      setHeroProgress(1);
+    if (prefersReducedMotion) {
+      setHeroProgress(0);
       return undefined;
     }
 
@@ -290,7 +286,7 @@ export default function App() {
       window.removeEventListener("scroll", updateHeroReveal);
       window.removeEventListener("resize", updateHeroReveal);
     };
-  }, [isCompactHero, activeArticleSlug, activeEventSlug, showAllArticlesPage]);
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
   useEffect(() => {
     const currentPhrase = activeHeroPhrases[headlineIndex];
@@ -901,7 +897,7 @@ export default function App() {
         </div>
       ) : null}
 
-      <header className="academic-topbar">
+      <header className={`academic-topbar ${isScrolled || hasDetailTopbar ? "is-pill" : ""}`}>
         <div className="academic-topbar-inner">
           <div className={`brand-cluster ${hasDetailTopbar ? "brand-cluster-detail" : ""}`}>
             <div className={`topbar-back-slot ${hasDetailTopbar ? "is-visible" : ""}`}>
@@ -1262,70 +1258,91 @@ export default function App() {
         </main>
       ) : (
         <main id="home" className="page-main">
-          <section ref={heroSectionRef} className="hero-section section">
-            <div className="hero-backdrop-track" aria-hidden="true">
-              <div
-                className="hero-backdrop"
-                style={{
-                  backgroundImage: `linear-gradient(180deg, rgba(47, 98, 159, 0.58), rgba(47, 98, 159, 0.66)), url(${heroBackground})`,
-                }}
-              ></div>
-            </div>
-            <div className="hero-sticky">
-              <div className="hero-layout">
-                <div className="hero-copy" style={{ "--hero-reveal": heroProgress }}>
-                  <h1
-                    className="hero-title typewriter-heading"
-                    style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
-                  >
-                    <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
-                      {activeHeroPhrases[0]}
-                    </span>
-                    <span className="typewriter-live">
-                      <span>{typedHeadline}</span>
-                      <span className="typewriter-cursor" aria-hidden="true"></span>
-                    </span>
-                  </h1>
-                  <div className="hero-story-card">
-                    <div className="hero-story-head" aria-hidden="true">
-                      <span className="hero-story-label">Who we are</span>
-                      <span className="hero-story-hint">
-                        Scroll
-                        <Icon name="arrow_forward" className="site-icon hero-story-hint-icon" />
-                      </span>
-                    </div>
-                    <p className="hero-description hero-description-scrub">
-                      {heroDescriptionWords.map((word, index) => (
-                        <span
-                          key={`${word}-${index}`}
-                          className={`scrub-word ${
-                            index < Math.round(heroProgress * heroDescriptionWords.length) ? "on" : ""
-                          }`}
-                        >
-                          {index < heroDescriptionWords.length - 1 ? `${word} ` : word}
-                        </span>
-                      ))}
-                    </p>
-                  </div>
-                  <div className="hero-chips" aria-hidden="true">
-                    <span className="hero-chip">Hands-on workshops</span>
-                    <span className="hero-chip">Community outreach</span>
-                    <span className="hero-chip">Creative learning</span>
-                  </div>
-                  <div className="hero-actions">
-                    <a href="#events" className="primary-button">
-                      Explore Events
-                    </a>
-                    <a href="#articles" className="secondary-button">
-                      Read Articles
-                    </a>
-                  </div>
+          <section ref={heroSectionRef} className="space-intro" style={{ "--p": heroProgress }}>
+            <div className="space-intro-sticky">
+              <div className="space-intro-dark" aria-hidden="true">
+                <div className="space-intro-stars"></div>
+                <div className="space-intro-grid"></div>
+                <div className="space-aurora space-aurora-one"></div>
+                <div className="space-aurora space-aurora-two"></div>
+              </div>
+
+              <div className="intro-gear intro-gear-one" aria-hidden="true">
+                <img src={gearSpace} alt="" className="intro-gear-spin" />
+              </div>
+              <div className="intro-gear intro-gear-two" aria-hidden="true">
+                <img src={gearSpace} alt="" className="intro-gear-spin intro-gear-spin-reverse" />
+              </div>
+
+              <div className={`intro-copy ${heroProgress > 0.42 ? "is-gone" : ""}`}>
+                <span className="intro-badge">
+                  <span className="intro-badge-dot" aria-hidden="true"></span>
+                  Youth-led &middot; Jakarta &rarr; the world
+                </span>
+                <p className="intro-eyebrow">{headlineIndex === 0 ? "Our Vision" : "Our Mission"}</p>
+                <h1
+                  className="intro-headline typewriter-heading"
+                  style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
+                >
+                  <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
+                    {activeHeroPhrases[0]}
+                  </span>
+                  <span className="typewriter-live">
+                    <span>{typedHeadline}</span>
+                    <span className="typewriter-cursor" aria-hidden="true"></span>
+                  </span>
+                </h1>
+                <p className="intro-description">{heroDescriptionText}</p>
+                <div className="intro-actions">
+                  <a href="#events" className="intro-button-primary">
+                    Explore Events
+                  </a>
+                  <a href="#articles" className="intro-button-ghost">
+                    Read Articles
+                  </a>
                 </div>
+              </div>
+
+              <div className="intro-earth-scene" aria-hidden="true">
+                <div
+                  className="intro-earth"
+                  style={{ backgroundImage: `url(${earthTexture})` }}
+                >
+                  <span className="intro-pin">
+                    <span className="intro-pin-ring"></span>
+                    <span className="intro-pin-dot"></span>
+                  </span>
+                </div>
+              </div>
+
+              <div className="intro-earth-copy">
+                <p className="intro-eyebrow">From Jakarta to the world</p>
+                <h2 className="intro-earth-title">
+                  Born in Jakarta Selatan, Indonesia &mdash; built for young learners everywhere.
+                </h2>
+                <p className="intro-earth-text">
+                  Workshops, community projects, and educational resources that turn engineering
+                  into something you can experience, question, and build.
+                </p>
+              </div>
+
+              <div className="intro-scroll-hint" aria-hidden="true">
+                <span className="intro-scroll-pill">
+                  <span className="intro-scroll-dot"></span>
+                </span>
               </div>
             </div>
           </section>
 
           <section id="information" className="section">
+            <div className="info-photo-frame">
+              <img
+                src={heroBackground}
+                alt="EnginAble volunteers with students at a community workshop"
+                className="info-photo"
+              />
+            </div>
+
             <div className="section-head">
               <h2 className="section-title">
                 Clear pathways into EnginAble&apos;s mission, approach, and public value.
