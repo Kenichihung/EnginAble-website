@@ -648,6 +648,43 @@ export default function App() {
     showUpcomingPopup && !isArticleRoute && !isEventRoute && !showAllArticlesPage && Boolean(activeUpcomingEvent);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return undefined;
+    }
+
+    const revealSelectors = [
+      ".section-head",
+      ".editorial-text-block",
+      ".article-card",
+      ".events-carousel-block",
+      ".partner-portfolio",
+      ".contact-card-academic",
+      ".instagram-card",
+      ".article-page-hero",
+      ".article-page-card",
+    ].join(", ");
+    const revealTargets = [...document.querySelectorAll(revealSelectors)];
+
+    revealTargets.forEach((target) => target.classList.add("reveal-init"));
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -6% 0px" },
+    );
+
+    revealTargets.forEach((target) => revealObserver.observe(target));
+
+    return () => revealObserver.disconnect();
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage, articlesLoaded, eventsLoaded]);
+
+  useEffect(() => {
     if (!menuOpen) {
       return undefined;
     }
@@ -772,6 +809,9 @@ export default function App() {
         <div className="blob blob-one"></div>
         <div className="blob blob-two"></div>
         <div className="blob blob-three"></div>
+        <div className="blob blob-four"></div>
+        <div className="gear-float gear-float-one"></div>
+        <div className="gear-float gear-float-two"></div>
       </div>
 
       {shouldShowUpcomingPopup ? (

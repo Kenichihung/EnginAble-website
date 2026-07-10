@@ -107,6 +107,70 @@ img {
   animation-delay: 6s;
 }
 
+.blob-four {
+  left: -8%;
+  top: 48%;
+  width: 30rem;
+  height: 30rem;
+  background: rgba(72, 129, 212, 0.14);
+  animation-delay: 9s;
+}
+
+.gear-float {
+  position: absolute;
+  aspect-ratio: 1;
+  background: url("./assets/gear-outline.svg") center / contain no-repeat;
+  opacity: 0.06;
+  animation: gearSpin 90s linear infinite;
+}
+
+.gear-float-one {
+  top: 16%;
+  right: -7rem;
+  width: 24rem;
+}
+
+.gear-float-two {
+  bottom: 6%;
+  left: -8rem;
+  width: 28rem;
+  animation-duration: 130s;
+  animation-direction: reverse;
+}
+
+.reveal-init {
+  opacity: 0;
+  transform: translateY(1.3rem);
+  transition: opacity 620ms ease, transform 620ms ease;
+}
+
+.reveal-init.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-init {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .gear-float {
+    animation: none;
+  }
+
+  .blob {
+    animation: none;
+  }
+}
+
+@keyframes gearSpin {
+  to {
+    rotate: 360deg;
+  }
+}
+
 .section,
 .hero-layout,
 .academic-topbar-inner,
@@ -121,15 +185,18 @@ main[id] {
 }
 
 #information {
-  width: 100%;
+  width: min(calc(100% - 1.5rem), calc(var(--max-width) + 8rem));
+  margin: 0.75rem auto 0;
   scroll-margin-top: 5.9rem;
-  padding: 5rem max(1rem, calc((100% - var(--max-width)) / 2)) 5.5rem;
+  padding: 4.5rem clamp(1.25rem, 5vw, 5rem) 5rem;
+  border-radius: clamp(1.5rem, 3vw, 2.4rem);
   background:
     radial-gradient(circle at 12% 38%, rgba(62, 139, 226, 0.62) 0 24rem, transparent 24.2rem),
     radial-gradient(circle at 88% 0%, rgba(69, 143, 231, 0.72) 0 17rem, transparent 17.2rem),
     linear-gradient(135deg, #327ed1 0%, #06487d 58%, #003c83 100%);
   color: #fff;
   overflow: hidden;
+  box-shadow: 0 1.4rem 3rem rgba(2, 20, 50, 0.2);
 }
 
 .academic-topbar {
@@ -395,23 +462,26 @@ body.menu-locked {
   position: relative;
   width: 100%;
   padding: calc(5.8rem + 4.4rem) 0 4rem;
-  background-color: var(--blue);
 }
 
 .hero-backdrop-track {
   position: absolute;
   inset: 0;
   z-index: 0;
+  padding: calc(5.6rem + 0.7rem) 0.75rem 0.75rem;
   pointer-events: none;
 }
 
 .hero-backdrop {
   width: 100%;
   height: 100%;
+  border-radius: 2rem;
+  background-color: var(--blue);
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  box-shadow: 0 1.4rem 3rem rgba(2, 20, 50, 0.22);
 }
 
 .hero-sticky {
@@ -1208,10 +1278,13 @@ body.menu-locked {
 }
 
 #partners {
-  width: 100%;
-  margin: 0;
-  padding: 5rem max(1rem, calc((100% - var(--max-width)) / 2));
+  width: min(calc(100% - 1.5rem), calc(var(--max-width) + 8rem));
+  margin: 0 auto;
+  padding: 4.5rem clamp(1.25rem, 5vw, 5rem);
+  border-radius: clamp(1.5rem, 3vw, 2.4rem);
   background: linear-gradient(135deg, var(--darkblue) 0%, #0b4f96 62%, var(--blue) 100%);
+  overflow: hidden;
+  box-shadow: 0 1.4rem 3rem rgba(2, 20, 50, 0.2);
 }
 
 #partners .section-head {
@@ -1805,12 +1878,17 @@ body.menu-locked {
 }
 
 .academic-footer {
-  width: 100%;
-  margin-top: 4rem;
-  padding: 3rem 0;
+  width: min(calc(100% - 1.5rem), calc(var(--max-width) + 8rem));
+  margin: 4rem auto 0.9rem;
+  padding: 3rem clamp(1.25rem, 4vw, 3.5rem);
   color: rgba(255, 255, 255, 0.82);
   background: var(--navy);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: clamp(1.5rem, 3vw, 2.2rem);
+  box-shadow: 0 1.2rem 2.6rem rgba(2, 20, 50, 0.18);
+}
+
+.academic-footer .academic-footer-inner {
+  width: 100%;
 }
 
 .academic-footer-inner {
@@ -2151,6 +2229,10 @@ body.menu-locked {
 
   .hero-section {
     min-height: 190vh;
+    padding: 0;
+  }
+
+  .hero-backdrop-track {
     padding: 0;
   }
 
