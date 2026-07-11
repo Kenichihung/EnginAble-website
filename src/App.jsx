@@ -3,6 +3,9 @@ import logo from "./assets/enginable-header-logo.png";
 import heroBackground from "./assets/hero-background.png";
 import earthTexture from "./assets/earth-day.jpg";
 import gearSpace from "./assets/gear-space.svg";
+import workWorkshop from "./assets/work-workshop-wide.jpg";
+import workHandsOn from "./assets/work-hands-on.jpg";
+import workTeaching from "./assets/work-teaching-group.jpg";
 import {
   contactCards,
   heroPhrasesMobile,
@@ -251,6 +254,27 @@ export default function App() {
 
     return () => window.removeEventListener("scroll", syncScrolledHeader);
   }, []);
+
+  useEffect(() => {
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const section = heroSectionRef.current;
+
+    if (!finePointer || prefersReducedMotion || !section) {
+      return undefined;
+    }
+
+    function trackPointer(event) {
+      const mx = (event.clientX / window.innerWidth - 0.5) * 2;
+      const my = (event.clientY / window.innerHeight - 0.5) * 2;
+      section.style.setProperty("--mx", mx.toFixed(3));
+      section.style.setProperty("--my", my.toFixed(3));
+    }
+
+    window.addEventListener("pointermove", trackPointer, { passive: true });
+
+    return () => window.removeEventListener("pointermove", trackPointer);
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1303,6 +1327,48 @@ export default function App() {
                 </div>
               </div>
 
+              <a
+                className={`intro-work-board ${heroProgress > 0.42 ? "is-gone" : ""}`}
+                href="#events"
+                aria-label="See our past events"
+              >
+                <span className="intro-work-tag">
+                  Our work in the field
+                  <svg className="intro-work-arrow" viewBox="0 0 90 60" aria-hidden="true">
+                    <path
+                      d="M6 8 C 30 18, 48 34, 66 46"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeDasharray="1 7"
+                    />
+                    <path
+                      d="M56 46 L 68 48 L 62 37"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <div className="intro-work-photos">
+                  <figure className="intro-photo intro-photo-one">
+                    <img src={workWorkshop} alt="Students building at an EnginAble workshop" />
+                    <figcaption>Workshops</figcaption>
+                  </figure>
+                  <figure className="intro-photo intro-photo-two">
+                    <img src={workHandsOn} alt="Hands-on engineering activity" />
+                    <figcaption>Hands-on</figcaption>
+                  </figure>
+                  <figure className="intro-photo intro-photo-three">
+                    <img src={workTeaching} alt="EnginAble team teaching a class" />
+                    <figcaption>Community</figcaption>
+                  </figure>
+                </div>
+              </a>
+
               <div className="intro-earth-scene" aria-hidden="true">
                 <div
                   className="intro-earth"
@@ -1318,7 +1384,8 @@ export default function App() {
               <div className="intro-earth-copy">
                 <p className="intro-eyebrow">From Jakarta to the world</p>
                 <h2 className="intro-earth-title">
-                  Born in Jakarta Selatan, Indonesia &mdash; built for young learners everywhere.
+                  Born in <span className="intro-hl-yellow">Jakarta Selatan</span>, Indonesia
+                  &mdash; built for <span className="intro-hl-gradient">young learners everywhere</span>.
                 </h2>
                 <p className="intro-earth-text">
                   Workshops, community projects, and educational resources that turn engineering
