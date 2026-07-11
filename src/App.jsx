@@ -140,6 +140,85 @@ function Icon({ name, className = "site-icon" }) {
   return icons[name] ?? null;
 }
 
+const IntroHeadline = React.memo(function IntroHeadline({ phrases }) {
+  const [typed, setTyped] = useState("");
+  const [index, setIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+  const [reservedHeight, setReservedHeight] = useState(0);
+  const measureRef = useRef(null);
+
+  useEffect(() => {
+    const currentPhrase = phrases[index];
+    const isPhraseComplete = typed === currentPhrase;
+    const isPhraseEmpty = typed === "";
+    let timeoutId;
+
+    if (!deleting && isPhraseComplete) {
+      timeoutId = window.setTimeout(() => {
+        setDeleting(true);
+      }, 3000);
+    } else if (deleting && isPhraseEmpty) {
+      timeoutId = window.setTimeout(() => {
+        setDeleting(false);
+        setIndex((current) => (current + 1) % phrases.length);
+      }, 250);
+    } else {
+      timeoutId = window.setTimeout(() => {
+        setTyped((current) =>
+          deleting
+            ? currentPhrase.slice(0, current.length - 1)
+            : currentPhrase.slice(0, current.length + 1),
+        );
+      }, deleting ? 18 : 34);
+    }
+
+    return () => window.clearTimeout(timeoutId);
+  }, [typed, index, deleting, phrases]);
+
+  useEffect(() => {
+    function measureHeadlineHeight() {
+      const measureElement = measureRef.current;
+
+      if (!measureElement) {
+        return;
+      }
+
+      let tallestHeight = 0;
+
+      phrases.forEach((phrase) => {
+        measureElement.textContent = phrase;
+        tallestHeight = Math.max(tallestHeight, measureElement.getBoundingClientRect().height);
+      });
+
+      measureElement.textContent = phrases[0];
+      setReservedHeight(Math.ceil(tallestHeight));
+    }
+
+    measureHeadlineHeight();
+    window.addEventListener("resize", measureHeadlineHeight);
+
+    return () => window.removeEventListener("resize", measureHeadlineHeight);
+  }, [phrases]);
+
+  return (
+    <>
+      <p className="intro-eyebrow">{index === 0 ? "Our Vision" : "Our Mission"}</p>
+      <h1
+        className="intro-headline typewriter-heading"
+        style={reservedHeight ? { minHeight: `${reservedHeight}px` } : undefined}
+      >
+        <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
+          {phrases[0]}
+        </span>
+        <span className="typewriter-live">
+          <span>{typed}</span>
+          <span className="typewriter-cursor" aria-hidden="true"></span>
+        </span>
+      </h1>
+    </>
+  );
+});
+
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("#information");
@@ -151,18 +230,15 @@ export default function App() {
   const [activePartnerPage, setActivePartnerPage] = useState(0);
   const [activeEventGallerySlide, setActiveEventGallerySlide] = useState(0);
   const [showUpcomingPopup, setShowUpcomingPopup] = useState(true);
-  const [typedHeadline, setTypedHeadline] = useState("");
-  const [headlineIndex, setHeadlineIndex] = useState(0);
-  const [isDeletingHeadline, setIsDeletingHeadline] = useState(false);
-  const [reservedHeadlineHeight, setReservedHeadlineHeight] = useState(0);
-  const [heroProgress, setHeroProgress] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const heroSectionRef = useRef(null);
+  const introCopyRef = useRef(null);
+  const workBoardRef = useRef(null);
+  const earthRef = useRef(null);
   const [articles, setArticles] = useState([]);
   const [articlesLoaded, setArticlesLoaded] = useState(false);
   const [pastEvents, setPastEvents] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(false);
-  const measureRef = useRef(null);
   const pendingNavRef = useRef(null);
   const navScrollTimeoutRef = useRef(null);
   const navScrollCleanupRef = useRef(null);
@@ -206,6 +282,10 @@ export default function App() {
     }
 
     const slideIntervalId = window.setInterval(() => {
+      if (window.matchMedia("(max-width: 860px)").matches) {
+        return;
+      }
+
       setActiveUpcomingSlide((current) => (current + 1) % upcomingEvents.length);
     }, 5000);
 
@@ -218,6 +298,10 @@ export default function App() {
     }
 
     const slideIntervalId = window.setInterval(() => {
+      if (window.matchMedia("(max-width: 860px)").matches) {
+        return;
+      }
+
       setActivePastSlide((current) => (current + 1) % pastEventArchive.length);
     }, 5000);
 
@@ -279,30 +363,33 @@ export default function App() {
     return () => window.removeEventListener("pointermove", trackPointer);
   }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
+  // Drives the whole intro cinematic with direct DOM writes so scrolling
+  // never re-renders the React tree (important for low-end devices).
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const section = heroSectionRef.current;
+
+    if (!section) {
+      return undefined;
+    }
 
     if (prefersReducedMotion) {
-      setHeroProgress(0);
+      section.style.setProperty("--p", "0");
       return undefined;
     }
 
     function updateHeroReveal() {
-      const section = heroSectionRef.current;
-
-      if (!section) {
-        return;
-      }
-
       const scrubRange = section.offsetHeight - window.innerHeight;
+      const progress =
+        scrubRange <= 0
+          ? 1
+          : Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrubRange));
 
-      if (scrubRange <= 0) {
-        setHeroProgress(1);
-        return;
-      }
+      section.style.setProperty("--p", progress.toFixed(3));
 
-      const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrubRange));
-      setHeroProgress(Math.round(progress * 200) / 200);
+      const isPastCopy = progress > 0.42;
+      introCopyRef.current?.classList.toggle("is-gone", isPastCopy);
+      workBoardRef.current?.classList.toggle("is-gone", isPastCopy);
     }
 
     updateHeroReveal();
@@ -315,58 +402,62 @@ export default function App() {
     };
   }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
+  // Drag the earth to spin it; it eases back home to Jakarta on release.
   useEffect(() => {
-    const currentPhrase = activeHeroPhrases[headlineIndex];
-    const isPhraseComplete = typedHeadline === currentPhrase;
-    const isPhraseEmpty = typedHeadline === "";
-    let timeoutId;
+    const earth = earthRef.current;
 
-    if (!isDeletingHeadline && isPhraseComplete) {
-      timeoutId = window.setTimeout(() => {
-        setIsDeletingHeadline(true);
-      }, 3000);
-    } else if (isDeletingHeadline && isPhraseEmpty) {
-      timeoutId = window.setTimeout(() => {
-        setIsDeletingHeadline(false);
-        setHeadlineIndex((current) => (current + 1) % activeHeroPhrases.length);
-      }, 250);
-    } else {
-      timeoutId = window.setTimeout(() => {
-        setTypedHeadline((current) =>
-          isDeletingHeadline
-            ? currentPhrase.slice(0, current.length - 1)
-            : currentPhrase.slice(0, current.length + 1),
-        );
-      }, isDeletingHeadline ? 18 : 34);
+    if (!earth) {
+      return undefined;
     }
 
-    return () => window.clearTimeout(timeoutId);
-  }, [typedHeadline, headlineIndex, isDeletingHeadline, activeHeroPhrases]);
+    let dragging = false;
+    let startX = 0;
 
-  useEffect(() => {
-    function measureHeadlineHeight() {
-      const measureElement = measureRef.current;
+    function onDown(event) {
+      dragging = true;
+      startX = event.clientX;
+      earth.classList.remove("is-settling");
+      earth.classList.add("is-grabbed");
 
-      if (!measureElement) {
+      try {
+        earth.setPointerCapture(event.pointerId);
+      } catch {
+        /* pointer capture is best-effort */
+      }
+    }
+
+    function onMove(event) {
+      if (!dragging) {
         return;
       }
 
-      let tallestHeight = 0;
-
-      activeHeroPhrases.forEach((phrase) => {
-        measureElement.textContent = phrase;
-        tallestHeight = Math.max(tallestHeight, measureElement.getBoundingClientRect().height);
-      });
-
-      measureElement.textContent = activeHeroPhrases[0];
-      setReservedHeadlineHeight(Math.ceil(tallestHeight));
+      earth.style.backgroundPositionX = `calc(96% + ${(event.clientX - startX) * 1.4}px)`;
     }
 
-    measureHeadlineHeight();
-    window.addEventListener("resize", measureHeadlineHeight);
+    function onUp() {
+      if (!dragging) {
+        return;
+      }
 
-    return () => window.removeEventListener("resize", measureHeadlineHeight);
-  }, [activeHeroPhrases]);
+      dragging = false;
+      earth.classList.remove("is-grabbed");
+      earth.classList.add("is-settling");
+      earth.style.backgroundPositionX = "96%";
+      window.setTimeout(() => earth.classList.remove("is-settling"), 750);
+    }
+
+    earth.addEventListener("pointerdown", onDown);
+    earth.addEventListener("pointermove", onMove);
+    earth.addEventListener("pointerup", onUp);
+    earth.addEventListener("pointercancel", onUp);
+
+    return () => {
+      earth.removeEventListener("pointerdown", onDown);
+      earth.removeEventListener("pointermove", onMove);
+      earth.removeEventListener("pointerup", onUp);
+      earth.removeEventListener("pointercancel", onUp);
+    };
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
   useEffect(() => {
     function syncRoutesFromHash() {
@@ -487,6 +578,33 @@ export default function App() {
     }
 
     setSlide((index + items.length) % items.length);
+  }
+
+  function syncSlideFromScroll(event, items, setSlide) {
+    const stage = event.currentTarget;
+    const maxScroll = stage.scrollWidth - stage.clientWidth;
+
+    if (maxScroll <= 0 || items.length < 2) {
+      return;
+    }
+
+    setSlide(Math.round((stage.scrollLeft / maxScroll) * (items.length - 1)));
+  }
+
+  function scrollStageToIndex(target, index, items) {
+    if (!window.matchMedia("(max-width: 860px)").matches) {
+      return;
+    }
+
+    const stage = target.closest(".events-carousel-block")?.querySelector(".carousel-stage");
+
+    if (!stage || items.length < 2) {
+      return;
+    }
+
+    const maxScroll = stage.scrollWidth - stage.clientWidth;
+    const wrappedIndex = (index + items.length) % items.length;
+    stage.scrollTo({ left: (wrappedIndex / (items.length - 1)) * maxScroll, behavior: "smooth" });
   }
 
   function goToEventGallerySlide(index, items) {
@@ -771,7 +889,10 @@ export default function App() {
             <Icon name="arrow_back" />
           </button>
 
-          <div className="carousel-stage">
+          <div
+            className="carousel-stage"
+            onScroll={(event) => syncSlideFromScroll(event, items, setSlide)}
+          >
             {items.map((eventItem, index) => (
               <article
                 key={eventItem.slug}
@@ -821,7 +942,10 @@ export default function App() {
               className={`dot ${index === activeIndex ? "active" : ""}`}
               type="button"
               aria-label={`${title} slide ${index + 1}`}
-              onClick={() => goToSlide(index, items, setSlide)}
+              onClick={(event) => {
+                goToSlide(index, items, setSlide);
+                scrollStageToIndex(event.currentTarget, index, items);
+              }}
             ></button>
           ))}
         </div>
@@ -1070,7 +1194,7 @@ export default function App() {
                       <div className="instagram-grid">
                         {activeArticle.instagramPosts.map((post) => (
                           <article key={post.url} className="glass-card instagram-card">
-                            <img src={post.image} alt={post.title} className="instagram-custom-image" />
+                            <img src={post.image} alt={post.title} className="instagram-custom-image" loading="lazy" decoding="async" />
                             <div className="instagram-caption-block">
                               {post.caption.split("\n\n").map((paragraph) => (
                                 <p key={paragraph}>{paragraph}</p>
@@ -1140,6 +1264,8 @@ export default function App() {
                                 src={galleryItem.image}
                                 alt={galleryItem.alt}
                                 className="event-gallery-image"
+                                loading="lazy"
+                                decoding="async"
                               />
                             </figure>
                           ))}
@@ -1205,7 +1331,7 @@ export default function App() {
                       <div className="instagram-grid">
                         {activeEvent.instagramPosts.map((post) => (
                           <article key={post.url} className="glass-card instagram-card">
-                            <img src={post.image} alt={post.title} className="instagram-custom-image" />
+                            <img src={post.image} alt={post.title} className="instagram-custom-image" loading="lazy" decoding="async" />
                             <div className="instagram-caption-block">
                               {post.caption.split("\n\n").map((paragraph) => (
                                 <p key={paragraph}>{paragraph}</p>
@@ -1274,7 +1400,7 @@ export default function App() {
                   >
                     <div className="article-image-frame">
                       <div className="article-image-tint"></div>
-                      <img src={card.image} alt={card.title} className="article-image" />
+                      <img src={card.image} alt={card.title} className="article-image" loading="lazy" decoding="async" />
                     </div>
                     <div className="article-copy">
                       <span className="article-category">{card.category}</span>
@@ -1289,7 +1415,7 @@ export default function App() {
         </main>
       ) : (
         <main id="home" className="page-main">
-          <section ref={heroSectionRef} className="space-intro" style={{ "--p": heroProgress }}>
+          <section ref={heroSectionRef} className="space-intro">
             <div className="space-intro-sticky">
               <div className="space-intro-dark" aria-hidden="true">
                 <div className="space-intro-stars"></div>
@@ -1310,24 +1436,12 @@ export default function App() {
                 <img src={gearSpace} alt="" className="intro-gear-spin intro-gear-spin-reverse" />
               </div>
 
-              <div className={`intro-copy ${heroProgress > 0.42 ? "is-gone" : ""}`}>
+              <div ref={introCopyRef} className="intro-copy">
                 <span className="intro-badge">
                   <span className="intro-badge-dot" aria-hidden="true"></span>
                   Youth-led &middot; Jakarta &rarr; the world
                 </span>
-                <p className="intro-eyebrow">{headlineIndex === 0 ? "Our Vision" : "Our Mission"}</p>
-                <h1
-                  className="intro-headline typewriter-heading"
-                  style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
-                >
-                  <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
-                    {activeHeroPhrases[0]}
-                  </span>
-                  <span className="typewriter-live">
-                    <span>{typedHeadline}</span>
-                    <span className="typewriter-cursor" aria-hidden="true"></span>
-                  </span>
-                </h1>
+                <IntroHeadline phrases={activeHeroPhrases} />
                 <p className="intro-description">{heroDescriptionText}</p>
                 <div className="intro-actions">
                   <a href="#events" className="intro-button-primary">
@@ -1340,7 +1454,8 @@ export default function App() {
               </div>
 
               <a
-                className={`intro-work-board ${heroProgress > 0.42 ? "is-gone" : ""}`}
+                ref={workBoardRef}
+                className="intro-work-board"
                 href="#events"
                 aria-label="See our past events"
               >
@@ -1383,6 +1498,7 @@ export default function App() {
 
               <div className="intro-earth-scene" aria-hidden="true">
                 <div
+                  ref={earthRef}
                   className="intro-earth"
                   style={{ backgroundImage: `url(${earthTexture})` }}
                 >
@@ -1419,6 +1535,8 @@ export default function App() {
                 src={heroBackground}
                 alt="EnginAble volunteers with students at a community workshop"
                 className="info-photo"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -1475,7 +1593,7 @@ export default function App() {
                 >
                   <div className="article-image-frame">
                     <div className="article-image-tint"></div>
-                    <img src={card.image} alt={card.title} className="article-image" />
+                    <img src={card.image} alt={card.title} className="article-image" loading="lazy" decoding="async" />
                   </div>
                   <div className="article-copy">
                     <span className="article-category">{card.category}</span>
@@ -1515,7 +1633,7 @@ export default function App() {
                     <div className="partner-logo-grid">
                       {page.logos.map((logo) => (
                         <article key={logo.name} className="partner-logo-item">
-                          <img src={logo.image} alt={logo.name} className="partner-logo-image" />
+                          <img src={logo.image} alt={logo.name} className="partner-logo-image" loading="lazy" decoding="async" />
                           <span>{logo.name}</span>
                         </article>
                       ))}
@@ -1591,7 +1709,7 @@ export default function App() {
       <footer className="academic-footer">
         <div className="academic-footer-inner">
           <div className="footer-brand">
-            <img src={logo} alt="EnginAble Global logo" className="footer-brand-logo" />
+            <img src={logo} alt="EnginAble Global logo" className="footer-brand-logo" loading="lazy" decoding="async" />
             <div>
               <div className="brand-wordmark brand-wordmark-footer">EnginAble Global</div>
               <p>Promoting engineering through information, stories, events, and partnerships.</p>
