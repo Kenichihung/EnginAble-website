@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=IBM+Plex+Serif:wght@500;600&family=Inter:wght@400;500;700&family=Quicksand:wght@500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700&display=swap");
 
 :root {
   --blue: #2f629f;
@@ -73,6 +73,17 @@ img {
   pointer-events: none;
 }
 
+.light-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(47, 98, 159, 0.065) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 98, 159, 0.065) 1px, transparent 1px);
+  background-size: 54px 54px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 34%, #000, transparent 80%);
+  mask-image: radial-gradient(ellipse at 50% 34%, #000, transparent 80%);
+}
+
 .blob {
   position: absolute;
   filter: blur(90px);
@@ -141,12 +152,53 @@ img {
 .reveal-init {
   opacity: 0;
   transform: translateY(1.3rem);
-  transition: opacity 620ms ease, transform 620ms ease;
+  transition: opacity 620ms ease, transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-init.is-revealed {
   opacity: 1;
   transform: none;
+}
+
+.feature-card-grid > .reveal-init:nth-child(2),
+.contact-grid > .reveal-init:nth-child(2) {
+  transition-delay: 110ms;
+}
+
+.feature-card-grid > .reveal-init:nth-child(3),
+.contact-grid > .reveal-init:nth-child(3) {
+  transition-delay: 220ms;
+}
+
+.intro-copy > * {
+  animation: introRise 850ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.intro-copy > .intro-eyebrow {
+  animation-delay: 140ms;
+}
+
+.intro-copy > .intro-headline {
+  animation-delay: 240ms;
+}
+
+.intro-copy > .intro-description {
+  animation-delay: 380ms;
+}
+
+.intro-copy > .intro-actions {
+  animation-delay: 520ms;
+}
+
+.intro-work-board .intro-work-photos {
+  animation: introRise 850ms cubic-bezier(0.16, 1, 0.3, 1) 700ms backwards;
+}
+
+@keyframes introRise {
+  from {
+    opacity: 0;
+    transform: translateY(1.1rem);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -161,6 +213,12 @@ img {
   }
 
   .blob {
+    animation: none;
+  }
+
+  .intro-copy > *,
+  .intro-work-board .intro-work-photos,
+  .academic-nav.is-open > a {
     animation: none;
   }
 }
@@ -219,6 +277,11 @@ main[id] {
   padding: 0.65rem 0.75rem 0;
 }
 
+.academic-topbar:not(.is-pill) .academic-topbar-inner {
+  width: calc(100% - 3rem);
+  max-width: none;
+}
+
 .academic-topbar-inner {
   transition: background 380ms ease, border-color 380ms ease, border-radius 380ms ease,
     min-height 380ms ease, box-shadow 380ms ease, width 380ms ease, padding 380ms ease;
@@ -272,13 +335,18 @@ main[id] {
 
 .topbar-back-slot {
   position: relative;
-  flex: 0 0 7.5rem;
-  width: 7.5rem;
+  flex: 0 0 auto;
+  width: 0;
   height: 3.15rem;
   opacity: 0;
   transform: translateX(-0.5rem);
   pointer-events: none;
-  transition: opacity 240ms ease, transform 240ms ease;
+  overflow: visible;
+  transition: opacity 240ms ease, transform 240ms ease, width 240ms ease;
+}
+
+.topbar-back-slot.is-visible {
+  width: 7.5rem;
 }
 
 .topbar-back-slot .back-button {
@@ -330,7 +398,9 @@ main[id] {
 }
 
 .brand-wordmark {
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
@@ -557,6 +627,46 @@ body.menu-locked {
   width: 38rem;
   height: 38rem;
   background: rgba(55, 139, 229, 0.26);
+}
+
+.intro-mosaic {
+  position: absolute;
+  inset: 0;
+}
+
+.intro-mosaic-img {
+  position: absolute;
+  object-fit: cover;
+  border-radius: 1.4rem;
+  filter: sepia(1) hue-rotate(185deg) saturate(2.4) brightness(0.52) contrast(1.08);
+  opacity: 0.5;
+  box-shadow: 0 1.5rem 3.5rem rgba(2, 6, 20, 0.5);
+  transform: translate(calc(var(--mx, 0) * 0.8vmin), calc(var(--my, 0) * 0.6vmin)) rotate(var(--tilt, 0deg));
+}
+
+.intro-mosaic-a {
+  --tilt: -8deg;
+  left: -4rem;
+  top: 16%;
+  width: clamp(13rem, 22vw, 21rem);
+  aspect-ratio: 4 / 5;
+}
+
+.intro-mosaic-b {
+  --tilt: 6deg;
+  right: 12%;
+  bottom: -6%;
+  width: clamp(14rem, 24vw, 23rem);
+  aspect-ratio: 4 / 3;
+}
+
+.intro-mosaic-c {
+  --tilt: 10deg;
+  left: 34%;
+  top: -8%;
+  width: clamp(11rem, 18vw, 18rem);
+  aspect-ratio: 1;
+  opacity: 0.34;
 }
 
 .intro-gear {
@@ -1069,7 +1179,23 @@ body.menu-locked {
 .partner-list-card h3,
 .icon-card h3,
 .contact-card-academic h3 {
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.section-eyebrow {
+  margin: 0 0 0.65rem;
+  color: var(--tertiary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+#information .section-eyebrow,
+#partners .section-eyebrow {
+  color: #9cc3ff;
 }
 
 .typewriter-heading {
@@ -1194,7 +1320,9 @@ body.menu-locked {
 
 .stat-number {
   margin-bottom: 0.5rem;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-size: 2.8rem;
   font-weight: 600;
   color: var(--darkblue);
@@ -1411,7 +1539,9 @@ body.menu-locked {
 
 .article-page-title {
   margin: 0;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1.12;
   color: var(--primary);
@@ -1619,7 +1749,9 @@ body.menu-locked {
 
 #information .section-head > .section-title {
   max-width: 54rem;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-weight: 600;
 }
 
@@ -1838,7 +1970,9 @@ body.menu-locked {
 
 #partners .section-title {
   color: #fff;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-size: clamp(2.1rem, 3.2vw, 3rem);
   font-weight: 600;
   letter-spacing: 0;
@@ -1974,7 +2108,9 @@ body.menu-locked {
 .partners-mini-card h3,
 .partners-type-card h3 {
   margin: 0;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--primary);
 }
 
@@ -2211,7 +2347,9 @@ body.menu-locked {
 
 .upcoming-popup-copy h2 {
   margin: 0;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.16;
   color: var(--primary);
@@ -2350,7 +2488,9 @@ body.menu-locked {
 
 .carousel-copy h3 {
   margin: 0;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-size: clamp(2rem, 3vw, 3rem);
   line-height: 1.18;
   color: var(--primary);
@@ -2601,36 +2741,46 @@ body.menu-locked {
 
   .academic-nav {
     position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+    top: calc(100% + 0.55rem);
+    left: 0.75rem;
+    right: 0.75rem;
     flex-direction: column;
     align-items: stretch;
-    gap: 0;
-    max-height: calc(100vh - 4.5rem);
+    gap: 0.15rem;
+    max-height: calc(100vh - 6rem);
     overflow-y: auto;
-    padding: 0.5rem 1.25rem 1.5rem;
-    background: linear-gradient(180deg, rgba(0, 60, 131, 0.98), rgba(4, 44, 94, 0.98));
-    box-shadow: 0 24px 44px rgba(2, 16, 40, 0.35);
+    padding: 0.8rem 0.8rem 0.95rem;
+    border-radius: 1.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(9, 14, 34, 0.78);
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    box-shadow: 0 1.6rem 3.2rem rgba(2, 6, 20, 0.55);
     opacity: 0;
-    transform: translateY(-0.6rem);
+    transform: translateY(-0.7rem) scale(0.97);
+    transform-origin: top center;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 240ms ease, transform 240ms ease, visibility 240ms;
+    transition: opacity 260ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1), visibility 260ms;
   }
 
   .academic-nav.is-open {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     visibility: visible;
     pointer-events: auto;
   }
 
   .academic-nav a:not(.nav-pill) {
-    padding: 1.05rem 0.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.95rem 1rem;
+    border-radius: 1.1rem;
     font-size: 0.86rem;
     letter-spacing: 0.12em;
+    transition: background 180ms ease, color 180ms ease;
+  }
+
+  .academic-nav a:not(.nav-pill):active {
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .academic-nav a:not(.nav-pill)::after {
@@ -2640,6 +2790,7 @@ body.menu-locked {
   .academic-nav a.is-active:not(.nav-pill) {
     color: #fff;
     font-weight: 700;
+    background: rgba(255, 255, 255, 0.09);
   }
 
   .academic-nav .nav-pill {
@@ -2650,11 +2801,36 @@ body.menu-locked {
   }
 
   .academic-nav .nav-pill-outline {
-    margin-top: 1.25rem;
+    margin-top: 0.9rem;
+    border-color: rgba(255, 255, 255, 0.22);
   }
 
   .academic-nav .nav-pill-solid {
-    margin-top: 0.75rem;
+    margin-top: 0.55rem;
+  }
+
+  .academic-nav.is-open > a {
+    animation: introRise 480ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  .academic-nav.is-open > a:nth-child(2) {
+    animation-delay: 45ms;
+  }
+
+  .academic-nav.is-open > a:nth-child(3) {
+    animation-delay: 90ms;
+  }
+
+  .academic-nav.is-open > a:nth-child(4) {
+    animation-delay: 135ms;
+  }
+
+  .academic-nav.is-open > a:nth-child(5) {
+    animation-delay: 180ms;
+  }
+
+  .academic-nav.is-open > a:nth-child(6) {
+    animation-delay: 225ms;
   }
 
   .program-grid,
@@ -2873,6 +3049,23 @@ body.menu-locked {
     top: 1.9rem;
     transform: translateX(-50%);
     font-size: 0.72rem;
+  }
+
+  .intro-mosaic-a {
+    left: -5rem;
+    top: 10%;
+    opacity: 0.32;
+  }
+
+  .intro-mosaic-b {
+    right: -4rem;
+    bottom: -10%;
+    width: 15rem;
+    opacity: 0.26;
+  }
+
+  .intro-mosaic-c {
+    display: none;
   }
 
   .info-photo {

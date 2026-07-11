@@ -6,6 +6,9 @@ import gearSpace from "./assets/gear-space.svg";
 import workWorkshop from "./assets/work-workshop-wide.jpg";
 import workHandsOn from "./assets/work-hands-on.jpg";
 import workTeaching from "./assets/work-teaching-group.jpg";
+import mosaicMentoring from "./assets/mosaic-mentoring.jpg";
+import mosaicCommunity from "./assets/mosaic-community-helping.jpg";
+import mosaicOverhead from "./assets/mosaic-activity-overhead.jpg";
 import {
   contactCards,
   heroPhrasesMobile,
@@ -752,7 +755,10 @@ export default function App() {
     return (
       <div className="events-carousel-block">
         <div className="section-head section-head-carousel">
-          <h2 className="section-title">{title}</h2>
+          <div>
+            <p className="section-eyebrow">What&apos;s happening</p>
+            <h2 className="section-title">{title}</h2>
+          </div>
         </div>
 
         <div className="carousel-shell">
@@ -826,6 +832,7 @@ export default function App() {
   return (
     <div className="academic-shell">
       <div className="academic-blobs" aria-hidden="true">
+        <div className="light-grid"></div>
         <div className="blob blob-one"></div>
         <div className="blob blob-two"></div>
         <div className="blob blob-three"></div>
@@ -1289,6 +1296,11 @@ export default function App() {
                 <div className="space-intro-grid"></div>
                 <div className="space-aurora space-aurora-one"></div>
                 <div className="space-aurora space-aurora-two"></div>
+                <div className="intro-mosaic">
+                  <img src={mosaicMentoring} alt="" className="intro-mosaic-img intro-mosaic-a" />
+                  <img src={mosaicCommunity} alt="" className="intro-mosaic-img intro-mosaic-b" />
+                  <img src={mosaicOverhead} alt="" className="intro-mosaic-img intro-mosaic-c" />
+                </div>
               </div>
 
               <div className="intro-gear intro-gear-one" aria-hidden="true">
@@ -1411,9 +1423,12 @@ export default function App() {
             </div>
 
             <div className="section-head">
-              <h2 className="section-title">
-                Clear pathways into EnginAble&apos;s mission, approach, and public value.
-              </h2>
+              <div>
+                <p className="section-eyebrow">Who we are</p>
+                <h2 className="section-title">
+                  Clear pathways into EnginAble&apos;s mission, approach, and public value.
+                </h2>
+              </div>
             </div>
 
             <div className="editorial-grid">
@@ -1434,7 +1449,10 @@ export default function App() {
 
           <section id="articles" className="section section-wide">
             <div className="section-head">
-              <h2 className="section-title">Articles</h2>
+              <div>
+                <p className="section-eyebrow">Read &amp; learn</p>
+                <h2 className="section-title">Articles</h2>
+              </div>
               <a href="#articles/all" className="section-link" onClick={openAllArticlesPage}>
                 View All
               </a>
@@ -1476,9 +1494,12 @@ export default function App() {
 
           <section id="partners" className="section">
             <div className="section-head">
-              <h2 className="section-title">
-                Our Partners and Collaborators
-              </h2>
+              <div>
+                <p className="section-eyebrow">Side by side</p>
+                <h2 className="section-title">
+                  Our Partners and Collaborators
+                </h2>
+              </div>
             </div>
 
             <div className="partner-portfolio">
@@ -1538,6 +1559,7 @@ export default function App() {
           </section>
 
           <section id="contact" className="section section-centered">
+            <p className="section-eyebrow">Get in touch</p>
             <h2 className="section-title section-title-centered">
               Start a conversation about content, events, or collaboration.
             </h2>
