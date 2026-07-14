@@ -402,6 +402,49 @@ export default function App() {
     };
   }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
+  // Pointer-follow tilt + glow for cards marked data-tilt (fine pointers only).
+  useEffect(() => {
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!finePointer || prefersReducedMotion) {
+      return undefined;
+    }
+
+    function onTiltMove(event) {
+      const card = event.target.closest?.("[data-tilt]");
+
+      if (!card) {
+        return;
+      }
+
+      const rect = card.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width;
+      const py = (event.clientY - rect.top) / rect.height;
+      card.style.setProperty("--tilt-x", `${((py - 0.5) * -7).toFixed(2)}deg`);
+      card.style.setProperty("--tilt-y", `${((px - 0.5) * 9).toFixed(2)}deg`);
+      card.style.setProperty("--glow-x", `${(px * 100).toFixed(1)}%`);
+      card.style.setProperty("--glow-y", `${(py * 100).toFixed(1)}%`);
+    }
+
+    function onTiltLeave(event) {
+      const card = event.target.closest?.("[data-tilt]");
+
+      if (card && !card.contains(event.relatedTarget)) {
+        card.style.setProperty("--tilt-x", "0deg");
+        card.style.setProperty("--tilt-y", "0deg");
+      }
+    }
+
+    document.addEventListener("pointermove", onTiltMove, { passive: true });
+    document.addEventListener("pointerout", onTiltLeave, { passive: true });
+
+    return () => {
+      document.removeEventListener("pointermove", onTiltMove);
+      document.removeEventListener("pointerout", onTiltLeave);
+    };
+  }, []);
+
   // Drag the earth to spin it; it eases back home to Jakarta on release.
   useEffect(() => {
     const earth = earthRef.current;
@@ -897,6 +940,7 @@ export default function App() {
               <article
                 key={eventItem.slug}
                 className={`carousel-panel ${index === activeIndex ? "active" : ""}`}
+                data-tilt="true"
                 onClick={() => openEvent(eventItem.slug)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -1388,6 +1432,7 @@ export default function App() {
                   <article
                     key={card.slug}
                     className="glass-card article-card article-card-hover"
+                    data-tilt="true"
                     onClick={() => openArticle(card.slug)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
@@ -1565,6 +1610,25 @@ export default function App() {
             </div>
           </section>
 
+          <div className="marquee" aria-hidden="true">
+            <div className="marquee-track">
+              {[0, 1].map((copy) => (
+                <React.Fragment key={copy}>
+                  <span>Hands-on workshops</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>Community outreach</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>Creative learning</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>Jakarta &rarr; the world</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>STEM for everyone</span>
+                  <span className="marquee-star">&#10038;</span>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
           <section id="articles" className="section section-wide">
             <div className="section-head">
               <div>
@@ -1581,6 +1645,7 @@ export default function App() {
                 <article
                   key={card.slug}
                   className="glass-card article-card article-card-hover"
+                  data-tilt="true"
                   onClick={() => openArticle(card.slug)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
@@ -1683,7 +1748,7 @@ export default function App() {
             </h2>
             <div className="contact-grid">
               {contactCards.map((card) => (
-                <article key={card.title} className="glass-card contact-card-academic">
+                <article key={card.title} className="glass-card contact-card-academic" data-tilt="true">
                   <div className="icon-badge">
                     <Icon name={card.icon} />
                   </div>
