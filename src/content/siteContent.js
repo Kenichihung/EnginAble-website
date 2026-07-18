@@ -58,14 +58,20 @@ export const slides = [
 export const infoBlocks = [
   {
     title: "Who We Are",
+    summary:
+      "EnginAble is a team of students passionate about engineering, education, and community impact.",
     text: "EnginAble is a team of students passionate about engineering, education, and community impact. We are driven by the belief that young people should have the opportunity to explore STEM beyond the classroom, regardless of their background or access to resources. As students ourselves, we understand how powerful it can be to learn through curiosity, creativity, and hands-on experiences. EnginAble was created to share that opportunity with more children and communities.",
   },
   {
     title: "What We Do",
+    summary:
+      "EnginAble designs and leads interactive engineering-based workshops for children and young students.",
     text: "EnginAble designs and leads interactive engineering-based workshops for children and young students. Our activities turn complex engineering concepts into simple, engaging, and practical challenges, such as building structures, exploring energy systems, designing solutions, and understanding how technology affects everyday life. We also collaborate with schools, orphanages, community centers, and other organizations to bring accessible STEM learning to more students. Beyond workshops, EnginAble creates educational materials and projects that connect engineering with real social and environmental issues.",
   },
   {
     title: "Why It Matters",
+    summary:
+      "EnginAble started in Indonesia — and grew into a mindset: engineering as a way to understand problems and design better solutions.",
     text: "EnginAble started in Indonesia, a country where young people grow up surrounded by real challenges that require creative and practical problem-solving. These issues are not unique to Indonesia, but they shaped the way we see engineering: not just as a career path, but as a mindset for understanding problems and designing better solutions. Around the world, communities need people who can think critically, build creatively, test ideas, and improve what already exists. Yet for many students, engineering is introduced too late, too theoretically, or in a way that feels disconnected from everyday life. EnginAble exists to change that. By making engineering hands-on, accessible, and connected to real-world issues, we help young learners see STEM as something they can use to understand the world around them and create meaningful change.",
   },
 ];

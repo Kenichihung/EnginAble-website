@@ -195,6 +195,10 @@ const IntroHeadline = React.memo(function IntroHeadline({ phrases }) {
     }
 
     measureHeadlineHeight();
+    // Re-measure once webfonts arrive - Inter 800 is wider than the
+    // fallback font, and measuring too early made the headline overlap
+    // the paragraph below it on slow connections.
+    document.fonts?.ready?.then(measureHeadlineHeight);
     window.addEventListener("resize", measureHeadlineHeight);
 
     return () => window.removeEventListener("resize", measureHeadlineHeight);
@@ -401,6 +405,36 @@ export default function App() {
       window.removeEventListener("resize", updateHeroReveal);
     };
   }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
+
+  // One sliding underline that glides between the active desktop nav links
+  // instead of each link's own underline popping in and out.
+  useEffect(() => {
+    function positionNavUnderline() {
+      const nav = document.querySelector(".academic-nav");
+      const underline = nav?.querySelector(".nav-underline");
+
+      if (!nav || !underline) {
+        return;
+      }
+
+      const active = nav.querySelector("a.is-active:not(.nav-pill)");
+
+      if (!active || window.matchMedia("(max-width: 860px)").matches) {
+        underline.style.opacity = "0";
+        return;
+      }
+
+      underline.style.opacity = "1";
+      underline.style.top = `${active.offsetTop + active.offsetHeight + 5}px`;
+      underline.style.transform = `translateX(${active.offsetLeft}px)`;
+      underline.style.width = `${active.offsetWidth}px`;
+    }
+
+    positionNavUnderline();
+    window.addEventListener("resize", positionNavUnderline);
+
+    return () => window.removeEventListener("resize", positionNavUnderline);
+  }, [activeNav, activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
   // Pointer-follow tilt + glow for cards marked data-tilt (fine pointers only).
   useEffect(() => {
@@ -1152,6 +1186,7 @@ export default function App() {
             ></div>
 
             <nav id="site-navigation" className={`academic-nav ${menuOpen ? "is-open" : ""}`}>
+              <span className="nav-underline" aria-hidden="true"></span>
               {navItems.map((item) => (
                 <a
                   key={item.href}
@@ -1482,10 +1517,6 @@ export default function App() {
               </div>
 
               <div ref={introCopyRef} className="intro-copy">
-                <span className="intro-badge">
-                  <span className="intro-badge-dot" aria-hidden="true"></span>
-                  Youth-led &middot; Jakarta &rarr; the world
-                </span>
                 <IntroHeadline phrases={activeHeroPhrases} />
                 <p className="intro-description">{heroDescriptionText}</p>
                 <div className="intro-actions">
@@ -1602,12 +1633,19 @@ export default function App() {
                       <span className="editorial-title-script">{block.title.charAt(0)}</span>
                       <span>{block.title.slice(1)}</span>
                     </h2>
-                    <p>{block.text}</p>
+                    <p>{block.summary}</p>
                   </article>
                 ))}
               </div>
-
             </div>
+
+            <a
+              href="#about"
+              className="secondary-button info-more-button"
+              onClick={(event) => scrollToSection(event, "#about")}
+            >
+              Learn more about us
+            </a>
           </section>
 
           <div className="marquee" aria-hidden="true">
@@ -1738,6 +1776,27 @@ export default function App() {
                   <Icon name="arrow_forward" className="site-icon site-icon-small" />
                 </button>
               </div>
+            </div>
+          </section>
+
+          <section id="about" className="section section-wide">
+            <div className="section-head">
+              <div>
+                <p className="section-eyebrow">The full story</p>
+                <h2 className="section-title">More about EnginAble</h2>
+              </div>
+            </div>
+
+            <div className="about-full-grid">
+              {infoBlocks.map((block) => (
+                <article key={block.title} className="glass-card about-full-card" data-tilt="true">
+                  <h3>
+                    <span className="editorial-title-script">{block.title.charAt(0)}</span>
+                    <span>{block.title.slice(1)}</span>
+                  </h3>
+                  <p>{block.text}</p>
+                </article>
+              ))}
             </div>
           </section>
 
