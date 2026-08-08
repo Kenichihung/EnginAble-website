@@ -1,15 +1,26 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import logo from "./assets/enginable-header-logo.png";
 import heroBackground from "./assets/hero-background.png";
+import earthTexture from "./assets/earth-day.jpg";
+import gearSpace from "./assets/gear-space.svg";
+import workWorkshop from "./assets/work-workshop-wide.jpg";
+import workHandsOn from "./assets/work-hands-on.jpg";
+import workTeaching from "./assets/work-teaching-group.jpg";
+import mosaicMentoring from "./assets/mosaic-mentoring.jpg";
+import mosaicCommunity from "./assets/mosaic-community-helping.jpg";
+import mosaicOverhead from "./assets/mosaic-activity-overhead.jpg";
 import {
   contactCards,
-  heroPhrases,
+  heroPhrasesMobile,
   infoBlocks,
   navItems,
   partnerLogoPages,
 } from "./content/siteContent";
 import { articleRepository } from "./lib/articleRepository";
 import { eventRepository } from "./lib/eventRepository";
+
+const heroDescriptionText =
+  "EnginAble is a youth-led organization dedicated to making engineering education more accessible, creative, and meaningful for young learners. Through hands-on workshops, community projects, and educational resources, we introduce students to engineering as a way to solve real-world problems and create a positive change. We believe engineering should not feel distant, intimidating, or limited to textbooks. Instead, it should be something students can experience, question, build, and use to understand the world around them.";
 
 function readArticleSlugFromHash() {
   const hash = window.location.hash || "";
@@ -129,6 +140,89 @@ function Icon({ name, className = "site-icon" }) {
   return icons[name] ?? null;
 }
 
+const IntroHeadline = React.memo(function IntroHeadline({ phrases }) {
+  const [typed, setTyped] = useState("");
+  const [index, setIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+  const [reservedHeight, setReservedHeight] = useState(0);
+  const measureRef = useRef(null);
+
+  useEffect(() => {
+    const currentPhrase = phrases[index];
+    const isPhraseComplete = typed === currentPhrase;
+    const isPhraseEmpty = typed === "";
+    let timeoutId;
+
+    if (!deleting && isPhraseComplete) {
+      timeoutId = window.setTimeout(() => {
+        setDeleting(true);
+      }, 3000);
+    } else if (deleting && isPhraseEmpty) {
+      timeoutId = window.setTimeout(() => {
+        setDeleting(false);
+        setIndex((current) => (current + 1) % phrases.length);
+      }, 250);
+    } else {
+      timeoutId = window.setTimeout(() => {
+        setTyped((current) =>
+          deleting
+            ? currentPhrase.slice(0, current.length - 1)
+            : currentPhrase.slice(0, current.length + 1),
+        );
+      }, deleting ? 18 : 34);
+    }
+
+    return () => window.clearTimeout(timeoutId);
+  }, [typed, index, deleting, phrases]);
+
+  useEffect(() => {
+    function measureHeadlineHeight() {
+      const measureElement = measureRef.current;
+
+      if (!measureElement) {
+        return;
+      }
+
+      let tallestHeight = 0;
+
+      phrases.forEach((phrase) => {
+        measureElement.textContent = phrase;
+        tallestHeight = Math.max(tallestHeight, measureElement.getBoundingClientRect().height);
+      });
+
+      measureElement.textContent = phrases[0];
+      setReservedHeight(Math.ceil(tallestHeight));
+    }
+
+    measureHeadlineHeight();
+    // Re-measure once webfonts arrive - Inter 800 is wider than the
+    // fallback font, and measuring too early made the headline overlap
+    // the paragraph below it on slow connections.
+    document.fonts?.ready?.then(measureHeadlineHeight);
+    window.addEventListener("resize", measureHeadlineHeight);
+
+    return () => window.removeEventListener("resize", measureHeadlineHeight);
+  }, [phrases]);
+
+  return (
+    <>
+      <p className="intro-eyebrow">{index === 0 ? "Our Vision" : "Our Mission"}</p>
+      <h1
+        className="intro-headline typewriter-heading"
+        style={reservedHeight ? { minHeight: `${reservedHeight}px` } : undefined}
+      >
+        <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
+          {phrases[0]}
+        </span>
+        <span className="typewriter-live">
+          <span>{typed}</span>
+          <span className="typewriter-cursor" aria-hidden="true"></span>
+        </span>
+      </h1>
+    </>
+  );
+});
+
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("#information");
@@ -139,16 +233,15 @@ export default function App() {
   const [activePastSlide, setActivePastSlide] = useState(0);
   const [activePartnerPage, setActivePartnerPage] = useState(0);
   const [activeEventGallerySlide, setActiveEventGallerySlide] = useState(0);
-  const [showUpcomingPopup, setShowUpcomingPopup] = useState(true);
-  const [typedHeadline, setTypedHeadline] = useState("");
-  const [headlineIndex, setHeadlineIndex] = useState(0);
-  const [isDeletingHeadline, setIsDeletingHeadline] = useState(false);
-  const [reservedHeadlineHeight, setReservedHeadlineHeight] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const heroSectionRef = useRef(null);
+  const introCopyRef = useRef(null);
+  const workBoardRef = useRef(null);
+  const earthRef = useRef(null);
   const [articles, setArticles] = useState([]);
   const [articlesLoaded, setArticlesLoaded] = useState(false);
   const [pastEvents, setPastEvents] = useState([]);
   const [eventsLoaded, setEventsLoaded] = useState(false);
-  const measureRef = useRef(null);
   const pendingNavRef = useRef(null);
   const navScrollTimeoutRef = useRef(null);
   const navScrollCleanupRef = useRef(null);
@@ -192,6 +285,10 @@ export default function App() {
     }
 
     const slideIntervalId = window.setInterval(() => {
+      if (window.matchMedia("(max-width: 860px)").matches) {
+        return;
+      }
+
       setActiveUpcomingSlide((current) => (current + 1) % upcomingEvents.length);
     }, 5000);
 
@@ -204,6 +301,10 @@ export default function App() {
     }
 
     const slideIntervalId = window.setInterval(() => {
+      if (window.matchMedia("(max-width: 860px)").matches) {
+        return;
+      }
+
       setActivePastSlide((current) => (current + 1) % pastEventArchive.length);
     }, 5000);
 
@@ -229,58 +330,210 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const currentPhrase = heroPhrases[headlineIndex];
-    const isPhraseComplete = typedHeadline === currentPhrase;
-    const isPhraseEmpty = typedHeadline === "";
-    let timeoutId;
+  // The space intro uses the short phrases at every size; the long
+  // originals live on in the intro description paragraph.
+  const activeHeroPhrases = heroPhrasesMobile;
 
-    if (!isDeletingHeadline && isPhraseComplete) {
-      timeoutId = window.setTimeout(() => {
-        setIsDeletingHeadline(true);
-      }, 3000);
-    } else if (isDeletingHeadline && isPhraseEmpty) {
-      timeoutId = window.setTimeout(() => {
-        setIsDeletingHeadline(false);
-        setHeadlineIndex((current) => (current + 1) % heroPhrases.length);
-      }, 250);
-    } else {
-      timeoutId = window.setTimeout(() => {
-        setTypedHeadline((current) =>
-          isDeletingHeadline
-            ? currentPhrase.slice(0, current.length - 1)
-            : currentPhrase.slice(0, current.length + 1),
-        );
-      }, isDeletingHeadline ? 18 : 34);
+  useEffect(() => {
+    function syncScrolledHeader() {
+      setIsScrolled(window.scrollY > 28);
     }
 
-    return () => window.clearTimeout(timeoutId);
-  }, [typedHeadline, headlineIndex, isDeletingHeadline]);
+    syncScrolledHeader();
+    window.addEventListener("scroll", syncScrolledHeader, { passive: true });
+
+    return () => window.removeEventListener("scroll", syncScrolledHeader);
+  }, []);
 
   useEffect(() => {
-    function measureHeadlineHeight() {
-      const measureElement = measureRef.current;
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const section = heroSectionRef.current;
 
-      if (!measureElement) {
+    if (!finePointer || prefersReducedMotion || !section) {
+      return undefined;
+    }
+
+    function trackPointer(event) {
+      const mx = (event.clientX / window.innerWidth - 0.5) * 2;
+      const my = (event.clientY / window.innerHeight - 0.5) * 2;
+      section.style.setProperty("--mx", mx.toFixed(3));
+      section.style.setProperty("--my", my.toFixed(3));
+    }
+
+    window.addEventListener("pointermove", trackPointer, { passive: true });
+
+    return () => window.removeEventListener("pointermove", trackPointer);
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
+
+  // Drives the whole intro cinematic with direct DOM writes so scrolling
+  // never re-renders the React tree (important for low-end devices).
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const section = heroSectionRef.current;
+
+    if (!section) {
+      return undefined;
+    }
+
+    if (prefersReducedMotion) {
+      section.style.setProperty("--p", "0");
+      return undefined;
+    }
+
+    function updateHeroReveal() {
+      const scrubRange = section.offsetHeight - window.innerHeight;
+      const progress =
+        scrubRange <= 0
+          ? 1
+          : Math.min(1, Math.max(0, -section.getBoundingClientRect().top / scrubRange));
+
+      section.style.setProperty("--p", progress.toFixed(3));
+
+      const isPastCopy = progress > 0.42;
+      introCopyRef.current?.classList.toggle("is-gone", isPastCopy);
+      workBoardRef.current?.classList.toggle("is-gone", isPastCopy);
+    }
+
+    updateHeroReveal();
+    window.addEventListener("scroll", updateHeroReveal, { passive: true });
+    window.addEventListener("resize", updateHeroReveal);
+
+    return () => {
+      window.removeEventListener("scroll", updateHeroReveal);
+      window.removeEventListener("resize", updateHeroReveal);
+    };
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
+
+  // One sliding underline that glides between the active desktop nav links
+  // instead of each link's own underline popping in and out.
+  useEffect(() => {
+    function positionNavUnderline() {
+      const nav = document.querySelector(".academic-nav");
+      const underline = nav?.querySelector(".nav-underline");
+
+      if (!nav || !underline) {
         return;
       }
 
-      let tallestHeight = 0;
+      const active = nav.querySelector("a.is-active:not(.nav-pill)");
 
-      heroPhrases.forEach((phrase) => {
-        measureElement.textContent = phrase;
-        tallestHeight = Math.max(tallestHeight, measureElement.getBoundingClientRect().height);
-      });
+      if (!active || window.matchMedia("(max-width: 860px)").matches) {
+        underline.style.opacity = "0";
+        return;
+      }
 
-      measureElement.textContent = heroPhrases[0];
-      setReservedHeadlineHeight(Math.ceil(tallestHeight));
+      underline.style.opacity = "1";
+      underline.style.top = `${active.offsetTop + active.offsetHeight + 5}px`;
+      underline.style.transform = `translateX(${active.offsetLeft}px)`;
+      underline.style.width = `${active.offsetWidth}px`;
     }
 
-    measureHeadlineHeight();
-    window.addEventListener("resize", measureHeadlineHeight);
+    positionNavUnderline();
+    window.addEventListener("resize", positionNavUnderline);
 
-    return () => window.removeEventListener("resize", measureHeadlineHeight);
+    return () => window.removeEventListener("resize", positionNavUnderline);
+  }, [activeNav, activeArticleSlug, activeEventSlug, showAllArticlesPage]);
+
+  // Pointer-follow tilt + glow for cards marked data-tilt (fine pointers only).
+  useEffect(() => {
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!finePointer || prefersReducedMotion) {
+      return undefined;
+    }
+
+    function onTiltMove(event) {
+      const card = event.target.closest?.("[data-tilt]");
+
+      if (!card) {
+        return;
+      }
+
+      const rect = card.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width;
+      const py = (event.clientY - rect.top) / rect.height;
+      card.style.setProperty("--tilt-x", `${((py - 0.5) * -7).toFixed(2)}deg`);
+      card.style.setProperty("--tilt-y", `${((px - 0.5) * 9).toFixed(2)}deg`);
+      card.style.setProperty("--glow-x", `${(px * 100).toFixed(1)}%`);
+      card.style.setProperty("--glow-y", `${(py * 100).toFixed(1)}%`);
+    }
+
+    function onTiltLeave(event) {
+      const card = event.target.closest?.("[data-tilt]");
+
+      if (card && !card.contains(event.relatedTarget)) {
+        card.style.setProperty("--tilt-x", "0deg");
+        card.style.setProperty("--tilt-y", "0deg");
+      }
+    }
+
+    document.addEventListener("pointermove", onTiltMove, { passive: true });
+    document.addEventListener("pointerout", onTiltLeave, { passive: true });
+
+    return () => {
+      document.removeEventListener("pointermove", onTiltMove);
+      document.removeEventListener("pointerout", onTiltLeave);
+    };
   }, []);
+
+  // Drag the earth to spin it; it eases back home to Jakarta on release.
+  useEffect(() => {
+    const earth = earthRef.current;
+
+    if (!earth) {
+      return undefined;
+    }
+
+    let dragging = false;
+    let startX = 0;
+
+    function onDown(event) {
+      dragging = true;
+      startX = event.clientX;
+      earth.classList.remove("is-settling");
+      earth.classList.add("is-grabbed");
+
+      try {
+        earth.setPointerCapture(event.pointerId);
+      } catch {
+        /* pointer capture is best-effort */
+      }
+    }
+
+    function onMove(event) {
+      if (!dragging) {
+        return;
+      }
+
+      earth.style.backgroundPositionX = `calc(96% + ${(event.clientX - startX) * 1.4}px)`;
+    }
+
+    function onUp() {
+      if (!dragging) {
+        return;
+      }
+
+      dragging = false;
+      earth.classList.remove("is-grabbed");
+      earth.classList.add("is-settling");
+      earth.style.backgroundPositionX = "96%";
+      window.setTimeout(() => earth.classList.remove("is-settling"), 750);
+    }
+
+    earth.addEventListener("pointerdown", onDown);
+    earth.addEventListener("pointermove", onMove);
+    earth.addEventListener("pointerup", onUp);
+    earth.addEventListener("pointercancel", onUp);
+
+    return () => {
+      earth.removeEventListener("pointerdown", onDown);
+      earth.removeEventListener("pointermove", onMove);
+      earth.removeEventListener("pointerup", onUp);
+      earth.removeEventListener("pointercancel", onUp);
+    };
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage]);
 
   useEffect(() => {
     function syncRoutesFromHash() {
@@ -401,6 +654,33 @@ export default function App() {
     }
 
     setSlide((index + items.length) % items.length);
+  }
+
+  function syncSlideFromScroll(event, items, setSlide) {
+    const stage = event.currentTarget;
+    const maxScroll = stage.scrollWidth - stage.clientWidth;
+
+    if (maxScroll <= 0 || items.length < 2) {
+      return;
+    }
+
+    setSlide(Math.round((stage.scrollLeft / maxScroll) * (items.length - 1)));
+  }
+
+  function scrollStageToIndex(target, index, items) {
+    if (!window.matchMedia("(max-width: 860px)").matches) {
+      return;
+    }
+
+    const stage = target.closest(".events-carousel-block")?.querySelector(".carousel-stage");
+
+    if (!stage || items.length < 2) {
+      return;
+    }
+
+    const maxScroll = stage.scrollWidth - stage.clientWidth;
+    const wrappedIndex = (index + items.length) % items.length;
+    stage.scrollTo({ left: (wrappedIndex / (items.length - 1)) * maxScroll, behavior: "smooth" });
   }
 
   function goToEventGallerySlide(index, items) {
@@ -579,28 +859,66 @@ export default function App() {
   const activeArticle = articles.find((card) => card.slug === activeArticleSlug) ?? null;
   const activeEvent = activeEventPreview;
   const latestArticles = articles.slice(0, 3);
-  const activeUpcomingEvent = upcomingEvents[activeUpcomingSlide] ?? upcomingEvents[0] ?? null;
   const hasDetailTopbar = isArticleRoute || isEventRoute || showAllArticlesPage;
-  const shouldShowUpcomingPopup =
-    showUpcomingPopup && !isArticleRoute && !isEventRoute && !showAllArticlesPage && Boolean(activeUpcomingEvent);
 
   useEffect(() => {
-    if (!shouldShowUpcomingPopup) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return undefined;
     }
 
-    function handleUpcomingPopupEscape(event) {
-      if (event.key !== "Escape") {
-        return;
-      }
+    const revealSelectors = [
+      ".section-head",
+      ".editorial-text-block",
+      ".article-card",
+      ".events-carousel-block",
+      ".partner-portfolio",
+      ".contact-card-academic",
+      ".instagram-card",
+      ".article-page-hero",
+      ".article-page-card",
+    ].join(", ");
+    const revealTargets = [...document.querySelectorAll(revealSelectors)];
 
-      setShowUpcomingPopup(false);
+    revealTargets.forEach((target) => target.classList.add("reveal-init"));
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -6% 0px" },
+    );
+
+    revealTargets.forEach((target) => revealObserver.observe(target));
+
+    return () => revealObserver.disconnect();
+  }, [activeArticleSlug, activeEventSlug, showAllArticlesPage, articlesLoaded, eventsLoaded]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return undefined;
     }
 
-    window.addEventListener("keydown", handleUpcomingPopupEscape);
+    const mobileNavQuery = window.matchMedia("(max-width: 860px)");
 
-    return () => window.removeEventListener("keydown", handleUpcomingPopupEscape);
-  }, [shouldShowUpcomingPopup]);
+    function closeMenuOnDesktop(event) {
+      if (!event.matches) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.body.classList.add("menu-locked");
+    mobileNavQuery.addEventListener("change", closeMenuOnDesktop);
+
+    return () => {
+      document.body.classList.remove("menu-locked");
+      mobileNavQuery.removeEventListener("change", closeMenuOnDesktop);
+    };
+  }, [menuOpen]);
 
   function renderEventCarousel(title, items, activeIndex, setSlide) {
     if (!items.length) {
@@ -610,7 +928,10 @@ export default function App() {
     return (
       <div className="events-carousel-block">
         <div className="section-head section-head-carousel">
-          <h2 className="section-title">{title}</h2>
+          <div>
+            <p className="section-eyebrow">What&apos;s happening</p>
+            <h2 className="section-title">{title}</h2>
+          </div>
         </div>
 
         <div className="carousel-shell">
@@ -623,11 +944,15 @@ export default function App() {
             <Icon name="arrow_back" />
           </button>
 
-          <div className="carousel-stage">
+          <div
+            className="carousel-stage"
+            onScroll={(event) => syncSlideFromScroll(event, items, setSlide)}
+          >
             {items.map((eventItem, index) => (
               <article
                 key={eventItem.slug}
                 className={`carousel-panel ${index === activeIndex ? "active" : ""}`}
+                data-tilt="true"
                 onClick={() => openEvent(eventItem.slug)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -673,7 +998,10 @@ export default function App() {
               className={`dot ${index === activeIndex ? "active" : ""}`}
               type="button"
               aria-label={`${title} slide ${index + 1}`}
-              onClick={() => goToSlide(index, items, setSlide)}
+              onClick={(event) => {
+                goToSlide(index, items, setSlide);
+                scrollStageToIndex(event.currentTarget, index, items);
+              }}
             ></button>
           ))}
         </div>
@@ -684,99 +1012,16 @@ export default function App() {
   return (
     <div className="academic-shell">
       <div className="academic-blobs" aria-hidden="true">
+        <div className="light-grid"></div>
         <div className="blob blob-one"></div>
         <div className="blob blob-two"></div>
         <div className="blob blob-three"></div>
+        <div className="blob blob-four"></div>
+        <div className="gear-float gear-float-one"></div>
+        <div className="gear-float gear-float-two"></div>
       </div>
 
-      {shouldShowUpcomingPopup ? (
-        <div className="upcoming-popup-backdrop" role="presentation">
-          <aside
-            className="upcoming-popup"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="upcoming-popup-title"
-          >
-            <button
-              type="button"
-              className="upcoming-popup-close"
-              aria-label="Close upcoming event popup"
-              onClick={() => setShowUpcomingPopup(false)}
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-
-            <div className="upcoming-popup-media-wrap">
-              <img
-                src={activeUpcomingEvent.image}
-                alt={activeUpcomingEvent.title}
-                className="upcoming-popup-media"
-              />
-            </div>
-
-            <div className="upcoming-popup-copy">
-              <span className="article-category">{activeUpcomingEvent.category}</span>
-              <h2 id="upcoming-popup-title">{activeUpcomingEvent.title}</h2>
-              <p>{activeUpcomingEvent.text}</p>
-            </div>
-
-            {upcomingEvents.length > 1 ? (
-              <div className="upcoming-popup-controls" aria-label="Upcoming event carousel controls">
-                <button
-                  type="button"
-                  className="upcoming-popup-arrow"
-                  aria-label="Previous upcoming event"
-                  onClick={() => goToSlide(activeUpcomingSlide - 1, upcomingEvents, setActiveUpcomingSlide)}
-                >
-                  <Icon name="arrow_back" className="site-icon site-icon-small" />
-                </button>
-                <div className="carousel-dots upcoming-popup-dots">
-                  {upcomingEvents.map((eventItem, index) => (
-                    <button
-                      key={eventItem.slug}
-                      className={`dot ${index === activeUpcomingSlide ? "active" : ""}`}
-                      type="button"
-                      aria-label={`Upcoming event slide ${index + 1}`}
-                      onClick={() => goToSlide(index, upcomingEvents, setActiveUpcomingSlide)}
-                    ></button>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="upcoming-popup-arrow"
-                  aria-label="Next upcoming event"
-                  onClick={() => goToSlide(activeUpcomingSlide + 1, upcomingEvents, setActiveUpcomingSlide)}
-                >
-                  <Icon name="arrow_forward" className="site-icon site-icon-small" />
-                </button>
-              </div>
-            ) : null}
-
-            <div className="upcoming-popup-actions">
-              <button
-                type="button"
-                className="secondary-button secondary-button-popup"
-                onClick={() => {
-                  setShowUpcomingPopup(false);
-                  openEvent(activeUpcomingEvent.slug);
-                }}
-              >
-                Event Details
-              </button>
-              <a
-                href={activeUpcomingEvent.registrationUrl || "#contact"}
-                className="primary-button primary-button-popup"
-                target={activeUpcomingEvent.registrationUrl ? "_blank" : undefined}
-                rel={activeUpcomingEvent.registrationUrl ? "noreferrer" : undefined}
-              >
-                Sign Up
-              </a>
-            </div>
-          </aside>
-        </div>
-      ) : null}
-
-      <header className="academic-topbar">
+      <header className={`academic-topbar ${isScrolled || hasDetailTopbar ? "is-pill" : ""}`}>
         <div className="academic-topbar-inner">
           <div className={`brand-cluster ${hasDetailTopbar ? "brand-cluster-detail" : ""}`}>
             <div className={`topbar-back-slot ${hasDetailTopbar ? "is-visible" : ""}`}>
@@ -811,16 +1056,28 @@ export default function App() {
 
           <div className={`topbar-nav-area ${hasDetailTopbar ? "is-hidden" : ""}`}>
             <button
-              className="menu-button"
+              className={`menu-button ${menuOpen ? "is-open" : ""}`}
               type="button"
               aria-expanded={menuOpen}
               aria-controls="site-navigation"
+              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
               onClick={() => setMenuOpen((open) => !open)}
             >
-              Menu
+              <span className="menu-icon" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
             </button>
 
+            <div
+              className={`mobile-nav-backdrop ${menuOpen ? "is-open" : ""}`}
+              role="presentation"
+              onClick={() => setMenuOpen(false)}
+            ></div>
+
             <nav id="site-navigation" className={`academic-nav ${menuOpen ? "is-open" : ""}`}>
+              <span className="nav-underline" aria-hidden="true"></span>
               {navItems.map((item) => (
                 <a
                   key={item.href}
@@ -907,7 +1164,7 @@ export default function App() {
                       <div className="instagram-grid">
                         {activeArticle.instagramPosts.map((post) => (
                           <article key={post.url} className="glass-card instagram-card">
-                            <img src={post.image} alt={post.title} className="instagram-custom-image" />
+                            <img src={post.image} alt={post.title} className="instagram-custom-image" loading="lazy" decoding="async" />
                             <div className="instagram-caption-block">
                               {post.caption.split("\n\n").map((paragraph) => (
                                 <p key={paragraph}>{paragraph}</p>
@@ -977,6 +1234,8 @@ export default function App() {
                                 src={galleryItem.image}
                                 alt={galleryItem.alt}
                                 className="event-gallery-image"
+                                loading="lazy"
+                                decoding="async"
                               />
                             </figure>
                           ))}
@@ -1042,7 +1301,7 @@ export default function App() {
                       <div className="instagram-grid">
                         {activeEvent.instagramPosts.map((post) => (
                           <article key={post.url} className="glass-card instagram-card">
-                            <img src={post.image} alt={post.title} className="instagram-custom-image" />
+                            <img src={post.image} alt={post.title} className="instagram-custom-image" loading="lazy" decoding="async" />
                             <div className="instagram-caption-block">
                               {post.caption.split("\n\n").map((paragraph) => (
                                 <p key={paragraph}>{paragraph}</p>
@@ -1099,6 +1358,7 @@ export default function App() {
                   <article
                     key={card.slug}
                     className="glass-card article-card article-card-hover"
+                    data-tilt="true"
                     onClick={() => openArticle(card.slug)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
@@ -1111,7 +1371,7 @@ export default function App() {
                   >
                     <div className="article-image-frame">
                       <div className="article-image-tint"></div>
-                      <img src={card.image} alt={card.title} className="article-image" />
+                      <img src={card.image} alt={card.title} className="article-image" loading="lazy" decoding="async" />
                     </div>
                     <div className="article-copy">
                       <span className="article-category">{card.category}</span>
@@ -1126,46 +1386,134 @@ export default function App() {
         </main>
       ) : (
         <main id="home" className="page-main">
-          <section
-            className="hero-section section"
-            style={{
-              backgroundImage: `linear-gradient(180deg, rgba(47, 98, 159, 0.58), rgba(47, 98, 159, 0.66)), url(${heroBackground})`,
-            }}
-          >
-            <div className="hero-layout">
-              <div className="hero-copy">
-                <h1
-                  className="hero-title typewriter-heading"
-                  style={reservedHeadlineHeight ? { minHeight: `${reservedHeadlineHeight}px` } : undefined}
-                >
-                  <span ref={measureRef} className="typewriter-ghost" aria-hidden="true">
-                    {heroPhrases[0]}
-                  </span>
-                  <span className="typewriter-live">
-                    <span>{typedHeadline}</span>
-                    <span className="typewriter-cursor" aria-hidden="true"></span>
-                  </span>
-                </h1>
-                <p className="hero-description">
-                  EnginAble is a youth-led organization dedicated to making engineering education more accessible, creative, and meaningful for young learners. Through hands-on workshops, community projects, and educational resources, we introduce students to engineering as a way to solve real-world problems and create a positive change. We believe engineering should not feel distant, intimidating, or limited to textbooks. Instead, it should be something students can experience, question, build, and use to understand the world around them.
-                </p>
-                <div className="hero-actions">
-                  <a href="#events" className="primary-button">
+          <section ref={heroSectionRef} className="space-intro">
+            <div className="space-intro-sticky">
+              <div className="space-intro-dark" aria-hidden="true">
+                <div className="space-intro-stars"></div>
+                <div className="space-intro-grid"></div>
+                <div className="space-aurora space-aurora-one"></div>
+                <div className="space-aurora space-aurora-two"></div>
+                <div className="intro-mosaic">
+                  <img src={mosaicMentoring} alt="" className="intro-mosaic-img intro-mosaic-a" />
+                  <img src={mosaicCommunity} alt="" className="intro-mosaic-img intro-mosaic-b" />
+                  <img src={mosaicOverhead} alt="" className="intro-mosaic-img intro-mosaic-c" />
+                </div>
+              </div>
+
+              <div className="intro-gear intro-gear-one" aria-hidden="true">
+                <img src={gearSpace} alt="" className="intro-gear-spin" />
+              </div>
+              <div className="intro-gear intro-gear-two" aria-hidden="true">
+                <img src={gearSpace} alt="" className="intro-gear-spin intro-gear-spin-reverse" />
+              </div>
+
+              <div ref={introCopyRef} className="intro-copy">
+                <IntroHeadline phrases={activeHeroPhrases} />
+                <p className="intro-description">{heroDescriptionText}</p>
+                <div className="intro-actions">
+                  <a href="#events" className="intro-button-primary">
                     Explore Events
                   </a>
-                  <a href="#articles" className="secondary-button">
+                  <a href="#articles" className="intro-button-ghost">
                     Read Articles
                   </a>
                 </div>
+              </div>
+
+              <a
+                ref={workBoardRef}
+                className="intro-work-board"
+                href="#events"
+                aria-label="See our past events"
+              >
+                <span className="intro-work-tag">
+                  Our work in the field
+                  <svg className="intro-work-arrow" viewBox="0 0 90 60" aria-hidden="true">
+                    <path
+                      d="M6 8 C 30 18, 48 34, 66 46"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeDasharray="1 7"
+                    />
+                    <path
+                      d="M56 46 L 68 48 L 62 37"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <div className="intro-work-photos">
+                  <figure className="intro-photo intro-photo-one">
+                    <img src={workWorkshop} alt="Students building at an EnginAble workshop" />
+                    <figcaption>Workshops</figcaption>
+                  </figure>
+                  <figure className="intro-photo intro-photo-two">
+                    <img src={workHandsOn} alt="Hands-on engineering activity" />
+                    <figcaption>Hands-on</figcaption>
+                  </figure>
+                  <figure className="intro-photo intro-photo-three">
+                    <img src={workTeaching} alt="EnginAble team teaching a class" />
+                    <figcaption>Community</figcaption>
+                  </figure>
+                </div>
+              </a>
+
+              <div className="intro-earth-scene" aria-hidden="true">
+                <div
+                  ref={earthRef}
+                  className="intro-earth"
+                  style={{ backgroundImage: `url(${earthTexture})` }}
+                >
+                  <span className="intro-pin">
+                    <span className="intro-pin-ring"></span>
+                    <span className="intro-pin-dot"></span>
+                  </span>
+                </div>
+              </div>
+
+              <div className="intro-earth-copy">
+                <p className="intro-eyebrow">From Jakarta to the world</p>
+                <h2 className="intro-earth-title">
+                  Born in <span className="intro-hl-yellow">Jakarta Selatan</span>, Indonesia
+                  &mdash; built for <span className="intro-hl-gradient">young learners everywhere</span>.
+                </h2>
+                <p className="intro-earth-text">
+                  Workshops, community projects, and educational resources that turn engineering
+                  into something you can experience, question, and build.
+                </p>
+              </div>
+
+              <div className="intro-scroll-hint" aria-hidden="true">
+                <span className="intro-scroll-pill">
+                  <span className="intro-scroll-dot"></span>
+                </span>
               </div>
             </div>
           </section>
 
           <section id="information" className="section">
+            <div className="info-photo-frame">
+              <img
+                src={heroBackground}
+                alt="EnginAble volunteers with students at a community workshop"
+                className="info-photo"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
             <div className="section-head">
-              <h2 className="section-title">
-                Clear pathways into EnginAble&apos;s mission, approach, and public value.
-              </h2>
+              <div>
+                <p className="section-eyebrow">Who we are</p>
+                <h2 className="section-title">
+                  Clear pathways into EnginAble&apos;s mission, approach, and public value.
+                </h2>
+              </div>
             </div>
 
             <div className="editorial-grid">
@@ -1176,17 +1524,46 @@ export default function App() {
                       <span className="editorial-title-script">{block.title.charAt(0)}</span>
                       <span>{block.title.slice(1)}</span>
                     </h2>
-                    <p>{block.text}</p>
+                    <p>{block.summary}</p>
                   </article>
                 ))}
               </div>
-
             </div>
+
+            <a
+              href="#about"
+              className="secondary-button info-more-button"
+              onClick={(event) => scrollToSection(event, "#about")}
+            >
+              Learn more about us
+            </a>
           </section>
+
+          <div className="marquee" aria-hidden="true">
+            <div className="marquee-track">
+              {[0, 1].map((copy) => (
+                <React.Fragment key={copy}>
+                  <span>Hands-on workshops</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>Community outreach</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>Creative learning</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>Jakarta &rarr; the world</span>
+                  <span className="marquee-star">&#10038;</span>
+                  <span>STEM for everyone</span>
+                  <span className="marquee-star">&#10038;</span>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
 
           <section id="articles" className="section section-wide">
             <div className="section-head">
-              <h2 className="section-title">Articles</h2>
+              <div>
+                <p className="section-eyebrow">Read &amp; learn</p>
+                <h2 className="section-title">Articles</h2>
+              </div>
               <a href="#articles/all" className="section-link" onClick={openAllArticlesPage}>
                 View All
               </a>
@@ -1197,6 +1574,7 @@ export default function App() {
                 <article
                   key={card.slug}
                   className="glass-card article-card article-card-hover"
+                  data-tilt="true"
                   onClick={() => openArticle(card.slug)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
@@ -1209,7 +1587,7 @@ export default function App() {
                 >
                   <div className="article-image-frame">
                     <div className="article-image-tint"></div>
-                    <img src={card.image} alt={card.title} className="article-image" />
+                    <img src={card.image} alt={card.title} className="article-image" loading="lazy" decoding="async" />
                   </div>
                   <div className="article-copy">
                     <span className="article-category">{card.category}</span>
@@ -1228,9 +1606,12 @@ export default function App() {
 
           <section id="partners" className="section">
             <div className="section-head">
-              <h2 className="section-title">
-                Our Partners and Collaborators
-              </h2>
+              <div>
+                <p className="section-eyebrow">Side by side</p>
+                <h2 className="section-title">
+                  Our Partners and Collaborators
+                </h2>
+              </div>
             </div>
 
             <div className="partner-portfolio">
@@ -1246,7 +1627,7 @@ export default function App() {
                     <div className="partner-logo-grid">
                       {page.logos.map((logo) => (
                         <article key={logo.name} className="partner-logo-item">
-                          <img src={logo.image} alt={logo.name} className="partner-logo-image" />
+                          <img src={logo.image} alt={logo.name} className="partner-logo-image" loading="lazy" decoding="async" />
                           <span>{logo.name}</span>
                         </article>
                       ))}
@@ -1289,13 +1670,35 @@ export default function App() {
             </div>
           </section>
 
+          <section id="about" className="section section-wide">
+            <div className="section-head">
+              <div>
+                <p className="section-eyebrow">The full story</p>
+                <h2 className="section-title">More about EnginAble</h2>
+              </div>
+            </div>
+
+            <div className="about-full-grid">
+              {infoBlocks.map((block) => (
+                <article key={block.title} className="glass-card about-full-card" data-tilt="true">
+                  <h3>
+                    <span className="editorial-title-script">{block.title.charAt(0)}</span>
+                    <span>{block.title.slice(1)}</span>
+                  </h3>
+                  <p>{block.text}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
           <section id="contact" className="section section-centered">
+            <p className="section-eyebrow">Get in touch</p>
             <h2 className="section-title section-title-centered">
               Start a conversation about content, events, or collaboration.
             </h2>
             <div className="contact-grid">
               {contactCards.map((card) => (
-                <article key={card.title} className="glass-card contact-card-academic">
+                <article key={card.title} className="glass-card contact-card-academic" data-tilt="true">
                   <div className="icon-badge">
                     <Icon name={card.icon} />
                   </div>
@@ -1321,7 +1724,7 @@ export default function App() {
       <footer className="academic-footer">
         <div className="academic-footer-inner">
           <div className="footer-brand">
-            <img src={logo} alt="EnginAble Global logo" className="footer-brand-logo" />
+            <img src={logo} alt="EnginAble Global logo" className="footer-brand-logo" loading="lazy" decoding="async" />
             <div>
               <div className="brand-wordmark brand-wordmark-footer">EnginAble Global</div>
               <p>Promoting engineering through information, stories, events, and partnerships.</p>
@@ -1329,10 +1732,12 @@ export default function App() {
           </div>
 
           <div className="footer-links">
-            <a href="#contact">Privacy Policy</a>
-            <a href="#contact">Terms of Service</a>
-            <a href="#articles">Press Kit</a>
-            <a href="#partners">Careers</a>
+            <a href="#articles">Articles</a>
+            <a href="#events">Events</a>
+            <a href="#contact">Contact</a>
+            <a href="https://www.instagram.com/enginable.global/" target="_blank" rel="noreferrer">
+              Instagram
+            </a>
           </div>
         </div>
       </footer>
