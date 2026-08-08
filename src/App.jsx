@@ -46,6 +46,16 @@ function readEventSlugFromHash() {
   return hash.replace("#event/", "");
 }
 
+const teamLocations = [
+  { id: "jakarta", label: "Jakarta Selatan, Indonesia", x: "50%", y: "28%", primary: true },
+  { id: "depok", label: "Depok, Indonesia", x: "48.8%", y: "27.1%" },
+  { id: "malang", label: "Malang, Indonesia", x: "53.2%", y: "29.2%" },
+  { id: "kuala-lumpur", label: "Kuala Lumpur, Malaysia", x: "47.2%", y: "22.3%" },
+  { id: "singapore", label: "Singapore", x: "48.6%", y: "24.1%" },
+  { id: "chisinau", label: "Chișinău, Moldova", x: "29.5%", y: "11.8%" },
+  { id: "trinidad", label: "Trinidad, Caribbean", x: "12.5%", y: "29.5%" },
+];
+
 function Icon({ name, className = "site-icon" }) {
   const commonProps = {
     className,
@@ -1469,10 +1479,21 @@ export default function App() {
                   className="intro-earth"
                   style={{ backgroundImage: `url(${earthTexture})` }}
                 >
-                  <span className="intro-pin">
-                    <span className="intro-pin-ring"></span>
-                    <span className="intro-pin-dot"></span>
-                  </span>
+                  {teamLocations.map((location, index) => (
+                    <span
+                      key={location.id}
+                      className={`intro-pin ${location.primary ? "is-primary" : ""}`}
+                      data-label={location.label}
+                      style={{
+                        "--pin-x": location.x,
+                        "--pin-y": location.y,
+                        "--pin-delay": `${index * 0.18}s`,
+                      }}
+                    >
+                      <span className="intro-pin-ring"></span>
+                      <span className="intro-pin-dot"></span>
+                    </span>
+                  ))}
                 </div>
               </div>
 
