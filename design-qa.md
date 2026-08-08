@@ -1,44 +1,51 @@
-# Design QA: Team Location Markers
+# Design QA: Geographic marker alignment
 
-- Source visual truth: `design-qa-assets/team-locations-source.png`
-- Desktop implementation: `design-qa-assets/team-locations-desktop.png`
-- Mobile implementation: `design-qa-assets/team-locations-mobile.png`
-- Source pixels: 1600 x 1034
-- Desktop implementation pixels/CSS viewport: 1600 x 1034 at device scale 1
-- Mobile implementation pixels/CSS viewport: 375 x 812 at device scale 1
-- State: globe scene during the Jakarta-to-the-world scroll sequence
+- Source visual truth: `design-qa-assets/location-alignment-source.jpg`
+- Desktop implementation: `design-qa-assets/location-alignment-desktop.png`
+- Mobile implementation: `design-qa-assets/location-alignment-mobile.png`
+- Source capture: 2558 x 1720 pixels; normalized proportionally to 1280 x 860 for desktop comparison
+- Desktop implementation: 1280 x 837 CSS pixels at device scale 1
+- Mobile implementation: 375 x 812 CSS pixels at device scale 1
+- State: Earth fully revealed during the Jakarta-to-the-world scroll sequence
 
 ## Full-view comparison evidence
 
-The existing globe crop, dark-space palette, navigation, type scale, copy, imagery, and primary Jakarta label remain visually unchanged. Six smaller pulsing markers were added around the globe, with Jakarta retaining the original larger dot and persistent pill label. The secondary markers are deliberately quieter so they do not compete with the headline or turn the Indonesia cluster into overlapping labels.
+The source capture exposed a P1 geographic mismatch: the texture was cropped to Asia, but the Moldova and Trinidad markers were still rendered inside that crop on unrelated land or ocean. The corrected implementation widens the same Earth texture to the longitude span from Trinidad through Indonesia and calculates every marker from latitude and longitude. Typography, navigation, colors, imagery, glass treatment, and surrounding section layout remain unchanged. A darker upper-atmosphere overlay preserves headline contrast against the newly visible Arctic region.
 
-## Focused interaction evidence
+## Focused marker evidence
 
-A separate crop was not required because every marker is clearly visible in the full desktop and mobile captures. Secondary names were interaction-tested in the browser: hovering Trinidad showed only `Trinidad, Caribbean`, while the persistent Jakarta label faded to prevent overlap. All seven markers rendered on mobile, the Jakarta label remained visible, and the page width stayed at 375 px with no horizontal overflow.
+- Trinidad is placed beside Trinidad and Venezuela at the western edge.
+- Chișinău is placed at Moldova, northwest of the Black Sea.
+- Kuala Lumpur and Singapore are placed on the Malay Peninsula.
+- Jakarta and Depok share the Jakarta-area position on western Java; Malang appears farther east on Java.
+- The primary Jakarta label opens inward so it stays readable near the eastern edge.
+
+## Responsive and interaction evidence
+
+- Desktop: all seven markers render within the visible geographic span.
+- Mobile: the globe uses a 100vmin diameter so both western and eastern edge markers remain visible; page width remains 375 px with no horizontal overflow.
+- Drag test: after a 105 CSS-pixel drag, the marker layer and texture returned together with a matched 67.97 px intermediate displacement, then settled to the 65% home position and zero marker offset.
+- Secondary hover labels remain one-at-a-time; Jakarta remains the default persistent label.
+- Browser console: no warnings or errors.
 
 ## Required fidelity surfaces
 
-- Typography: unchanged from the source; marker labels reuse the existing Jakarta pill typography.
-- Spacing and layout: existing composition is preserved; dots are scaled down except for the primary Jakarta marker.
-- Colors and tokens: markers reuse the existing yellow, white border, glow, and pulse treatment.
-- Image quality: the existing Earth texture and crop are unchanged.
-- Copy: all requested locations are present: Jakarta, Depok, Malang, Kuala Lumpur, Singapore, Chișinău, and Trinidad.
+- Fonts and typography: unchanged; headline and marker-label styles match the existing design.
+- Spacing and layout rhythm: desktop section geometry is unchanged; mobile Earth sizing was reduced only enough to keep the complete mapped span on-screen.
+- Colors and visual tokens: existing navy, blue atmosphere, yellow marker, white border, and glow tokens are preserved.
+- Image quality and asset fidelity: the existing 4096 x 2048 Earth texture is reused without regeneration or replacement.
+- Copy and content: all seven requested member locations remain present with their original labels.
 
 ## Findings
 
-No actionable P0, P1, or P2 differences. The additions preserve the original section while extending its meaning from one location to the full member network.
+No remaining actionable P0, P1, or P2 findings.
 
 ## Comparison history
 
-- Initial implementation: a hovered secondary label could overlap the persistent Jakarta label.
-- Fix: added a hover rule that temporarily fades the Jakarta label while another location label is displayed.
-- Post-fix evidence: desktop hover inspection showed Trinidad at opacity 1 and all other labels, including Jakarta, at opacity 0.
-
-## Browser verification
-
-- Seven location markers rendered.
-- Secondary hover labels work one at a time.
-- Mobile viewport has no horizontal overflow.
-- Browser console: no warnings or errors.
+- Initial P1: rough percentage coordinates placed Chișinău and Trinidad on unrelated parts of an Asia-only crop.
+- Fix: switched to latitude/longitude projection, widened and centered the map span, synchronized markers with drag displacement, and added inward-facing labels for eastern markers.
+- Initial mobile P1: the wider geographic span pushed the Indonesia markers beyond the viewport on the previous oversized mobile globe.
+- Fix: fit the globe to 100vmin on mobile and adjusted its reveal translation so the full mapped span remains visible.
+- Post-fix evidence: desktop and mobile captures show all locations on their corresponding geography with no horizontal overflow or console errors.
 
 final result: passed

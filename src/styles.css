@@ -949,8 +949,9 @@ body.menu-locked {
   width: min(150vmin, 80rem);
   aspect-ratio: 1;
   border-radius: 50%;
-  background-size: 300% 170%;
-  background-position: 96% 89%;
+  background-size: 195% 100%;
+  background-position: 65% 50%;
+  background-repeat: no-repeat;
   background-color: #06122c;
   transform: translate(-50%, calc(97% - var(--pe, 0) * 55%));
   box-shadow:
@@ -978,6 +979,12 @@ body.menu-locked {
   transition: opacity 240ms ease;
 }
 
+.intro-earth.is-settling .intro-pin {
+  transition:
+    opacity 240ms ease,
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .intro-earth.is-grabbed .intro-pin {
   opacity: 0;
 }
@@ -987,7 +994,9 @@ body.menu-locked {
   position: absolute;
   inset: -1.5%;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 42%, transparent 60%, rgba(122, 178, 255, 0.26) 73%, transparent 82%);
+  background:
+    linear-gradient(to bottom, rgba(3, 8, 24, 0.56) 0%, rgba(3, 8, 24, 0.2) 34%, transparent 52%),
+    radial-gradient(circle at 50% 42%, transparent 60%, rgba(122, 178, 255, 0.26) 73%, transparent 82%);
 }
 
 .intro-pin {
@@ -995,7 +1004,7 @@ body.menu-locked {
   left: var(--pin-x);
   top: var(--pin-y);
   z-index: 2;
-  transform: translate(-50%, -50%);
+  transform: translate(calc(-50% + var(--earth-drag-x, 0px)), -50%);
   cursor: help;
 }
 
@@ -1038,6 +1047,11 @@ body.menu-locked {
   opacity: 0;
   transform: translateX(-0.35rem);
   transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.intro-pin.is-east::after {
+  right: 1.25rem;
+  left: auto;
 }
 
 .intro-pin.is-primary .intro-pin-dot {
@@ -3059,7 +3073,8 @@ body.menu-locked {
   }
 
   .intro-earth {
-    width: 175vmin;
+    width: 100vmin;
+    transform: translate(-50%, calc(78% - var(--pe, 0) * 78%));
   }
 
   .intro-earth-copy {
@@ -3078,6 +3093,12 @@ body.menu-locked {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background: rgba(8, 14, 34, 0.92);
+  }
+
+  .intro-pin.is-east::after {
+    right: 0;
+    left: auto;
+    transform: none;
   }
 
   .intro-photo {

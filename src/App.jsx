@@ -46,15 +46,30 @@ function readEventSlugFromHash() {
   return hash.replace("#event/", "");
 }
 
+const EARTH_MAP_WIDTH = 1.95;
+const EARTH_MAP_POSITION_X = 0.65;
+
+function projectTeamLocation(latitude, longitude) {
+  const imageX = (longitude + 180) / 360;
+  const imageY = (90 - latitude) / 180;
+  const x = imageX * EARTH_MAP_WIDTH + (1 - EARTH_MAP_WIDTH) * EARTH_MAP_POSITION_X;
+
+  return {
+    x: `${(x * 100).toFixed(2)}%`,
+    y: `${(imageY * 100).toFixed(2)}%`,
+    align: x > 0.75 ? "east" : "west",
+  };
+}
+
 const teamLocations = [
-  { id: "jakarta", label: "Jakarta Selatan, Indonesia", x: "50%", y: "28%", primary: true },
-  { id: "depok", label: "Depok, Indonesia", x: "48.8%", y: "27.1%" },
-  { id: "malang", label: "Malang, Indonesia", x: "53.2%", y: "29.2%" },
-  { id: "kuala-lumpur", label: "Kuala Lumpur, Malaysia", x: "47.2%", y: "22.3%" },
-  { id: "singapore", label: "Singapore", x: "48.6%", y: "24.1%" },
-  { id: "chisinau", label: "Chișinău, Moldova", x: "29.5%", y: "11.8%" },
-  { id: "trinidad", label: "Trinidad, Caribbean", x: "12.5%", y: "29.5%" },
-];
+  { id: "jakarta", label: "Jakarta Selatan, Indonesia", latitude: -6.2615, longitude: 106.8106, primary: true },
+  { id: "depok", label: "Depok, Indonesia", latitude: -6.4025, longitude: 106.7942 },
+  { id: "malang", label: "Malang, Indonesia", latitude: -7.9666, longitude: 112.6326 },
+  { id: "kuala-lumpur", label: "Kuala Lumpur, Malaysia", latitude: 3.139, longitude: 101.6869 },
+  { id: "singapore", label: "Singapore", latitude: 1.3521, longitude: 103.8198 },
+  { id: "chisinau", label: "Chișinău, Moldova", latitude: 47.0105, longitude: 28.8638 },
+  { id: "trinidad", label: "Trinidad, Caribbean", latitude: 10.6918, longitude: -61.2225 },
+].map((location) => ({ ...location, ...projectTeamLocation(location.latitude, location.longitude) }));
 
 function Icon({ name, className = "site-icon" }) {
   const commonProps = {
@@ -504,6 +519,7 @@ export default function App() {
       startX = event.clientX;
       earth.classList.remove("is-settling");
       earth.classList.add("is-grabbed");
+      earth.style.setProperty("--earth-drag-x", "0px");
 
       try {
         earth.setPointerCapture(event.pointerId);
@@ -517,7 +533,9 @@ export default function App() {
         return;
       }
 
-      earth.style.backgroundPositionX = `calc(96% + ${(event.clientX - startX) * 1.4}px)`;
+      const dragX = (event.clientX - startX) * 1.4;
+      earth.style.backgroundPositionX = `calc(65% + ${dragX}px)`;
+      earth.style.setProperty("--earth-drag-x", `${dragX}px`);
     }
 
     function onUp() {
@@ -528,7 +546,8 @@ export default function App() {
       dragging = false;
       earth.classList.remove("is-grabbed");
       earth.classList.add("is-settling");
-      earth.style.backgroundPositionX = "96%";
+      earth.style.backgroundPositionX = "65%";
+      earth.style.setProperty("--earth-drag-x", "0px");
       window.setTimeout(() => earth.classList.remove("is-settling"), 750);
     }
 
@@ -1482,7 +1501,7 @@ export default function App() {
                   {teamLocations.map((location, index) => (
                     <span
                       key={location.id}
-                      className={`intro-pin ${location.primary ? "is-primary" : ""}`}
+                      className={`intro-pin ${location.primary ? "is-primary" : ""} ${location.align === "east" ? "is-east" : ""}`}
                       data-label={location.label}
                       style={{
                         "--pin-x": location.x,
