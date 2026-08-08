@@ -992,34 +992,39 @@ body.menu-locked {
 
 .intro-pin {
   position: absolute;
-  left: 50%;
-  top: 28%;
+  left: var(--pin-x);
+  top: var(--pin-y);
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  cursor: help;
 }
 
 .intro-pin-dot {
   display: block;
-  width: 1.1rem;
+  width: 0.72rem;
   aspect-ratio: 1;
   border-radius: 999px;
   background: #ffd84d;
-  border: 2px solid #fff;
-  box-shadow: 0 0 1.8rem rgba(255, 216, 77, 1);
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 1.1rem rgba(255, 216, 77, 0.95);
   animation: pinBlink 1.1s steps(2, start) infinite;
+  animation-delay: var(--pin-delay);
 }
 
 .intro-pin-ring {
   position: absolute;
-  inset: -0.75rem;
+  inset: -0.5rem;
   border-radius: 999px;
   border: 2px solid rgba(255, 216, 77, 0.75);
   animation: pinPing 1.7s ease-out infinite;
+  animation-delay: var(--pin-delay);
 }
 
 .intro-pin::after {
-  content: "Jakarta Selatan, Indonesia";
+  content: attr(data-label);
   position: absolute;
-  left: 1.7rem;
-  top: -0.45rem;
+  left: 1.25rem;
+  top: -0.55rem;
   padding: 0.5rem 0.85rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -1030,6 +1035,29 @@ body.menu-locked {
   font-size: 0.78rem;
   font-weight: 600;
   white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-0.35rem);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.intro-pin.is-primary .intro-pin-dot {
+  width: 1.1rem;
+  border-width: 2px;
+  box-shadow: 0 0 1.8rem rgba(255, 216, 77, 1);
+}
+
+.intro-pin.is-primary .intro-pin-ring {
+  inset: -0.75rem;
+}
+
+.intro-pin.is-primary::after,
+.intro-pin:hover::after {
+  opacity: 1;
+  transform: none;
+}
+
+.intro-earth:has(.intro-pin:not(.is-primary):hover) .intro-pin.is-primary::after {
+  opacity: 0;
 }
 
 .intro-earth-copy {
