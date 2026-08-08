@@ -233,7 +233,6 @@ export default function App() {
   const [activePastSlide, setActivePastSlide] = useState(0);
   const [activePartnerPage, setActivePartnerPage] = useState(0);
   const [activeEventGallerySlide, setActiveEventGallerySlide] = useState(0);
-  const [showUpcomingPopup, setShowUpcomingPopup] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const heroSectionRef = useRef(null);
   const introCopyRef = useRef(null);
@@ -860,10 +859,7 @@ export default function App() {
   const activeArticle = articles.find((card) => card.slug === activeArticleSlug) ?? null;
   const activeEvent = activeEventPreview;
   const latestArticles = articles.slice(0, 3);
-  const activeUpcomingEvent = upcomingEvents[activeUpcomingSlide] ?? upcomingEvents[0] ?? null;
   const hasDetailTopbar = isArticleRoute || isEventRoute || showAllArticlesPage;
-  const shouldShowUpcomingPopup =
-    showUpcomingPopup && !isArticleRoute && !isEventRoute && !showAllArticlesPage && Boolean(activeUpcomingEvent);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -923,24 +919,6 @@ export default function App() {
       mobileNavQuery.removeEventListener("change", closeMenuOnDesktop);
     };
   }, [menuOpen]);
-
-  useEffect(() => {
-    if (!shouldShowUpcomingPopup) {
-      return undefined;
-    }
-
-    function handleUpcomingPopupEscape(event) {
-      if (event.key !== "Escape") {
-        return;
-      }
-
-      setShowUpcomingPopup(false);
-    }
-
-    window.addEventListener("keydown", handleUpcomingPopupEscape);
-
-    return () => window.removeEventListener("keydown", handleUpcomingPopupEscape);
-  }, [shouldShowUpcomingPopup]);
 
   function renderEventCarousel(title, items, activeIndex, setSlide) {
     if (!items.length) {
@@ -1042,93 +1020,6 @@ export default function App() {
         <div className="gear-float gear-float-one"></div>
         <div className="gear-float gear-float-two"></div>
       </div>
-
-      {shouldShowUpcomingPopup ? (
-        <div className="upcoming-popup-backdrop" role="presentation">
-          <aside
-            className="upcoming-popup"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="upcoming-popup-title"
-          >
-            <button
-              type="button"
-              className="upcoming-popup-close"
-              aria-label="Close upcoming event popup"
-              onClick={() => setShowUpcomingPopup(false)}
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-
-            <div className="upcoming-popup-media-wrap">
-              <img
-                src={activeUpcomingEvent.image}
-                alt={activeUpcomingEvent.title}
-                className="upcoming-popup-media"
-              />
-            </div>
-
-            <div className="upcoming-popup-copy">
-              <span className="article-category">{activeUpcomingEvent.category}</span>
-              <h2 id="upcoming-popup-title">{activeUpcomingEvent.title}</h2>
-              <p>{activeUpcomingEvent.text}</p>
-            </div>
-
-            {upcomingEvents.length > 1 ? (
-              <div className="upcoming-popup-controls" aria-label="Upcoming event carousel controls">
-                <button
-                  type="button"
-                  className="upcoming-popup-arrow"
-                  aria-label="Previous upcoming event"
-                  onClick={() => goToSlide(activeUpcomingSlide - 1, upcomingEvents, setActiveUpcomingSlide)}
-                >
-                  <Icon name="arrow_back" className="site-icon site-icon-small" />
-                </button>
-                <div className="carousel-dots upcoming-popup-dots">
-                  {upcomingEvents.map((eventItem, index) => (
-                    <button
-                      key={eventItem.slug}
-                      className={`dot ${index === activeUpcomingSlide ? "active" : ""}`}
-                      type="button"
-                      aria-label={`Upcoming event slide ${index + 1}`}
-                      onClick={() => goToSlide(index, upcomingEvents, setActiveUpcomingSlide)}
-                    ></button>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="upcoming-popup-arrow"
-                  aria-label="Next upcoming event"
-                  onClick={() => goToSlide(activeUpcomingSlide + 1, upcomingEvents, setActiveUpcomingSlide)}
-                >
-                  <Icon name="arrow_forward" className="site-icon site-icon-small" />
-                </button>
-              </div>
-            ) : null}
-
-            <div className="upcoming-popup-actions">
-              <button
-                type="button"
-                className="secondary-button secondary-button-popup"
-                onClick={() => {
-                  setShowUpcomingPopup(false);
-                  openEvent(activeUpcomingEvent.slug);
-                }}
-              >
-                Event Details
-              </button>
-              <a
-                href={activeUpcomingEvent.registrationUrl || "#contact"}
-                className="primary-button primary-button-popup"
-                target={activeUpcomingEvent.registrationUrl ? "_blank" : undefined}
-                rel={activeUpcomingEvent.registrationUrl ? "noreferrer" : undefined}
-              >
-                Sign Up
-              </a>
-            </div>
-          </aside>
-        </div>
-      ) : null}
 
       <header className={`academic-topbar ${isScrolled || hasDetailTopbar ? "is-pill" : ""}`}>
         <div className="academic-topbar-inner">
